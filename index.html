@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Reformer booking and management</title>
+  <title>Chez Nadya - Pilates Reformer</title>
 
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,10 +15,18 @@
       --accent: #10b981;
       --accent-glow: rgba(16, 185, 129, 0.25);
       --bg-dark: #020617;
-      --bg-card: rgba(15, 23, 42, 0.85);
-      --border-card: rgba(255, 255, 255, 0.1);
+      --bg-card: rgba(15, 23, 42, 0.82);
+      --border-card: rgba(255, 255, 255, 0.08);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
     
     body {
       background: radial-gradient(circle at 50% 0%, #062e24 0%, var(--bg-dark) 100%);
@@ -31,6 +39,7 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
+    /* Header */
     header {
       height: 54px;
       background: rgba(15, 23, 42, 0.95);
@@ -39,124 +48,168 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 14px;
+      padding: 0 16px;
       position: sticky;
       top: 0;
       z-index: 30;
       flex-shrink: 0;
+      transition: all 0.3s var(--ease-out);
     }
+    
     .badge-brand {
       background: var(--accent);
       color: #020617;
       font-size: 11px;
       font-weight: 900;
-      padding: 4px 8px;
-      border-radius: 6px;
+      padding: 4px 9px;
+      border-radius: 7px;
       letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px var(--accent-glow);
     }
 
-    /* Modal / Pop-up de confirmation personnalisée VFA24 */
+    /* Modal Universel de Confirmation */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 150;
       padding: 16px;
+      opacity: 0;
+      transition: opacity 0.25s var(--ease-out);
+    }
+    .vfa-modal-overlay.show {
+      display: flex;
+      opacity: 1;
     }
     .vfa-modal-box {
       background: #0f172a;
-      border: 1px solid var(--accent);
-      border-radius: 16px;
-      padding: 18px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 18px;
+      padding: 20px;
       max-width: 360px;
       width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
+      transform: scale(0.94);
+      transition: transform 0.25s var(--ease-out);
+    }
+    .vfa-modal-overlay.show .vfa-modal-box {
+      transform: scale(1);
     }
 
-    /* Toast */
+    /* Toast Notification */
     .toast {
       position: fixed;
-      top: 12px;
+      top: 14px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translate(-50%, -20px);
       background: #0f172a;
       border: 1px solid var(--accent);
-      box-shadow: 0 4px 20px var(--accent-glow);
-      border-radius: 12px;
-      padding: 10px 14px;
+      box-shadow: 0 8px 25px var(--accent-glow);
+      border-radius: 14px;
+      padding: 12px 16px;
       font-size: 11px;
+      font-weight: 600;
       z-index: 200;
       opacity: 0;
       pointer-events: none;
-      transition: 0.3s ease;
+      transition: all 0.35s var(--ease-out);
       max-width: 90%;
       width: 340px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
-    .toast.show { opacity: 1; pointer-events: auto; }
+    .toast.show { 
+      opacity: 1; 
+      transform: translate(-50%, 0); 
+      pointer-events: auto; 
+    }
 
+    /* Main Container & Panes */
     main {
       flex: 1;
-      padding: 14px;
-      padding-bottom: 84px;
+      padding: 16px;
+      padding-bottom: 88px;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      max-width: 600px;
+      max-width: 580px;
       width: 100%;
       margin: 0 auto;
     }
-    .view-pane { display: none; flex-direction: column; gap: 12px; }
-    .view-pane.active { display: flex; }
+    
+    .view-pane { 
+      display: none; 
+      flex-direction: column; 
+      gap: 14px; 
+    }
+    
+    .view-pane.active { 
+      display: flex; 
+      animation: fadeUp 0.35s var(--ease-out) forwards;
+    }
 
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
     .card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
       border: 1px solid var(--border-card);
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 16px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transition: transform 0.2s var(--ease-out), border-color 0.2s var(--ease-out);
     }
+    
     .card-title {
       font-size: 11px;
       font-weight: 800;
       color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+    /* Form Fields */
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: 0.4px; }
     .field input, .field select {
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.45);
       border: 1px solid var(--border-card);
       color: #fff;
-      padding: 10px 12px;
-      border-radius: 8px;
+      padding: 11px 12px;
+      border-radius: 9px;
       font-size: 13px;
       outline: none;
       width: 100%;
+      transition: border-color 0.2s var(--ease-out), background 0.2s var(--ease-out);
     }
-    .field input:focus, .field select:focus { border-color: var(--accent); }
+    .field input:focus, .field select:focus { 
+      border-color: var(--accent); 
+      background: rgba(0,0,0,0.65);
+    }
 
+    /* Buttons */
     .btn {
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 11px;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       border: none;
@@ -164,33 +217,50 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: 0.15s;
+      transition: transform 0.15s var(--ease-out), opacity 0.15s var(--ease-out);
     }
-    .btn-accent { background: var(--accent); color: #020617; font-weight: 800; }
+    .btn:active { transform: scale(0.97); }
+    .btn-accent { 
+      background: var(--accent); 
+      color: #020617; 
+      font-weight: 800; 
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
     .btn-ghost { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border-card); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
     .btn-danger { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+    .btn-danger:hover { background: rgba(244,63,94,0.25); }
 
-    .date-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    /* Date Strip Picker */
+    .date-strip { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 4px; }
     .date-strip::-webkit-scrollbar { display: none; }
     .date-chip {
       position: relative;
       flex-shrink: 0;
-      padding: 6px 10px;
-      border-radius: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
       border: 1px solid var(--border-card);
       background: rgba(255,255,255,0.03);
       text-align: center;
       cursor: pointer;
-      min-width: 54px;
+      min-width: 56px;
+      transition: all 0.2s var(--ease-out);
     }
-    .date-chip.active { border-color: var(--accent); background: var(--accent-glow); color: #fff; }
+    .date-chip:active { transform: scale(0.95); }
+    .date-chip.active { 
+      border-color: var(--accent); 
+      background: var(--accent-glow); 
+      color: #fff; 
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
     .date-chip .day { font-size: 8px; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.5); }
     .date-chip.active .day { color: var(--accent); }
-    .date-chip .num { font-size: 14px; font-weight: 800; margin-top: 1px; }
+    .date-chip .num { font-size: 14px; font-weight: 800; margin-top: 2px; }
+    
     .has-booking-dot {
       position: absolute;
-      top: 4px;
-      right: 4px;
+      top: 5px;
+      right: 5px;
       width: 6px;
       height: 6px;
       background: #f43f5e;
@@ -198,27 +268,33 @@
       box-shadow: 0 0 6px #f43f5e;
     }
 
+    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .kpi-box {
       background: rgba(0,0,0,0.4);
       border: 1px solid var(--border-card);
-      border-radius: 10px;
-      padding: 10px 8px;
+      border-radius: 12px;
+      padding: 12px 8px;
       text-align: center;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s var(--ease-out);
     }
-    .kpi-box:hover { border-color: var(--accent); transform: translateY(-1px); }
-    .kpi-lbl { font-size: 8px; color: rgba(255,255,255,0.4); text-transform: uppercase; font-weight: 700; }
-    .kpi-val { font-size: 16px; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 2px; }
+    .kpi-box:hover, .kpi-box:active { 
+      border-color: var(--accent); 
+      transform: translateY(-2px); 
+    }
+    .kpi-lbl { font-size: 8px; color: rgba(255,255,255,0.45); text-transform: uppercase; font-weight: 700; }
+    .kpi-val { font-size: 17px; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 2px; }
 
+    /* Progress bar */
     .prog-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-    .prog-fill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
+    .prog-fill { height: 100%; background: var(--accent); transition: width 0.35s var(--ease-out); }
 
+    /* Bottom Navigation Bar */
     .bottom-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: 60px;
+      height: 62px;
       background: rgba(15, 23, 42, 0.98);
       backdrop-filter: blur(20px);
       border-top: 1px solid var(--border-card);
@@ -236,15 +312,17 @@
       gap: 3px;
       background: none;
       border: none;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.45);
       font-size: 9px;
       font-weight: 700;
       height: 100%;
       cursor: pointer;
       flex: 1;
+      transition: color 0.2s var(--ease-out), transform 0.15s var(--ease-out);
     }
+    .nav-item:active { transform: scale(0.92); }
     .nav-item.active { color: var(--accent); }
-    .nav-item span.icon { font-size: 16px; }
+    .nav-item span.icon { font-size: 17px; }
 
     .badge-series {
       background: rgba(168, 85, 247, 0.2);
@@ -253,7 +331,7 @@
       font-size: 9px;
       font-weight: 800;
       padding: 2px 6px;
-      border-radius: 4px;
+      border-radius: 5px;
       display: inline-flex;
       align-items: center;
       gap: 4px;
@@ -281,45 +359,39 @@
   <header>
     <div style="display:flex; align-items:center; gap:8px;">
       <span class="badge-brand" id="brand-badge">Chez Nadya</span>
-      <span id="app-title-header" style="font-size:11px; font-weight:700;">Reformer Studio</span>
+      <span id="app-title-header" style="font-size:12px; font-weight:700;">Reformer Studio</span>
     </div>
-    <button id="btn-logout" class="btn btn-ghost" style="padding:4px 8px; font-size:10px; display:none;" onclick="logout()">Déconnexion</button>
+    <button id="btn-logout" class="btn btn-ghost" style="padding:5px 9px; font-size:10px; display:none;" onclick="logout()">Déconnexion</button>
   </header>
 
   <main>
 
     <div id="view-login" class="view-pane active">
-      <div class="card" style="padding:18px;">
-        <div class="card-title" style="font-size:13px;">Accès au Studio Reformer</div>
+      <div class="card" style="padding:22px; margin-top:10px;">
+        <div class="card-title" style="font-size:14px;">Accès au Studio Reformer</div>
         <p style="font-size:11px; color:rgba(255,255,255,0.5);">Identifiez-vous pour gérer le studio ou réserver vos séances.</p>
         
-        <div class="field">
-          <label>Identifiant (User)</label>
-          <input type="text" id="in-user" placeholder="Nadya ou Guest" autocomplete="off">
+        <div class="field" style="margin-top:6px;">
+          <label>Identifiant</label>
+          <input type="text" id="in-user" placeholder="Nom d'utilisateur" autocomplete="off">
         </div>
         <div class="field">
-          <label>Mot de passe (Password)</label>
+          <label>Mot de passe</label>
           <input type="password" id="in-pass" placeholder="••••••••" autocomplete="off">
         </div>
 
-        <button class="btn btn-accent" style="margin-top:6px;" onclick="login()">Se Connecter</button>
-
-        <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); font-size:10px; color:rgba(255,255,255,0.4); line-height:1.4;">
-          <b>Comptes disponibles :</b><br>
-          • <b>Admin :</b> <code>Nadya</code> / <code>0312</code><br>
-          • <b>Membres :</b> <code>Guest</code>, <code>Sophie</code>, <code>Claire</code> (MDP initial : <code>Guest</code>)
-        </div>
+        <button class="btn btn-accent" style="margin-top:10px; padding:12px;" onclick="login()">Se Connecter</button>
       </div>
     </div>
 
     <div id="view-force-pwd" class="view-pane">
-      <div class="card" style="padding:18px; border-color: rgba(245,158,11,0.4);">
+      <div class="card" style="padding:20px; border-color: rgba(245,158,11,0.4);">
         <div class="card-title" style="color:#fbbf24;">🔐 Première Connexion — Sécurité</div>
-        <p style="font-size:11px; color:rgba(255,255,255,0.7);">
+        <p style="font-size:11px; color:rgba(255,255,255,0.7); line-height:1.4;">
           Pour des raisons de sécurité, veuillez définir votre nouveau mot de passe personnel avant d'accéder au studio.
         </p>
 
-        <div class="field">
+        <div class="field" style="margin-top:6px;">
           <label>Nouveau mot de passe</label>
           <input type="password" id="in-new-pwd" placeholder="Au moins 4 caractères">
         </div>
@@ -328,14 +400,14 @@
           <input type="password" id="in-confirm-pwd" placeholder="Répéter le mot de passe">
         </div>
 
-        <button class="btn btn-accent" onclick="submitNewPassword()">Enregistrer et Continuer</button>
+        <button class="btn btn-accent" style="margin-top:8px;" onclick="submitNewPassword()">Enregistrer et Continuer</button>
       </div>
     </div>
 
     <div id="view-g-plan" class="view-pane">
       <div class="card">
         <div class="card-title">
-          <span>Planning Étendu (3 Semaines)</span>
+          <span>Planning (3 Semaines)</span>
           <span id="g-date-lbl" style="color:#fff; font-family:monospace;">Aujourd'hui</span>
         </div>
         <div class="date-strip" id="g-date-strip"></div>
@@ -381,11 +453,11 @@
           <label>Contact d'urgence</label>
           <input type="text" id="prof-emergency" placeholder="Nom et Téléphone">
         </div>
-        <div class="field" style="margin-top:4px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.06);">
+        <div class="field" style="margin-top:4px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);">
           <label>Modifier mon Mot de Passe</label>
-          <input type="password" id="prof-pwd" placeholder="Nouveau mot de passe">
+          <input type="password" id="prof-pwd" placeholder="Nouveau mot de passe personnel">
         </div>
-        <button class="btn btn-accent" onclick="saveGuestProfile()">Mettre à jour mon profil</button>
+        <button class="btn btn-accent" style="margin-top:4px;" onclick="saveGuestProfile()">Mettre à jour mon profil</button>
       </div>
 
       <div class="card">
@@ -423,11 +495,11 @@
         <button class="btn btn-accent" style="flex:1;" onclick="exportFullDataJSON()">💾 Export Données</button>
       </div>
 
-      <div class="card" id="analytics-chart-card" style="display:none; padding:14px;">
+      <div class="card" id="analytics-chart-card" style="display:none; padding:16px;">
         <div class="card-title">
           <span id="chart-title">Analyse Graphique</span>
           <div style="display:flex; gap:4px;">
-            <select id="chart-granularity" onchange="refreshChartData()" style="background:rgba(0,0,0,0.5); color:#fff; font-size:9px; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:2px 4px;">
+            <select id="chart-granularity" onchange="refreshChartData()" style="background:rgba(0,0,0,0.5); color:#fff; font-size:9px; border:1px solid rgba(255,255,255,0.1); border-radius:5px; padding:3px 6px;">
               <option value="day">Vue Jours</option>
               <option value="month" selected>Vue Mois</option>
               <option value="year">Vue Année</option>
@@ -436,13 +508,13 @@
           </div>
         </div>
         <div id="chart-legend" style="font-size:9px; color:rgba(255,255,255,0.6); display:flex; justify-content:space-between; margin-top:4px;"></div>
-        <div id="chart-svg-container" style="margin-top:10px; width:100%; display:flex; justify-content:center; overflow-x:auto;"></div>
+        <div id="chart-svg-container" style="margin-top:12px; width:100%; display:flex; justify-content:center; overflow-x:auto;"></div>
       </div>
 
       <div class="card" id="kpi-detail-card" style="border-color: rgba(16,185,129,0.3);">
         <div class="card-title">
           <span id="kpi-detail-title">Détail des Inscriptions & Fréquentation</span>
-          <button class="btn btn-ghost" style="padding:2px 6px; font-size:9px;" onclick="renderAdminKPI()">Actualiser</button>
+          <button class="btn btn-ghost" style="padding:3px 7px; font-size:9px;" onclick="renderAdminKPI()">Actualiser</button>
         </div>
         <div id="kpi-detail-content" style="font-size:11px; color:rgba(255,255,255,0.7); display:flex; flex-direction:column; gap:6px;"></div>
       </div>
@@ -518,7 +590,7 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
           <div class="field">
             <label>Identifiant / Nom</label>
-            <input type="text" id="new-mem-user" placeholder="ex: Sophie">
+            <input type="text" id="new-mem-user" placeholder="ex: Julie">
           </div>
           <div class="field">
             <label>Type d'Abonnement</label>
@@ -553,9 +625,7 @@
           </div>
         </div>
 
-        <p style="font-size:9px; color:rgba(255,255,255,0.4);">* Mot de passe initial : <code>Guest</code> (modification requise à la 1ère connexion).</p>
-        
-        <div style="display:flex; gap:6px;">
+        <div style="display:flex; gap:6px; margin-top:4px;">
           <button id="btn-cancel-mem-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelMemEdit()">Annuler</button>
           <button id="btn-save-member" class="btn btn-accent" style="flex:2;" onclick="adminSaveMember()">+ Créer le Compte Membre</button>
         </div>
@@ -582,7 +652,7 @@
           <label>Modifier le mot de passe Admin</label>
           <input type="password" id="adm-new-pwd" placeholder="Nouveau mot de passe">
         </div>
-        <button class="btn btn-accent" onclick="saveAdminProfile()">Mettre à jour mes accès</button>
+        <button class="btn btn-accent" style="margin-top:4px;" onclick="saveAdminProfile()">Mettre à jour mes accès</button>
       </div>
     </div>
 
@@ -600,11 +670,11 @@
 
     var defaultSessions = [
       { id: "s1", seriesId: "ser_01", title: "Reformer Flow & Posture", coach: "Nadya", duration: 50, date: new Date().toISOString().split('T')[0], time: "09:00", cap: 6, users: ["Guest", "Sophie"], status: "active" },
-      { id: "s2", seriesId: "ser_02", title: "Reformer Sculpt & Core", coach: "Sarah", duration: 60, date: new Date().toISOString().split('T')[0], time: "11:00", cap: 6, users: ["Claire"], status: "active" },
+      { id: "s2", seriesId: "ser_02", title: "Reformer Sculpt & Core", coach: "Nadya", duration: 60, date: new Date().toISOString().split('T')[0], time: "11:00", cap: 6, users: ["Claire"], status: "active" },
       { id: "s3", seriesId: "ser_03", title: "Reformer Cardio Jump", coach: "Nadya", duration: 45, date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: "18:00", cap: 6, users: [], status: "active" }
     ];
 
-    // --- 2. RESTAURATION & RÉTENTION DE VOS DONNÉES DE TESTS ---
+    // --- 2. RESTAURATION & RÉTENTION UNIFIÉE ---
     var savedMembers = localStorage.getItem('cn_members_v4') || localStorage.getItem('cn_members_v3') || localStorage.getItem('cn_members') || null;
     var savedSessions = localStorage.getItem('cn_sessions_v4') || localStorage.getItem('cn_sessions_v3') || localStorage.getItem('cn_sessions_v2') || localStorage.getItem('cn_sessions') || null;
 
@@ -624,7 +694,6 @@
       renderActiveView();
     }
 
-    // Sauvegarde initiale unifiée
     saveState();
 
     function showToast(text, isError) {
@@ -635,22 +704,22 @@
       setTimeout(function() { t.className = 'toast'; }, 2800);
     }
 
-    // --- DIALOGUE DE CONFIRMATION PERSONNALISÉ ---
+    // --- DIALOGUE DE CONFIRMATION ---
     function openConfirmModal(title, msg, onConfirm) {
       var modal = document.getElementById('vfa-confirm-modal');
       document.getElementById('confirm-modal-title').innerText = title;
       document.getElementById('confirm-modal-msg').innerText = msg;
-      modal.style.display = 'flex';
+      modal.className = 'vfa-modal-overlay show';
 
       var btnConfirm = document.getElementById('btn-modal-confirm');
       var btnCancel = document.getElementById('btn-modal-cancel');
 
       btnConfirm.onclick = function() {
-        modal.style.display = 'none';
+        modal.className = 'vfa-modal-overlay';
         onConfirm();
       };
       btnCancel.onclick = function() {
-        modal.style.display = 'none';
+        modal.className = 'vfa-modal-overlay';
       };
     }
 
@@ -888,7 +957,7 @@
         var isSeriesMulti = seriesSessions.length > 1;
 
         var box = document.createElement('div');
-        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;";
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
@@ -897,13 +966,13 @@
                 '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
                 (isSeriesMulti ? '<span class="badge-series">🔁 Série (' + seriesSessions.length + ' sem.)</span>' : '<span style="font-size:9px; color:rgba(255,255,255,0.4);">● Unique</span>') +
               '</div>' +
-              '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
-              '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div>' +
+              '<div style="font-size:13px; font-weight:800; margin-top:3px;">' + s.title + '</div>' +
+              '<div style="font-size:10px; color:rgba(255,255,255,0.45);">Coach : ' + s.coach + '</div>' +
             '</div>' +
             '<span style="font-size:10px; font-weight:700; color:' + (isFull ? '#f87171' : '#34d399') + ';">' + (s.cap - s.users.length) + ' place(s)</span>' +
           '</div>' +
           '<div class="prog-track"><div class="prog-fill" style="width:' + pct + '%;"></div></div>' +
-          '<div style="display:flex; gap:6px; margin-top:2px;">' +
+          '<div style="display:flex; gap:6px; margin-top:3px;">' +
             (isBooked 
               ? '<button class="btn btn-danger" style="width:100%;" onclick="requestGuestCancel(\'' + s.id + '\')">✓ Inscrit(e) — Annuler ma place</button>'
               : '<button class="btn btn-accent" style="flex:1;" ' + (isFull ? 'disabled style="opacity:0.4;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' + (isFull ? 'Complet' : 'Réserver') + '</button>' +
@@ -939,7 +1008,7 @@
       var placesNeeded = seriesList.filter(function(x) { return x.users.indexOf(currentUser.user) === -1; }).length;
 
       if (myBookingsCount + placesNeeded > totalPass) {
-        showToast("Solde insuffisant pour réserver toute la série (" + placesNeeded + " séances requises).", true);
+        showToast("Solde insuffisant (" + placesNeeded + " séances requises).", true);
         return;
       }
 
@@ -976,18 +1045,18 @@
       list.innerHTML = '';
       my.forEach(function(s) {
         var box = document.createElement('div');
-        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;";
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px;";
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:center;">' +
             '<div><span style="font-size:9px; color:var(--accent); font-family:monospace;">📅 ' + s.date + ' à ' + s.time + ' (' + (s.duration || 50) + ' min)</span>' +
-            '<div style="font-size:12px; font-weight:800;">' + s.title + '</div>' +
-            '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div></div>' +
-            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
+            '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
+            '<div style="font-size:10px; color:rgba(255,255,255,0.45);">Coach : ' + s.coach + '</div></div>' +
+            '<button class="btn btn-danger" style="padding:5px 9px; font-size:10px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
           '</div>' +
-          '<div style="display:flex; gap:4px; border-top:1px solid rgba(255,255,255,0.04); padding-top:6px;">' +
-            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📅 Google</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToOutlook(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📧 Outlook</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToICS(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">🍏 Apple / iCal</button>' +
+          '<div style="display:flex; gap:5px; border-top:1px solid rgba(255,255,255,0.04); padding-top:8px;">' +
+            '<button class="btn btn-ghost" style="flex:1; padding:4px 6px; font-size:9px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📅 Google</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:4px 6px; font-size:9px;" onclick="exportToOutlook(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📧 Outlook</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:4px 6px; font-size:9px;" onclick="exportToICS(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">🍏 Apple / iCal</button>' +
           '</div>';
         list.appendChild(box);
       });
@@ -1021,7 +1090,7 @@
       a.href = URL.createObjectURL(blob);
       a.download = "seance_reformer.ics";
       a.click();
-      showToast("Fichier calendrier iCal téléchargé !", false);
+      showToast("Fichier iCal téléchargé !", false);
     }
 
     function renderGuestProfileView() {
@@ -1115,7 +1184,7 @@
           var x = 30 + (i * 48);
           var h = p.val * 8;
           var y = 120 - h;
-          svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#10b981" rx="4"/>';
+          svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#10b981" rx="5"/>';
           svgContent += '<text x="' + (x + 12) + '" y="' + (y - 4) + '" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">' + p.val + '</text>';
           svgContent += '<text x="' + (x + 12) + '" y="134" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">' + p.label + '</text>';
         });
@@ -1130,7 +1199,7 @@
           <svg width="340" height="150" viewBox="0 0 340 150">
             <defs>
               <linearGradient id="gradCurve" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
                 <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
@@ -1165,7 +1234,7 @@
         }
 
         container.innerHTML = bookedSessions.map(function(s) {
-          return "<div style='background:rgba(0,0,0,0.3); padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);'>" +
+          return "<div style='background:rgba(0,0,0,0.3); padding:9px; border-radius:10px; border:1px solid rgba(255,255,255,0.05);'>" +
             "<div style='display:flex; justify-content:space-between; font-weight:700; color:#fff;'>" +
               "<span>" + s.title + "</span>" +
               "<span style='color:var(--accent); font-family:monospace;'>" + s.date + " à " + s.time + "</span>" +
@@ -1182,7 +1251,7 @@
       }
     }
 
-    // --- ADMIN PLANNING & DISTINCTION OCCURRENCE / SÉRIE ---
+    // --- ADMIN PLANNING ---
     function renderAdminSchedule() {
       var list = document.getElementById('adm-session-list');
       list.innerHTML = '';
@@ -1190,7 +1259,7 @@
       sessions.forEach(function(s) {
         var isSeries = s.seriesId ? true : false;
         var box = document.createElement('div');
-        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px;";
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
@@ -1199,15 +1268,15 @@
                 '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
                 (isSeries ? '<span class="badge-series">🔁 Série</span>' : '') +
               '</div>' +
-              '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
-              '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach: ' + s.coach + ' | Inscrits: ' + s.users.length + '/' + s.cap + ' (' + (s.users.join(', ') || 'aucun') + ')</div>' +
+              '<div style="font-size:13px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
+              '<div style="font-size:10px; color:rgba(255,255,255,0.45);">Coach: ' + s.coach + ' | Inscrits: ' + s.users.length + '/' + s.cap + ' (' + (s.users.join(', ') || 'aucun') + ')</div>' +
             '</div>' +
             '<span style="font-size:9px; font-weight:700; color:' + (s.status === 'active' ? '#34d399' : '#f87171') + ';">● ' + s.status.toUpperCase() + '</span>' +
           '</div>' +
-          '<div style="display:flex; gap:4px; margin-top:4px;">' +
-            '<button class="btn btn-accent" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">✏️ Modifier</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:5px 6px; font-size:10px;" onclick="requestAdminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Annuler' : '✅ Activer') + '</button>' +
-            '<button class="btn btn-danger" style="padding:5px 6px; font-size:10px;" onclick="requestAdminDelete(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
+          '<div style="display:flex; gap:5px; margin-top:4px;">' +
+            '<button class="btn btn-accent" style="flex:1; padding:6px 6px; font-size:10px;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">✏️ Modifier</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:6px 6px; font-size:10px;" onclick="requestAdminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Annuler' : '✅ Activer') + '</button>' +
+            '<button class="btn btn-danger" style="padding:6px 8px; font-size:10px;" onclick="requestAdminDelete(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
           '</div>';
         list.appendChild(box);
       });
@@ -1327,7 +1396,7 @@
       });
     }
 
-    // --- ADMIN MEMBERS, ÉDITION & DÉSACTIVATION DOUCE ---
+    // --- ADMIN MEMBERS, ÉDITION & DÉSACTIVATION ---
     function renderAdminMembers() {
       var list = document.getElementById('adm-members-list');
       list.innerHTML = '';
@@ -1339,29 +1408,29 @@
         var isDisabled = m.status === "disabled";
 
         var box = document.createElement('div');
-        box.style.cssText = "background:rgba(0,0,0,0.3); border:1px solid " + (isDisabled ? 'rgba(244,63,94,0.3)' : 'rgba(255,255,255,0.06)') + "; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px; " + (isDisabled ? 'opacity:0.6;' : '');
+        box.style.cssText = "background:rgba(0,0,0,0.3); border:1px solid " + (isDisabled ? 'rgba(244,63,94,0.3)' : 'rgba(255,255,255,0.06)') + "; border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px; " + (isDisabled ? 'opacity:0.6;' : '');
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px;">' +
-                '<span style="font-size:12px; font-weight:800; color:#fff;">👤 ' + (m.name || m.user) + '</span>' +
-                (isDisabled ? '<span style="font-size:8px; background:rgba(244,63,94,0.2); color:#f87171; border:1px solid #f43f5e; padding:1px 4px; border-radius:4px; font-weight:bold;">DÉSACTIVÉ</span>' : '') +
+                '<span style="font-size:13px; font-weight:800; color:#fff;">👤 ' + (m.name || m.user) + '</span>' +
+                (isDisabled ? '<span style="font-size:8px; background:rgba(244,63,94,0.2); color:#f87171; border:1px solid #f43f5e; padding:1px 5px; border-radius:4px; font-weight:bold;">DÉSACTIVÉ</span>' : '') +
               '</div>' +
-              '<div style="font-size:10px; color:var(--accent); font-weight:700;">' + (m.passType || "Pass 10 Séances") + '</div>' +
+              '<div style="font-size:10px; color:var(--accent); font-weight:700; margin-top:1px;">' + (m.passType || "Pass 10 Séances") + '</div>' +
               '<div style="font-size:9px; color:rgba(255,255,255,0.4);">Validité : ' + (m.startDate || "01/01/2026") + ' au ' + (m.expiryDate || "31/12/2026") + '</div>' +
-              (m.phone ? '<div style="font-size:9px; color:rgba(255,255,255,0.5);">📞 ' + m.phone + '</div>' : '') +
+              (m.phone ? '<div style="font-size:9px; color:rgba(255,255,255,0.5); margin-top:2px;">📞 ' + m.phone + '</div>' : '') +
             '</div>' +
             '<div style="text-align:right;">' +
-              '<span style="font-size:14px; font-weight:900; color:#34d399; font-family:monospace;">' + remaining + ' / ' + total + '</span>' +
+              '<span style="font-size:15px; font-weight:900; color:#34d399; font-family:monospace;">' + remaining + ' / ' + total + '</span>' +
               '<div style="font-size:8px; color:rgba(255,255,255,0.4);">séances dispo</div>' +
             '</div>' +
           '</div>' +
-          '<div style="display:flex; gap:4px; margin-top:2px;">' +
-            '<button class="btn btn-accent" style="flex:1; padding:4px 6px; font-size:10px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier</button>' +
-            '<button class="btn btn-ghost" style="padding:4px 6px; font-size:10px;" onclick="adminRechargeMember(' + idx + ')">💳 +5</button>' +
+          '<div style="display:flex; gap:5px; margin-top:4px;">' +
+            '<button class="btn btn-accent" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier</button>' +
+            '<button class="btn btn-ghost" style="padding:5px 7px; font-size:10px;" onclick="adminRechargeMember(' + idx + ')">💳 +5</button>' +
             (isDisabled 
-              ? '<button class="btn btn-ghost" style="padding:4px 6px; font-size:10px; color:#34d399;" onclick="adminToggleMemberStatus(' + idx + ')">✅ Réactiver</button>'
-              : '<button class="btn btn-danger" style="padding:4px 6px; font-size:10px;" onclick="adminToggleMemberStatus(' + idx + ')">🚫 Désactiver</button>') +
+              ? '<button class="btn btn-ghost" style="padding:5px 7px; font-size:10px; color:#34d399;" onclick="adminToggleMemberStatus(' + idx + ')">✅ Réactiver</button>'
+              : '<button class="btn btn-danger" style="padding:5px 7px; font-size:10px;" onclick="adminToggleMemberStatus(' + idx + ')">🚫 Désactiver</button>') +
           '</div>';
         list.appendChild(box);
       });
