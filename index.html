@@ -31,7 +31,6 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* Header */
     header {
       height: 54px;
       background: rgba(15, 23, 42, 0.95);
@@ -56,7 +55,32 @@
       letter-spacing: 0.5px;
     }
 
-    /* Toast Notification */
+    /* Modal / Pop-up de confirmation personnalisée VFA24 */
+    .vfa-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      padding: 16px;
+    }
+    .vfa-modal-box {
+      background: #0f172a;
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 18px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Toast */
     .toast {
       position: fixed;
       top: 12px;
@@ -68,7 +92,7 @@
       border-radius: 12px;
       padding: 10px 14px;
       font-size: 11px;
-      z-index: 100;
+      z-index: 200;
       opacity: 0;
       pointer-events: none;
       transition: 0.3s ease;
@@ -80,7 +104,6 @@
     }
     .toast.show { opacity: 1; pointer-events: auto; }
 
-    /* Main Container */
     main {
       flex: 1;
       padding: 14px;
@@ -88,14 +111,13 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      max-width: 580px;
+      max-width: 600px;
       width: 100%;
       margin: 0 auto;
     }
     .view-pane { display: none; flex-direction: column; gap: 12px; }
     .view-pane.active { display: flex; }
 
-    /* Cards */
     .card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -117,7 +139,6 @@
       align-items: center;
     }
 
-    /* Form Fields */
     .field { display: flex; flex-direction: column; gap: 4px; }
     .field label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; }
     .field input, .field select {
@@ -132,7 +153,6 @@
     }
     .field input:focus, .field select:focus { border-color: var(--accent); }
 
-    /* Buttons */
     .btn {
       padding: 10px 12px;
       border-radius: 8px;
@@ -150,7 +170,6 @@
     .btn-ghost { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border-card); }
     .btn-danger { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
 
-    /* Date Strip Picker */
     .date-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
     .date-strip::-webkit-scrollbar { display: none; }
     .date-chip {
@@ -179,7 +198,6 @@
       box-shadow: 0 0 6px #f43f5e;
     }
 
-    /* KPIs */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .kpi-box {
       background: rgba(0,0,0,0.4);
@@ -194,16 +212,12 @@
     .kpi-lbl { font-size: 8px; color: rgba(255,255,255,0.4); text-transform: uppercase; font-weight: 700; }
     .kpi-val { font-size: 16px; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 2px; }
 
-    /* Progress bar */
     .prog-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
     .prog-fill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
 
-    /* Bottom Navigation Bar */
     .bottom-bar {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       height: 60px;
       background: rgba(15, 23, 42, 0.98);
       backdrop-filter: blur(20px);
@@ -232,14 +246,32 @@
     .nav-item.active { color: var(--accent); }
     .nav-item span.icon { font-size: 16px; }
 
-    /* Switch toggle */
-    .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
-    .toggle-row:last-child { border-bottom: none; }
-    .toggle-label { font-size: 11px; color: rgba(255,255,255,0.8); }
-    .toggle-sub { font-size: 9px; color: rgba(255,255,255,0.4); }
+    .badge-series {
+      background: rgba(168, 85, 247, 0.2);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #d8b4fe;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
 <body>
+
+  <div id="vfa-confirm-modal" class="vfa-modal-overlay">
+    <div class="vfa-modal-box">
+      <div id="confirm-modal-title" style="font-size:13px; font-weight:800; color:var(--accent);">Confirmation</div>
+      <p id="confirm-modal-msg" style="font-size:11px; color:rgba(255,255,255,0.8); line-height:1.4;">Êtes-vous certain de vouloir effectuer cette action ?</p>
+      <div style="display:flex; gap:8px; margin-top:6px;">
+        <button id="btn-modal-cancel" class="btn btn-ghost" style="flex:1;">Annuler</button>
+        <button id="btn-modal-confirm" class="btn btn-accent" style="flex:1;">Confirmer</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast">
     <span id="toast-icon">✨</span>
@@ -358,18 +390,12 @@
 
       <div class="card">
         <div class="card-title">Préférences de Notifications</div>
-        <div class="toggle-row">
-          <div>
-            <div class="toggle-label">Rappels Email (24h avant)</div>
-            <div class="toggle-sub">Recevoir un rappel pour vos séances</div>
-          </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
+          <span style="font-size:11px; color:rgba(255,255,255,0.8);">Rappels Email (24h avant)</span>
           <input type="checkbox" id="notif-g-reminder" checked style="width:18px; height:18px;">
         </div>
-        <div class="toggle-row">
-          <div>
-            <div class="toggle-label">Alerte Expiration Pass</div>
-            <div class="toggle-sub">Alerter lorsqu'il reste ≤ 2 séances</div>
-          </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
+          <span style="font-size:11px; color:rgba(255,255,255,0.8);">Alerte Expiration Pass (≤ 2 séances)</span>
           <input type="checkbox" id="notif-g-expiry" checked style="width:18px; height:18px;">
         </div>
       </div>
@@ -392,16 +418,25 @@
       </div>
 
       <div style="display:flex; gap:6px;">
-        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('histo')">📊 Histogramme Réservations</button>
-        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('curve')">📈 Courbe des Ventes</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('histo')">📊 Fréquentation</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('curve')">📈 Ventes & Abos</button>
+        <button class="btn btn-accent" style="flex:1;" onclick="exportFullDataJSON()">💾 Export Données</button>
       </div>
 
-      <div class="card" id="analytics-chart-card" style="display:none; padding:16px;">
+      <div class="card" id="analytics-chart-card" style="display:none; padding:14px;">
         <div class="card-title">
-          <span id="chart-title">Évolution des Fréquentations</span>
-          <button class="btn btn-ghost" style="padding:2px 6px; font-size:9px;" onclick="document.getElementById('analytics-chart-card').style.display='none'">✕</button>
+          <span id="chart-title">Analyse Graphique</span>
+          <div style="display:flex; gap:4px;">
+            <select id="chart-granularity" onchange="refreshChartData()" style="background:rgba(0,0,0,0.5); color:#fff; font-size:9px; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:2px 4px;">
+              <option value="day">Vue Jours</option>
+              <option value="month" selected>Vue Mois</option>
+              <option value="year">Vue Année</option>
+            </select>
+            <button class="btn btn-ghost" style="padding:2px 6px; font-size:9px;" onclick="document.getElementById('analytics-chart-card').style.display='none'">✕</button>
+          </div>
         </div>
-        <div id="chart-svg-container" style="margin-top:10px; width:100%; display:flex; justify-content:center;"></div>
+        <div id="chart-legend" style="font-size:9px; color:rgba(255,255,255,0.6); display:flex; justify-content:space-between; margin-top:4px;"></div>
+        <div id="chart-svg-container" style="margin-top:10px; width:100%; display:flex; justify-content:center; overflow-x:auto;"></div>
       </div>
 
       <div class="card" id="kpi-detail-card" style="border-color: rgba(16,185,129,0.3);">
@@ -470,7 +505,7 @@
 
         <div style="display:flex; gap:6px;">
           <button id="btn-cancel-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelEditMode()">Annuler</button>
-          <button id="btn-submit-session" class="btn btn-accent" style="flex:2;" onclick="adminSaveSession()">Publier la Séance</button>
+          <button id="btn-submit-session" class="btn btn-accent" style="flex:2;" onclick="requestAdminSaveSession()">Publier la Séance</button>
         </div>
       </div>
     </div>
@@ -549,24 +584,6 @@
         </div>
         <button class="btn btn-accent" onclick="saveAdminProfile()">Mettre à jour mes accès</button>
       </div>
-
-      <div class="card">
-        <div class="card-title">Centre de Notifications Studio</div>
-        <div class="toggle-row">
-          <div>
-            <div class="toggle-label">Alertes Nouvelles Réservations</div>
-            <div class="toggle-sub">Recevoir un e-mail à chaque inscription</div>
-          </div>
-          <input type="checkbox" id="notif-a-book" checked style="width:18px; height:18px;">
-        </div>
-        <div class="toggle-row">
-          <div>
-            <div class="toggle-label">Alertes Annulations & Désistements</div>
-            <div class="toggle-sub">Notifier immédiatement pour réattribution</div>
-          </div>
-          <input type="checkbox" id="notif-a-cancel" checked style="width:18px; height:18px;">
-        </div>
-      </div>
     </div>
 
   </main>
@@ -576,9 +593,9 @@
   <script>
     // --- BASE DE DONNÉES LOCALE ---
     var defaultMembers = [
-      { user: "Guest", pass: "Guest", name: "Guest (Test)", passType: "Pass 10 Séances", totalCredits: 10, startDate: "2026-01-01", expiryDate: "2026-12-31", mustChangePass: false, phone: "06 00 00 00 01", emergency: "Contact Test" },
-      { user: "Sophie", pass: "Guest", name: "Sophie M.", passType: "Pass Découverte (5)", totalCredits: 5, startDate: "2026-02-01", expiryDate: "2026-12-31", mustChangePass: true, phone: "06 55 44 33 22", emergency: "Paul (06 11 22 33 44)" },
-      { user: "Claire", pass: "Guest", name: "Claire D.", passType: "Platinum (Sur-mesure)", totalCredits: 35, startDate: "2026-01-15", expiryDate: "2026-12-31", mustChangePass: true, phone: "07 88 99 00 11", emergency: "Maman (06 99 88 77 66)" }
+      { user: "Guest", pass: "Guest", name: "Guest (Test)", passType: "Pass 10 Séances", totalCredits: 10, startDate: "2026-01-01", expiryDate: "2026-12-31", mustChangePass: false, status: "active", phone: "06 00 00 00 01", emergency: "Contact Test" },
+      { user: "Sophie", pass: "Guest", name: "Sophie M.", passType: "Pass Découverte (5)", totalCredits: 5, startDate: "2026-02-01", expiryDate: "2026-12-31", mustChangePass: true, status: "active", phone: "06 55 44 33 22", emergency: "Paul (06 11 22 33 44)" },
+      { user: "Claire", pass: "Guest", name: "Claire D.", passType: "Platinum (Sur-mesure)", totalCredits: 35, startDate: "2026-01-15", expiryDate: "2026-12-31", mustChangePass: true, status: "active", phone: "07 88 99 00 11", emergency: "Maman (06 99 88 77 66)" }
     ];
 
     var defaultSessions = [
@@ -587,17 +604,18 @@
       { id: "s3", seriesId: "ser_03", title: "Reformer Cardio Jump", coach: "Nadya", duration: 45, date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: "18:00", cap: 6, users: [], status: "active" }
     ];
 
-    var members = JSON.parse(localStorage.getItem('cn_members_v3')) || defaultMembers;
-    var sessions = JSON.parse(localStorage.getItem('cn_sessions_v3')) || defaultSessions;
+    var members = JSON.parse(localStorage.getItem('cn_members_v4')) || defaultMembers;
+    var sessions = JSON.parse(localStorage.getItem('cn_sessions_v4')) || defaultSessions;
     var adminData = JSON.parse(localStorage.getItem('cn_admin')) || { user: 'Nadya', pass: '0312', email: 'contact@cheznadya-reformer.com' };
 
     var currentUser = null;
     var selectedDate = new Date().toISOString().split('T')[0];
     var activeTab = '';
+    var currentChartMode = 'histo';
 
     function saveState() {
-      localStorage.setItem('cn_members_v3', JSON.stringify(members));
-      localStorage.setItem('cn_sessions_v3', JSON.stringify(sessions));
+      localStorage.setItem('cn_members_v4', JSON.stringify(members));
+      localStorage.setItem('cn_sessions_v4', JSON.stringify(sessions));
       localStorage.setItem('cn_admin', JSON.stringify(adminData));
       renderActiveView();
     }
@@ -610,7 +628,32 @@
       setTimeout(function() { t.className = 'toast'; }, 2800);
     }
 
-    // --- GESTION DES PASS & SÉANCES LIÉES ---
+    // --- DIALOGUE DE CONFIRMATION PERSONNALISÉ ---
+    function openConfirmModal(title, msg, onConfirm) {
+      var modal = document.getElementById('vfa-confirm-modal');
+      document.getElementById('confirm-modal-title').innerText = title;
+      document.getElementById('confirm-modal-msg').innerText = msg;
+      modal.style.display = 'flex';
+
+      var btnConfirm = document.getElementById('btn-modal-confirm');
+      var btnCancel = document.getElementById('btn-modal-cancel');
+
+      btnConfirm.onclick = function() {
+        modal.style.display = 'none';
+        onConfirm();
+      };
+      btnCancel.onclick = function() {
+        modal.style.display = 'none';
+      };
+    }
+
+    // --- LIBELLÉ PASS MEMBRE (Masquage des termes techniques d'admin) ---
+    function getDisplayPassName(passType) {
+      if (passType === "Platinum (Sur-mesure)") return "Pass Platinum Privilège";
+      return passType || "Pass 10 Séances";
+    }
+
+    // --- GESTION DU TYPE DE PASS CÔTÉ ADMIN ---
     function handlePassSelection(passName) {
       var inputCredits = document.getElementById('new-mem-credits');
       var lbl = document.getElementById('lbl-mem-credits');
@@ -652,6 +695,11 @@
       var mem = members.find(function(m) { return m.user.toLowerCase() === u.toLowerCase() && m.pass === p; });
 
       if (mem) {
+        if (mem.status === "disabled") {
+          showToast("Ce compte a été désactivé par le studio.", true);
+          return;
+        }
+
         currentUser = { user: mem.user, role: 'guest', name: mem.name || mem.user };
         
         if (mem.mustChangePass || p === 'Guest') {
@@ -782,7 +830,7 @@
       }
     }
 
-    // --- GUEST RENDERS & CALENDAR EXPORTS ---
+    // --- GUEST PLANNING, SÉANCE UNIQUE & RÉSERVATION SÉRIE ---
     function renderGuestPlanning() {
       var strip = document.getElementById('g-date-strip');
       strip.innerHTML = '';
@@ -829,15 +877,21 @@
         var isBooked = s.users.indexOf(currentUser.user) !== -1;
         var isFull = s.users.length >= s.cap;
         var pct = Math.round((s.users.length / s.cap) * 100);
+        
+        // Détection de série
+        var isSeries = s.seriesId ? true : false;
+        var seriesSessions = isSeries ? sessions.filter(function(x) { return x.seriesId === s.seriesId; }) : [];
+        var isSeriesMulti = seriesSessions.length > 1;
 
         var box = document.createElement('div');
         box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
         box.innerHTML = 
-          '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px;">' +
                 '<span style="font-size:9px; color:var(--accent); font-weight:700; font-family:monospace;">⏰ ' + s.time + '</span>' +
                 '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
+                (isSeriesMulti ? '<span class="badge-series">🔁 Série (' + seriesSessions.length + ' sem.)</span>' : '<span style="font-size:9px; color:rgba(255,255,255,0.4);">● Unique</span>') +
               '</div>' +
               '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
               '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div>' +
@@ -845,16 +899,17 @@
             '<span style="font-size:10px; font-weight:700; color:' + (isFull ? '#f87171' : '#34d399') + ';">' + (s.cap - s.users.length) + ' place(s)</span>' +
           '</div>' +
           '<div class="prog-track"><div class="prog-fill" style="width:' + pct + '%;"></div></div>' +
-          '<div style="margin-top:2px;">' +
+          '<div style="display:flex; gap:6px; margin-top:2px;">' +
             (isBooked 
-              ? '<button class="btn btn-danger" style="width:100%;" onclick="guestCancel(\'' + s.id + '\')">✓ Inscrit(e) — Annuler ma place</button>'
-              : '<button class="btn btn-accent" style="width:100%;" ' + (isFull ? 'disabled style="opacity:0.4;"' : '') + ' onclick="guestBook(\'' + s.id + '\')">' + (isFull ? 'Complet' : 'Réserver cette séance') + '</button>') +
+              ? '<button class="btn btn-danger" style="width:100%;" onclick="requestGuestCancel(\'' + s.id + '\')">✓ Inscrit(e) — Annuler ma place</button>'
+              : '<button class="btn btn-accent" style="flex:1;" ' + (isFull ? 'disabled style="opacity:0.4;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' + (isFull ? 'Complet' : 'Réserver') + '</button>' +
+                (isSeriesMulti ? '<button class="btn btn-ghost" style="flex:1; border-color:rgba(168,85,247,0.4); color:#d8b4fe;" onclick="guestBookSeries(\'' + s.seriesId + '\')">🔁 Réserver la Série</button>' : '')) +
           '</div>';
         list.appendChild(box);
       });
     }
 
-    function guestBook(id) {
+    function guestBookSingle(id) {
       var s = sessions.find(function(x) { return x.id === id; });
       if (!s || s.users.length >= s.cap) return;
 
@@ -863,7 +918,7 @@
       var totalPass = mem ? (mem.totalCredits || 10) : 10;
 
       if (myBookingsCount >= totalPass) {
-        showToast("Votre pass est épuisé. Veuillez contacter le studio.", true);
+        showToast("Votre pass est épuisé.", true);
         return;
       }
 
@@ -872,12 +927,37 @@
       saveState();
     }
 
-    function guestCancel(id) {
-      var s = sessions.find(function(x) { return x.id === id; });
-      if (!s) return;
-      s.users = s.users.filter(function(u) { return u !== currentUser.user; });
-      showToast("Réservation annulée", false);
-      saveState();
+    function guestBookSeries(seriesId) {
+      var seriesList = sessions.filter(function(x) { return x.seriesId === seriesId; });
+      var mem = members.find(function(m) { return m.user === currentUser.user; });
+      var myBookingsCount = sessions.filter(function(x) { return x.users.indexOf(currentUser.user) !== -1; }).length;
+      var totalPass = mem ? (mem.totalCredits || 10) : 10;
+      var placesNeeded = seriesList.filter(function(x) { return x.users.indexOf(currentUser.user) === -1; }).length;
+
+      if (myBookingsCount + placesNeeded > totalPass) {
+        showToast("Solde insuffisant pour réserver toute la série (" + placesNeeded + " séances requises).", true);
+        return;
+      }
+
+      openConfirmModal("Inscription Série", "Voulez-vous réserver les " + seriesList.length + " séances consécutives de cette série ?", function() {
+        seriesList.forEach(function(s) {
+          if (s.users.indexOf(currentUser.user) === -1 && s.users.length < s.cap) {
+            s.users.push(currentUser.user);
+          }
+        });
+        showToast("Inscription validée pour l'ensemble de la série !", false);
+        saveState();
+      });
+    }
+
+    function requestGuestCancel(id) {
+      openConfirmModal("Annuler ma place", "Êtes-vous sûr de vouloir annuler votre réservation pour cette séance ?", function() {
+        var s = sessions.find(function(x) { return x.id === id; });
+        if (!s) return;
+        s.users = s.users.filter(function(u) { return u !== currentUser.user; });
+        showToast("Votre réservation a été annulée.", false);
+        saveState();
+      });
     }
 
     function renderGuestMyBookings() {
@@ -898,7 +978,7 @@
             '<div><span style="font-size:9px; color:var(--accent); font-family:monospace;">📅 ' + s.date + ' à ' + s.time + ' (' + (s.duration || 50) + ' min)</span>' +
             '<div style="font-size:12px; font-weight:800;">' + s.title + '</div>' +
             '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div></div>' +
-            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="guestCancel(\'' + s.id + '\')">Annuler</button>' +
+            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
           '</div>' +
           '<div style="display:flex; gap:4px; border-top:1px solid rgba(255,255,255,0.04); padding-top:6px;">' +
             '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📅 Google</button>' +
@@ -946,7 +1026,7 @@
       var total = mem.totalCredits || 10;
       var remaining = Math.max(0, total - myBookingsCount);
 
-      document.getElementById('prof-pass-name').innerText = mem.passType || "Pass 10 Séances";
+      document.getElementById('prof-pass-name').innerText = getDisplayPassName(mem.passType);
       document.getElementById('prof-pass-dates').innerText = "Validité : " + (mem.startDate || "01/01/2026") + " au " + (mem.expiryDate || "31/12/2026");
       document.getElementById('prof-pass-count').innerText = remaining + " / " + total;
       document.getElementById('prof-pass-bar').style.width = ((remaining / total) * 100) + "%";
@@ -972,7 +1052,7 @@
       }
     }
 
-    // --- ADMIN RENDERS & ANALYTICS ---
+    // --- ADMIN RENDERS, KPIS, EXPORT & ANALYTICS ---
     function renderAdminKPI() {
       var tot = sessions.length;
       var booked = sessions.reduce(function(acc, s) { return acc + s.users.length; }, 0);
@@ -986,49 +1066,82 @@
       showKpiDetail('booked');
     }
 
+    function exportFullDataJSON() {
+      var exportPayload = {
+        exportDate: new Date().toISOString(),
+        studio: "Chez Nadya - Pilates Reformer",
+        admin: adminData,
+        members: members,
+        sessions: sessions
+      };
+      var blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: "application/json" });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "export_studio_cheznadya_" + new Date().toISOString().split('T')[0] + ".json";
+      a.click();
+      showToast("Base de données exportée avec succès !", false);
+    }
+
     function toggleAnalyticsView(mode) {
-      var card = document.getElementById('analytics-chart-card');
+      currentChartMode = mode;
+      document.getElementById('analytics-chart-card').style.display = 'flex';
+      refreshChartData();
+    }
+
+    function refreshChartData() {
+      var mode = currentChartMode;
+      var granularity = document.getElementById('chart-granularity').value;
       var container = document.getElementById('chart-svg-container');
       var title = document.getElementById('chart-title');
-      card.style.display = 'flex';
+      var legend = document.getElementById('chart-legend');
 
       if (mode === 'histo') {
-        title.innerText = "📊 Histogramme : Inscriptions par Jour";
-        container.innerHTML = `
-          <svg width="280" height="140" viewBox="0 0 280 140">
-            <line x1="20" y1="120" x2="260" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-            <rect x="35" y="40" width="22" height="80" fill="#10b981" rx="4"/>
-            <rect x="70" y="25" width="22" height="95" fill="#10b981" rx="4"/>
-            <rect x="105" y="60" width="22" height="60" fill="#10b981" rx="4"/>
-            <rect x="140" y="30" width="22" height="90" fill="#10b981" rx="4"/>
-            <rect x="175" y="15" width="22" height="105" fill="#34d399" rx="4"/>
-            <rect x="210" y="50" width="22" height="70" fill="#10b981" rx="4"/>
-            <text x="46" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Lun</text>
-            <text x="81" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mar</text>
-            <text x="116" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mer</text>
-            <text x="151" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Jeu</text>
-            <text x="186" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Ven</text>
-            <text x="221" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Sam</text>
-          </svg>
-        `;
+        title.innerText = "📊 Fréquentation Studio (" + (granularity === 'day' ? 'Par Jour' : (granularity === 'month' ? 'Par Mois' : 'Par Année')) + ")";
+        legend.innerHTML = "<span>Min: 0 réservations</span><span style='color:var(--accent); font-weight:bold;'>Max: 12 réservations</span>";
+        
+        var points = [
+          { label: "01/08", val: 4 }, { label: "05/08", val: 8 }, { label: "10/08", val: 6 },
+          { label: "15/08", val: 11 }, { label: "20/08", val: 9 }, { label: "25/08", val: 12 }
+        ];
+
+        var svgContent = '<svg width="340" height="150" viewBox="0 0 340 150">';
+        svgContent += '<line x1="20" y1="120" x2="320" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>';
+        
+        points.forEach(function(p, i) {
+          var x = 30 + (i * 48);
+          var h = p.val * 8;
+          var y = 120 - h;
+          svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#10b981" rx="4"/>';
+          svgContent += '<text x="' + (x + 12) + '" y="' + (y - 4) + '" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">' + p.val + '</text>';
+          svgContent += '<text x="' + (x + 12) + '" y="134" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">' + p.label + '</text>';
+        });
+        svgContent += '</svg>';
+        container.innerHTML = svgContent;
+
       } else {
-        title.innerText = "📈 Courbe : Ventes & Évolution des Abonnements";
+        title.innerText = "📈 Évolution des Abonnements (" + (granularity === 'day' ? 'Journalier' : (granularity === 'month' ? 'Mensuel' : 'Annuel')) + ")";
+        legend.innerHTML = "<span>Objectif: 30 Pass</span><span style='color:var(--accent); font-weight:bold;'>Actuel: 24 Pass</span>";
+        
         container.innerHTML = `
-          <svg width="280" height="140" viewBox="0 0 280 140">
+          <svg width="340" height="150" viewBox="0 0 340 150">
             <defs>
               <linearGradient id="gradCurve" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
                 <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
-            <path d="M 30 100 Q 80 80, 130 50 T 250 20 L 250 120 L 30 120 Z" fill="url(#gradCurve)"/>
-            <path d="M 30 100 Q 80 80, 130 50 T 250 20" fill="none" stroke="#10b981" stroke-width="3"/>
+            <line x1="20" y1="120" x2="320" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <path d="M 30 100 Q 100 80, 170 50 T 310 20 L 310 120 L 30 120 Z" fill="url(#gradCurve)"/>
+            <path d="M 30 100 Q 100 80, 170 50 T 310 20" fill="none" stroke="#10b981" stroke-width="3"/>
             <circle cx="30" cy="100" r="4" fill="#34d399"/>
-            <circle cx="130" cy="50" r="4" fill="#34d399"/>
-            <circle cx="250" cy="20" r="4" fill="#34d399"/>
-            <text x="30" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Jan</text>
-            <text x="130" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Fév</text>
-            <text x="250" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mar</text>
+            <text x="30" y="90" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">10</text>
+            <circle cx="170" cy="50" r="4" fill="#34d399"/>
+            <text x="170" y="40" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">18</text>
+            <circle cx="310" cy="20" r="4" fill="#34d399"/>
+            <text x="310" y="14" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">24</text>
+            <text x="30" y="134" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Juin</text>
+            <text x="170" y="134" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Juil</text>
+            <text x="310" y="134" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Août</text>
           </svg>
         `;
       }
@@ -1039,11 +1152,11 @@
       var title = document.getElementById('kpi-detail-title');
 
       if (type === 'booked') {
-        title.innerText = "Détail des Réservations par Séance (Inscrits & Dates)";
+        title.innerText = "Détail des Inscriptions par Séance";
         var bookedSessions = sessions.filter(function(s) { return s.users.length > 0; });
 
         if (bookedSessions.length === 0) {
-          container.innerHTML = "<p style='color:rgba(255,255,255,0.4); text-align:center;'>Aucune réservation enregistrée pour le moment.</p>";
+          container.innerHTML = "<p style='color:rgba(255,255,255,0.4); text-align:center;'>Aucune réservation active pour le moment.</p>";
           return;
         }
 
@@ -1053,12 +1166,12 @@
               "<span>" + s.title + "</span>" +
               "<span style='color:var(--accent); font-family:monospace;'>" + s.date + " à " + s.time + "</span>" +
             "</div>" +
-            "<div style='font-size:10px; color:rgba(255,255,255,0.5); margin-top:2px;'>Membres inscrits (" + s.users.length + "/" + s.cap + ") : <b style='color:#34d399;'>" + s.users.join(', ') + "</b></div>" +
+            "<div style='font-size:10px; color:rgba(255,255,255,0.5); margin-top:2px;'>Inscrits (" + s.users.length + "/" + s.cap + ") : <b style='color:#34d399;'>" + s.users.join(', ') + "</b></div>" +
           "</div>";
         }).join('');
       } else if (type === 'occ') {
         title.innerText = "Analyse du Remplissage du Studio";
-        container.innerHTML = "<p>Le taux global est calculé sur l'ensemble des créneaux actifs. Les séances avec 6/6 machines réservées sont marquées complètes automatiquement.</p>";
+        container.innerHTML = "<p>Le taux global est calculé sur l'ensemble des créneaux actifs. Les séances pleines sont automatiquement complètes.</p>";
       } else {
         title.innerText = "Catalogue des Séances Programmées";
         container.innerHTML = "<p>Total de " + sessions.length + " créneaux actifs sur le planning du studio.</p>";
@@ -1071,6 +1184,7 @@
       list.innerHTML = '';
 
       sessions.forEach(function(s) {
+        var isSeries = s.seriesId ? true : false;
         var box = document.createElement('div');
         box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
         box.innerHTML = 
@@ -1079,6 +1193,7 @@
               '<div style="display:flex; align-items:center; gap:6px;">' +
                 '<span style="font-size:9px; color:var(--accent); font-family:monospace;">📅 ' + s.date + ' (' + s.time + ')</span>' +
                 '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
+                (isSeries ? '<span class="badge-series">🔁 Série</span>' : '') +
               '</div>' +
               '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
               '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach: ' + s.coach + ' | Inscrits: ' + s.users.length + '/' + s.cap + ' (' + (s.users.join(', ') || 'aucun') + ')</div>' +
@@ -1087,41 +1202,42 @@
           '</div>' +
           '<div style="display:flex; gap:4px; margin-top:4px;">' +
             '<button class="btn btn-accent" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">✏️ Modifier</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Annuler Séance' : '✅ Réactiver') + '</button>' +
-            '<button class="btn btn-danger" style="padding:5px 6px; font-size:10px;" onclick="adminDeletePrompt(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:5px 6px; font-size:10px;" onclick="requestAdminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Annuler' : '✅ Activer') + '</button>' +
+            '<button class="btn btn-danger" style="padding:5px 6px; font-size:10px;" onclick="requestAdminDelete(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
           '</div>';
         list.appendChild(box);
       });
     }
 
-    function adminToggleOccurrence(id) {
-      var s = sessions.find(function(x) { return x.id === id; });
-      if (!s) return;
-      s.status = s.status === 'active' ? 'cancelled' : 'active';
-      showToast("Statut de la séance " + s.date + " mis à jour", false);
-      saveState();
+    function requestAdminToggleOccurrence(id) {
+      openConfirmModal("Modifier le statut", "Voulez-vous basculer le statut de cette séance (Active / Annulée) ?", function() {
+        var s = sessions.find(function(x) { return x.id === id; });
+        if (!s) return;
+        s.status = s.status === 'active' ? 'cancelled' : 'active';
+        showToast("Statut mis à jour.", false);
+        saveState();
+      });
     }
 
-    function adminDeletePrompt(id, seriesId) {
+    function requestAdminDelete(id, seriesId) {
       var s = sessions.find(function(x) { return x.id === id; });
       if (!s) return;
 
       var hasSeries = seriesId && sessions.filter(function(x) { return x.seriesId === seriesId; }).length > 1;
 
       if (hasSeries) {
-        var choice = confirm("Cette séance fait partie d'une série récurrente.\n\n• Cliquez sur [OK] pour supprimer UNIQUEMENT cette séance du " + s.date + ".\n• Cliquez sur [ANNULER] pour SUPPRIMER TOUTE LA SÉRIE.");
-        if (choice) {
+        openConfirmModal("Suppression de Séance / Série", "Cette séance fait partie d'une série récurrente.\n\nConfirmez-vous la suppression de cette séance du " + s.date + " ?", function() {
           sessions = sessions.filter(function(x) { return x.id !== id; });
-          showToast("Séance unique supprimée", false);
-        } else {
-          sessions = sessions.filter(function(x) { return x.seriesId !== seriesId; });
-          showToast("Toute la série récurrente a été supprimée", false);
-        }
+          showToast("Séance unique supprimée.", false);
+          saveState();
+        });
       } else {
-        sessions = sessions.filter(function(x) { return x.id !== id; });
-        showToast("Séance supprimée", false);
+        openConfirmModal("Supprimer la séance", "Voulez-vous supprimer définitivement ce créneau ?", function() {
+          sessions = sessions.filter(function(x) { return x.id !== id; });
+          showToast("Séance supprimée.", false);
+          saveState();
+        });
       }
-      saveState();
     }
 
     function adminEditSessionPrompt(id) {
@@ -1154,57 +1270,60 @@
       switchTab('view-a-sched');
     }
 
-    function adminSaveSession() {
+    function requestAdminSaveSession() {
       var editId = document.getElementById('edit-session-id').value;
       var title = document.getElementById('add-title').value.trim();
-      var coach = document.getElementById('add-coach').value.trim();
-      var dur = parseInt(document.getElementById('add-dur').value) || 50;
-      var cap = parseInt(document.getElementById('add-cap').value) || 6;
       var date = document.getElementById('add-date').value;
-      var time = document.getElementById('add-time').value;
-      var isRec = document.getElementById('add-rec').checked;
 
       if (!title || !date) { showToast("Veuillez renseigner le titre et la date", true); return; }
 
-      if (editId) {
-        var s = sessions.find(function(x) { return x.id === editId; });
-        if (s) {
-          s.title = title;
-          s.coach = coach;
-          s.duration = dur;
-          s.cap = cap;
-          s.date = date;
-          s.time = time;
-          showToast("Séance modifiée avec succès", false);
+      openConfirmModal(editId ? "Enregistrer modifications" : "Publier nouvelle séance", "Confirmez-vous la publication de ce créneau ?", function() {
+        var coach = document.getElementById('add-coach').value.trim();
+        var dur = parseInt(document.getElementById('add-dur').value) || 50;
+        var cap = parseInt(document.getElementById('add-cap').value) || 6;
+        var time = document.getElementById('add-time').value;
+        var isRec = document.getElementById('add-rec').checked;
+
+        if (editId) {
+          var s = sessions.find(function(x) { return x.id === editId; });
+          if (s) {
+            s.title = title;
+            s.coach = coach;
+            s.duration = dur;
+            s.cap = cap;
+            s.date = date;
+            s.time = time;
+            showToast("Séance modifiée avec succès", false);
+          }
+          cancelEditMode();
+        } else {
+          var occurrences = isRec ? 4 : 1;
+          var sId = "ser_" + Date.now();
+          for (var i = 0; i < occurrences; i++) {
+            var d = new Date(date);
+            d.setDate(d.getDate() + (i * 7));
+            sessions.push({
+              id: "s_" + Date.now() + "_" + i,
+              seriesId: isRec ? sId : null,
+              title: title,
+              coach: coach,
+              duration: dur,
+              date: d.toISOString().split('T')[0],
+              time: time,
+              cap: cap,
+              users: [],
+              status: "active"
+            });
+          }
+          showToast(isRec ? "4 séances récurrentes créées" : "Séance publiée", false);
+          document.getElementById('add-title').value = '';
+          switchTab('view-a-sched');
         }
-        cancelEditMode();
-      } else {
-        var occurrences = isRec ? 4 : 1;
-        var sId = "ser_" + Date.now();
-        for (var i = 0; i < occurrences; i++) {
-          var d = new Date(date);
-          d.setDate(d.getDate() + (i * 7));
-          sessions.push({
-            id: "s_" + Date.now() + "_" + i,
-            seriesId: isRec ? sId : null,
-            title: title,
-            coach: coach,
-            duration: dur,
-            date: d.toISOString().split('T')[0],
-            time: time,
-            cap: cap,
-            users: [],
-            status: "active"
-          });
-        }
-        showToast(isRec ? "4 séances récurrentes créées" : "Séance publiée", false);
-        document.getElementById('add-title').value = '';
-        switchTab('view-a-sched');
-      }
-      saveState();
+        saveState();
+      });
     }
 
-    // --- ADMIN MEMBERS & PASS MANAGEMENT ---
+    // --- ADMIN MEMBERS, ÉDITION & DÉSACTIVATION DOUCE ---
     function renderAdminMembers() {
       var list = document.getElementById('adm-members-list');
       list.innerHTML = '';
@@ -1213,13 +1332,17 @@
         var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(m.user) !== -1; }).length;
         var total = m.totalCredits || 10;
         var remaining = Math.max(0, total - myBookingsCount);
+        var isDisabled = m.status === "disabled";
 
         var box = document.createElement('div');
-        box.style.cssText = "background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.style.cssText = "background:rgba(0,0,0,0.3); border:1px solid " + (isDisabled ? 'rgba(244,63,94,0.3)' : 'rgba(255,255,255,0.06)') + "; border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px; " + (isDisabled ? 'opacity:0.6;' : '');
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
-              '<div style="font-size:12px; font-weight:800; color:#fff;">👤 ' + (m.name || m.user) + ' <span style="font-size:9px; color:rgba(255,255,255,0.4); font-mono">(@' + m.user + ')</span></div>' +
+              '<div style="display:flex; align-items:center; gap:6px;">' +
+                '<span style="font-size:12px; font-weight:800; color:#fff;">👤 ' + (m.name || m.user) + '</span>' +
+                (isDisabled ? '<span style="font-size:8px; background:rgba(244,63,94,0.2); color:#f87171; border:1px solid #f43f5e; padding:1px 4px; border-radius:4px; font-weight:bold;">DÉSACTIVÉ</span>' : '') +
+              '</div>' +
               '<div style="font-size:10px; color:var(--accent); font-weight:700;">' + (m.passType || "Pass 10 Séances") + '</div>' +
               '<div style="font-size:9px; color:rgba(255,255,255,0.4);">Validité : ' + (m.startDate || "01/01/2026") + ' au ' + (m.expiryDate || "31/12/2026") + '</div>' +
               (m.phone ? '<div style="font-size:9px; color:rgba(255,255,255,0.5);">📞 ' + m.phone + '</div>' : '') +
@@ -1229,12 +1352,38 @@
               '<div style="font-size:8px; color:rgba(255,255,255,0.4);">séances dispo</div>' +
             '</div>' +
           '</div>' +
-          '<div style="display:flex; gap:6px; margin-top:2px;">' +
-            '<button class="btn btn-accent" style="flex:1; padding:4px 8px; font-size:10px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier Profil</button>' +
-            '<button class="btn btn-ghost" style="padding:4px 8px; font-size:10px;" onclick="adminRechargeMember(' + idx + ')">💳 +5</button>' +
-            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="adminDeleteMember(' + idx + ')">🗑️</button>' +
+          '<div style="display:flex; gap:4px; margin-top:2px;">' +
+            '<button class="btn btn-accent" style="flex:1; padding:4px 6px; font-size:10px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier</button>' +
+            '<button class="btn btn-ghost" style="padding:4px 6px; font-size:10px;" onclick="adminRechargeMember(' + idx + ')">💳 +5</button>' +
+            (isDisabled 
+              ? '<button class="btn btn-ghost" style="padding:4px 6px; font-size:10px; color:#34d399;" onclick="adminToggleMemberStatus(' + idx + ')">✅ Réactiver</button>'
+              : '<button class="btn btn-danger" style="padding:4px 6px; font-size:10px;" onclick="adminToggleMemberStatus(' + idx + ')">🚫 Désactiver</button>') +
           '</div>';
         list.appendChild(box);
+      });
+    }
+
+    function adminToggleMemberStatus(idx) {
+      var m = members[idx];
+      if (!m) return;
+
+      if (m.user === 'Guest') { showToast("Impossible de désactiver le compte Guest test.", true); return; }
+
+      var willDisable = m.status !== "disabled";
+      openConfirmModal(willDisable ? "Désactiver le compte" : "Réactiver le compte", 
+        willDisable ? "Le membre sera retiré de toutes ses réservations futures et son compte passera en statut Désactivé." : "Le compte du membre sera réactivé avec ses informations conservées.", function() {
+          if (willDisable) {
+            m.status = "disabled";
+            // Retirer de toutes les séances
+            sessions.forEach(function(s) {
+              s.users = s.users.filter(function(u) { return u !== m.user; });
+            });
+            showToast("Compte membre désactivé et séances libérées.", false);
+          } else {
+            m.status = "active";
+            showToast("Compte membre réactivé !", false);
+          }
+          saveState();
       });
     }
 
@@ -1279,55 +1428,53 @@
 
       if (!u) { showToast("Veuillez renseigner un identifiant", true); return; }
 
-      if (editIdx !== "") {
-        var m = members[parseInt(editIdx)];
-        if (m) {
-          m.user = u;
-          m.name = u;
-          m.passType = passType;
-          m.totalCredits = credits;
-          m.expiryDate = expiry;
-          m.phone = phone;
-          m.emergency = emergency;
-          showToast("Profil membre mis à jour", false);
-        }
-        cancelMemEdit();
-      } else {
-        if (members.some(function(x) { return x.user.toLowerCase() === u.toLowerCase(); })) {
-          showToast("Cet identifiant existe déjà", true);
-          return;
-        }
+      openConfirmModal(editIdx !== "" ? "Enregistrer les modifications" : "Créer le compte membre", "Confirmez-vous ces paramètres pour le membre " + u + " ?", function() {
+        if (editIdx !== "") {
+          var m = members[parseInt(editIdx)];
+          if (m) {
+            m.user = u;
+            m.name = u;
+            m.passType = passType;
+            m.totalCredits = credits;
+            m.expiryDate = expiry;
+            m.phone = phone;
+            m.emergency = emergency;
+            showToast("Profil membre mis à jour", false);
+          }
+          cancelMemEdit();
+        } else {
+          if (members.some(function(x) { return x.user.toLowerCase() === u.toLowerCase(); })) {
+            showToast("Cet identifiant existe déjà", true);
+            return;
+          }
 
-        members.push({
-          user: u,
-          pass: "Guest",
-          name: u,
-          passType: passType,
-          totalCredits: credits,
-          startDate: new Date().toISOString().split('T')[0],
-          expiryDate: expiry,
-          mustChangePass: true,
-          phone: phone,
-          emergency: emergency
-        });
+          members.push({
+            user: u,
+            pass: "Guest",
+            name: u,
+            passType: passType,
+            totalCredits: credits,
+            startDate: new Date().toISOString().split('T')[0],
+            expiryDate: expiry,
+            mustChangePass: true,
+            status: "active",
+            phone: phone,
+            emergency: emergency
+          });
 
-        showToast("Compte membre créé (MDP initial : Guest)", false);
-        cancelMemEdit();
-      }
-      saveState();
+          showToast("Compte membre créé (MDP initial : Guest)", false);
+          cancelMemEdit();
+        }
+        saveState();
+      });
     }
 
     function adminRechargeMember(idx) {
-      members[idx].totalCredits = (members[idx].totalCredits || 10) + 5;
-      showToast("+5 séances ajoutées pour " + members[idx].user, false);
-      saveState();
-    }
-
-    function adminDeleteMember(idx) {
-      if (members[idx].user === 'Guest') { showToast("Impossible de supprimer le compte Guest par défaut", true); return; }
-      members.splice(idx, 1);
-      showToast("Compte membre supprimé", false);
-      saveState();
+      openConfirmModal("Recharge de séances", "Voulez-vous ajouter 5 séances au compte de " + members[idx].user + " ?", function() {
+        members[idx].totalCredits = (members[idx].totalCredits || 10) + 5;
+        showToast("+5 séances ajoutées pour " + members[idx].user, false);
+        saveState();
+      });
     }
 
     // --- PROFIL ADMIN ---
@@ -1337,14 +1484,16 @@
     }
 
     function saveAdminProfile() {
-      adminData.email = document.getElementById('adm-email').value.trim();
-      var p = document.getElementById('adm-new-pwd').value.trim();
-      if (p) {
-        if (p.length < 4) { showToast("Mot de passe trop court", true); return; }
-        adminData.pass = p;
-      }
-      saveState();
-      showToast("Profil & mot de passe Admin mis à jour !", false);
+      openConfirmModal("Profil Administrateur", "Voulez-vous enregistrer vos nouvelles coordonnées d'accès ?", function() {
+        adminData.email = document.getElementById('adm-email').value.trim();
+        var p = document.getElementById('adm-new-pwd').value.trim();
+        if (p) {
+          if (p.length < 4) { showToast("Mot de passe trop court", true); return; }
+          adminData.pass = p;
+        }
+        saveState();
+        showToast("Profil & mot de passe Admin mis à jour !", false);
+      });
     }
 
     // Initialisation
