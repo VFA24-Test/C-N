@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Reformer booking and management</title>
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#020617">
+
+  <style>
+    :root {
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.25);
+      --bg-dark: #020617;
+      --bg-card: rgba(15, 23, 42, 0.85);
+      --border-card: rgba(255, 255, 255, 0.1);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      background: radial-gradient(circle at 50% 0%, #062e24 0%, var(--bg-dark) 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* Header */
+    header {
+      height: 54px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+    .badge-brand {
+      background: var(--accent);
+      color: #020617;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      border: 1px solid var(--accent);
+      box-shadow: 0 4px 20px var(--accent-glow);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 11px;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.3s ease;
+      max-width: 90%;
+      width: 340px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast.show { opacity: 1; pointer-events: auto; }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 14px;
+      padding-bottom: 84px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-width: 580px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .view-pane { display: none; flex-direction: column; gap: 12px; }
+    .view-pane.active { display: flex; }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Form Fields */
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+    .field input, .field select {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border-card);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      width: 100%;
+    }
+    .field input:focus, .field select:focus { border-color: var(--accent); }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: 0.15s;
+    }
+    .btn-accent { background: var(--accent); color: #020617; font-weight: 800; }
+    .btn-ghost { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--border-card); }
+    .btn-danger { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.3); }
+
+    /* Date Strip Picker */
+    .date-strip { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+    .date-strip::-webkit-scrollbar { display: none; }
+    .date-chip {
+      position: relative;
+      flex-shrink: 0;
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-card);
+      background: rgba(255,255,255,0.03);
+      text-align: center;
+      cursor: pointer;
+      min-width: 54px;
+    }
+    .date-chip.active { border-color: var(--accent); background: var(--accent-glow); color: #fff; }
+    .date-chip .day { font-size: 8px; text-transform: uppercase; font-weight: 700; color: rgba(255,255,255,0.5); }
+    .date-chip.active .day { color: var(--accent); }
+    .date-chip .num { font-size: 14px; font-weight: 800; margin-top: 1px; }
+    .has-booking-dot {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 6px;
+      height: 6px;
+      background: #f43f5e;
+      border-radius: 50%;
+      box-shadow: 0 0 6px #f43f5e;
+    }
+
+    /* KPIs */
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .kpi-box {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-card);
+      border-radius: 10px;
+      padding: 10px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .kpi-box:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .kpi-lbl { font-size: 8px; color: rgba(255,255,255,0.4); text-transform: uppercase; font-weight: 700; }
+    .kpi-val { font-size: 16px; font-weight: 800; color: var(--accent); font-family: monospace; margin-top: 2px; }
+
+    /* Progress bar */
+    .prog-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--accent); transition: width 0.25s ease; }
+
+    /* Bottom Navigation Bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: rgba(15, 23, 42, 0.98);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 40;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 9px;
+      font-weight: 700;
+      height: 100%;
+      cursor: pointer;
+      flex: 1;
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-item span.icon { font-size: 16px; }
+
+    /* Switch toggle */
+    .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .toggle-row:last-child { border-bottom: none; }
+    .toggle-label { font-size: 11px; color: rgba(255,255,255,0.8); }
+    .toggle-sub { font-size: 9px; color: rgba(255,255,255,0.4); }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast">
+    <span id="toast-icon">✨</span>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <header>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span class="badge-brand" id="brand-badge">Chez Nadya</span>
+      <span id="app-title-header" style="font-size:11px; font-weight:700;">Reformer Studio</span>
+    </div>
+    <button id="btn-logout" class="btn btn-ghost" style="padding:4px 8px; font-size:10px; display:none;" onclick="logout()">Déconnexion</button>
+  </header>
+
+  <main>
+
+    <div id="view-login" class="view-pane active">
+      <div class="card" style="padding:18px;">
+        <div class="card-title" style="font-size:13px;">Accès au Studio Reformer</div>
+        <p style="font-size:11px; color:rgba(255,255,255,0.5);">Identifiez-vous pour gérer le studio ou réserver vos séances.</p>
+        
+        <div class="field">
+          <label>Identifiant (User)</label>
+          <input type="text" id="in-user" placeholder="Nadya ou Guest" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Mot de passe (Password)</label>
+          <input type="password" id="in-pass" placeholder="••••••••" autocomplete="off">
+        </div>
+
+        <button class="btn btn-accent" style="margin-top:6px;" onclick="login()">Se Connecter</button>
+
+        <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); font-size:10px; color:rgba(255,255,255,0.4); line-height:1.4;">
+          <b>Comptes disponibles :</b><br>
+          • <b>Admin :</b> <code>Nadya</code> / <code>0312</code><br>
+          • <b>Membres :</b> <code>Guest</code>, <code>Sophie</code>, <code>Claire</code> (MDP initial : <code>Guest</code>)
+        </div>
+      </div>
+    </div>
+
+    <div id="view-force-pwd" class="view-pane">
+      <div class="card" style="padding:18px; border-color: rgba(245,158,11,0.4);">
+        <div class="card-title" style="color:#fbbf24;">🔐 Première Connexion — Sécurité</div>
+        <p style="font-size:11px; color:rgba(255,255,255,0.7);">
+          Pour des raisons de sécurité, veuillez définir votre nouveau mot de passe personnel avant d'accéder au studio.
+        </p>
+
+        <div class="field">
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="in-new-pwd" placeholder="Au moins 4 caractères">
+        </div>
+        <div class="field">
+          <label>Confirmer le mot de passe</label>
+          <input type="password" id="in-confirm-pwd" placeholder="Répéter le mot de passe">
+        </div>
+
+        <button class="btn btn-accent" onclick="submitNewPassword()">Enregistrer et Continuer</button>
+      </div>
+    </div>
+
+    <div id="view-g-plan" class="view-pane">
+      <div class="card">
+        <div class="card-title">
+          <span>Planning Étendu (3 Semaines)</span>
+          <span id="g-date-lbl" style="color:#fff; font-family:monospace;">Aujourd'hui</span>
+        </div>
+        <div class="date-strip" id="g-date-strip"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Séances Reformer Disponibles</div>
+        <div id="g-session-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+
+    <div id="view-g-my" class="view-pane">
+      <div class="card">
+        <div class="card-title">Mes Séances Réservées</div>
+        <div id="g-my-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+
+    <div id="view-g-profile" class="view-pane">
+      <div class="card">
+        <div class="card-title">Mon Pass & Abonnement</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+          <div>
+            <div id="prof-pass-name" style="font-size:12px; font-weight:800; color:#fff;">Pass 10 Séances</div>
+            <div id="prof-pass-dates" style="font-size:9px; color:rgba(255,255,255,0.4);">Validité : 01/01/2026 au 31/12/2026</div>
+          </div>
+          <span id="prof-pass-count" style="font-size:20px; font-weight:900; color:var(--accent); font-family:monospace;">0 / 10</span>
+        </div>
+        <div class="prog-track"><div id="prof-pass-bar" class="prog-fill" style="width:0%;"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Informations Personnelles & Sécurité</div>
+        <div class="field">
+          <label>Identifiant</label>
+          <input type="text" id="prof-user" disabled style="opacity:0.6;">
+        </div>
+        <div class="field">
+          <label>Numéro de Téléphone</label>
+          <input type="tel" id="prof-phone" placeholder="06 12 34 56 78">
+        </div>
+        <div class="field">
+          <label>Contact d'urgence</label>
+          <input type="text" id="prof-emergency" placeholder="Nom et Téléphone">
+        </div>
+        <div class="field" style="margin-top:4px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.06);">
+          <label>Modifier mon Mot de Passe</label>
+          <input type="password" id="prof-pwd" placeholder="Nouveau mot de passe">
+        </div>
+        <button class="btn btn-accent" onclick="saveGuestProfile()">Mettre à jour mon profil</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Préférences de Notifications</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Rappels Email (24h avant)</div>
+            <div class="toggle-sub">Recevoir un rappel pour vos séances</div>
+          </div>
+          <input type="checkbox" id="notif-g-reminder" checked style="width:18px; height:18px;">
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Alerte Expiration Pass</div>
+            <div class="toggle-sub">Alerter lorsqu'il reste ≤ 2 séances</div>
+          </div>
+          <input type="checkbox" id="notif-g-expiry" checked style="width:18px; height:18px;">
+        </div>
+      </div>
+    </div>
+
+    <div id="view-a-kpi" class="view-pane">
+      <div class="kpi-grid">
+        <div class="kpi-box" onclick="showKpiDetail('occ')">
+          <div class="kpi-lbl">Remplissage ℹ️</div>
+          <div class="kpi-val" id="adm-kpi-occ">0%</div>
+        </div>
+        <div class="kpi-box" onclick="showKpiDetail('booked')">
+          <div class="kpi-lbl">Inscrits ℹ️</div>
+          <div class="kpi-val" id="adm-kpi-book">0</div>
+        </div>
+        <div class="kpi-box" onclick="showKpiDetail('total')">
+          <div class="kpi-lbl">Séances ℹ️</div>
+          <div class="kpi-val" id="adm-kpi-tot">0</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('histo')">📊 Histogramme Réservations</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="toggleAnalyticsView('curve')">📈 Courbe des Ventes</button>
+      </div>
+
+      <div class="card" id="analytics-chart-card" style="display:none; padding:16px;">
+        <div class="card-title">
+          <span id="chart-title">Évolution des Fréquentations</span>
+          <button class="btn btn-ghost" style="padding:2px 6px; font-size:9px;" onclick="document.getElementById('analytics-chart-card').style.display='none'">✕</button>
+        </div>
+        <div id="chart-svg-container" style="margin-top:10px; width:100%; display:flex; justify-content:center;"></div>
+      </div>
+
+      <div class="card" id="kpi-detail-card" style="border-color: rgba(16,185,129,0.3);">
+        <div class="card-title">
+          <span id="kpi-detail-title">Détail des Inscriptions & Fréquentation</span>
+          <button class="btn btn-ghost" style="padding:2px 6px; font-size:9px;" onclick="renderAdminKPI()">Actualiser</button>
+        </div>
+        <div id="kpi-detail-content" style="font-size:11px; color:rgba(255,255,255,0.7); display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+    </div>
+
+    <div id="view-a-sched" class="view-pane">
+      <div class="card">
+        <div class="card-title">Gestion des Créneaux du Studio</div>
+        <div id="adm-session-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+      </div>
+    </div>
+
+    <div id="view-a-add" class="view-pane">
+      <div class="card">
+        <div class="card-title" id="form-card-title">Ajouter une Séance Reformer</div>
+        <input type="hidden" id="edit-session-id" value="">
+        
+        <div class="field">
+          <label>Intitulé du Cours</label>
+          <input type="text" id="add-title" placeholder="ex: Reformer Flow & Align">
+        </div>
+        
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div class="field">
+            <label>Coach</label>
+            <input type="text" id="add-coach" value="Nadya">
+          </div>
+          <div class="field">
+            <label>Durée (Minutes)</label>
+            <select id="add-dur">
+              <option value="45">45 min</option>
+              <option value="50" selected>50 min</option>
+              <option value="55">55 min</option>
+              <option value="60">60 min (1h)</option>
+              <option value="75">75 min (1h15)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div class="field">
+            <label>Machines (Capacité)</label>
+            <input type="number" id="add-cap" value="6" min="1" max="12">
+          </div>
+          <div class="field">
+            <label>Heure de début</label>
+            <input type="time" id="add-time" value="09:30">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Date de la séance</label>
+          <input type="date" id="add-date">
+        </div>
+
+        <div id="recurrent-opt" style="display:flex; align-items:center; gap:8px; padding:6px 0;">
+          <input type="checkbox" id="add-rec" style="width:16px; height:16px;">
+          <label for="add-rec" style="font-size:11px; color:#fff; cursor:pointer;">Répéter chaque semaine (4 semaines)</label>
+        </div>
+
+        <div style="display:flex; gap:6px;">
+          <button id="btn-cancel-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelEditMode()">Annuler</button>
+          <button id="btn-submit-session" class="btn btn-accent" style="flex:2;" onclick="adminSaveSession()">Publier la Séance</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-a-members" class="view-pane">
+      <div class="card">
+        <div class="card-title" id="form-mem-title">Ajouter un Nouveau Membre</div>
+        <input type="hidden" id="edit-mem-idx" value="">
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div class="field">
+            <label>Identifiant / Nom</label>
+            <input type="text" id="new-mem-user" placeholder="ex: Sophie">
+          </div>
+          <div class="field">
+            <label>Type d'Abonnement</label>
+            <select id="new-mem-pass" onchange="handlePassSelection(this.value)">
+              <option value="Pass Découverte (5)">Pass Découverte (5 séances)</option>
+              <option value="Pass 10 Séances" selected>Pass 10 Séances</option>
+              <option value="Pass 20 Séances">Pass 20 Séances</option>
+              <option value="Platinum (Sur-mesure)">Platinum (Sur-mesure)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div class="field">
+            <label id="lbl-mem-credits">Nombre de séances (Auto)</label>
+            <input type="number" id="new-mem-credits" value="10" min="1" max="500" disabled style="opacity:0.6;">
+          </div>
+          <div class="field">
+            <label>Validité jusqu'au</label>
+            <input type="date" id="new-mem-expiry" value="2026-12-31">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+          <div class="field">
+            <label>Téléphone</label>
+            <input type="tel" id="new-mem-phone" placeholder="06 12 34 56 78">
+          </div>
+          <div class="field">
+            <label>Contact d'urgence</label>
+            <input type="text" id="new-mem-emergency" placeholder="Nom et Numéro">
+          </div>
+        </div>
+
+        <p style="font-size:9px; color:rgba(255,255,255,0.4);">* Mot de passe initial : <code>Guest</code> (modification requise à la 1ère connexion).</p>
+        
+        <div style="display:flex; gap:6px;">
+          <button id="btn-cancel-mem-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelMemEdit()">Annuler</button>
+          <button id="btn-save-member" class="btn btn-accent" style="flex:2;" onclick="adminSaveMember()">+ Créer le Compte Membre</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Annuaire des Membres du Studio</div>
+        <div id="adm-members-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+
+    <div id="view-a-profile" class="view-pane">
+      <div class="card">
+        <div class="card-title">Profil Gestionnaire Studio (Nadya)</div>
+        <div class="field">
+          <label>Identifiant</label>
+          <input type="text" value="Nadya" disabled style="opacity:0.6;">
+        </div>
+        <div class="field">
+          <label>E-mail du Studio</label>
+          <input type="email" id="adm-email" value="contact@cheznadya-reformer.com">
+        </div>
+        <div class="field">
+          <label>Modifier le mot de passe Admin</label>
+          <input type="password" id="adm-new-pwd" placeholder="Nouveau mot de passe">
+        </div>
+        <button class="btn btn-accent" onclick="saveAdminProfile()">Mettre à jour mes accès</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Centre de Notifications Studio</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Alertes Nouvelles Réservations</div>
+            <div class="toggle-sub">Recevoir un e-mail à chaque inscription</div>
+          </div>
+          <input type="checkbox" id="notif-a-book" checked style="width:18px; height:18px;">
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Alertes Annulations & Désistements</div>
+            <div class="toggle-sub">Notifier immédiatement pour réattribution</div>
+          </div>
+          <input type="checkbox" id="notif-a-cancel" checked style="width:18px; height:18px;">
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
+
+  <script>
+    // --- BASE DE DONNÉES LOCALE ---
+    var defaultMembers = [
+      { user: "Guest", pass: "Guest", name: "Guest (Test)", passType: "Pass 10 Séances", totalCredits: 10, startDate: "2026-01-01", expiryDate: "2026-12-31", mustChangePass: false, phone: "06 00 00 00 01", emergency: "Contact Test" },
+      { user: "Sophie", pass: "Guest", name: "Sophie M.", passType: "Pass Découverte (5)", totalCredits: 5, startDate: "2026-02-01", expiryDate: "2026-12-31", mustChangePass: true, phone: "06 55 44 33 22", emergency: "Paul (06 11 22 33 44)" },
+      { user: "Claire", pass: "Guest", name: "Claire D.", passType: "Platinum (Sur-mesure)", totalCredits: 35, startDate: "2026-01-15", expiryDate: "2026-12-31", mustChangePass: true, phone: "07 88 99 00 11", emergency: "Maman (06 99 88 77 66)" }
+    ];
+
+    var defaultSessions = [
+      { id: "s1", seriesId: "ser_01", title: "Reformer Flow & Posture", coach: "Nadya", duration: 50, date: new Date().toISOString().split('T')[0], time: "09:00", cap: 6, users: ["Guest", "Sophie"], status: "active" },
+      { id: "s2", seriesId: "ser_02", title: "Reformer Sculpt & Core", coach: "Sarah", duration: 60, date: new Date().toISOString().split('T')[0], time: "11:00", cap: 6, users: ["Claire"], status: "active" },
+      { id: "s3", seriesId: "ser_03", title: "Reformer Cardio Jump", coach: "Nadya", duration: 45, date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: "18:00", cap: 6, users: [], status: "active" }
+    ];
+
+    var members = JSON.parse(localStorage.getItem('cn_members_v3')) || defaultMembers;
+    var sessions = JSON.parse(localStorage.getItem('cn_sessions_v3')) || defaultSessions;
+    var adminData = JSON.parse(localStorage.getItem('cn_admin')) || { user: 'Nadya', pass: '0312', email: 'contact@cheznadya-reformer.com' };
+
+    var currentUser = null;
+    var selectedDate = new Date().toISOString().split('T')[0];
+    var activeTab = '';
+
+    function saveState() {
+      localStorage.setItem('cn_members_v3', JSON.stringify(members));
+      localStorage.setItem('cn_sessions_v3', JSON.stringify(sessions));
+      localStorage.setItem('cn_admin', JSON.stringify(adminData));
+      renderActiveView();
+    }
+
+    function showToast(text, isError) {
+      var t = document.getElementById('toast');
+      document.getElementById('toast-icon').innerText = isError ? '❌' : '✅';
+      document.getElementById('toast-text').innerText = text;
+      t.className = 'toast show';
+      setTimeout(function() { t.className = 'toast'; }, 2800);
+    }
+
+    // --- GESTION DES PASS & SÉANCES LIÉES ---
+    function handlePassSelection(passName) {
+      var inputCredits = document.getElementById('new-mem-credits');
+      var lbl = document.getElementById('lbl-mem-credits');
+
+      if (passName === "Pass Découverte (5)") {
+        inputCredits.value = 5;
+        inputCredits.disabled = true;
+        inputCredits.style.opacity = "0.6";
+        lbl.innerText = "Nombre de séances (Fixé à 5)";
+      } else if (passName === "Pass 10 Séances") {
+        inputCredits.value = 10;
+        inputCredits.disabled = true;
+        inputCredits.style.opacity = "0.6";
+        lbl.innerText = "Nombre de séances (Fixé à 10)";
+      } else if (passName === "Pass 20 Séances") {
+        inputCredits.value = 20;
+        inputCredits.disabled = true;
+        inputCredits.style.opacity = "0.6";
+        lbl.innerText = "Nombre de séances (Fixé à 20)";
+      } else if (passName === "Platinum (Sur-mesure)") {
+        inputCredits.disabled = false;
+        inputCredits.style.opacity = "1";
+        lbl.innerText = "Nombre de séances (Personnalisable)";
+      }
+    }
+
+    // --- AUTHENTIFICATION ---
+    function login() {
+      var u = document.getElementById('in-user').value.trim();
+      var p = document.getElementById('in-pass').value.trim();
+
+      if (u === adminData.user && p === adminData.pass) {
+        currentUser = { user: 'Nadya', role: 'admin', name: 'Nadya' };
+        showToast("Bienvenue Nadya (Mode Admin)", false);
+        completeLogin();
+        return;
+      }
+
+      var mem = members.find(function(m) { return m.user.toLowerCase() === u.toLowerCase() && m.pass === p; });
+
+      if (mem) {
+        currentUser = { user: mem.user, role: 'guest', name: mem.name || mem.user };
+        
+        if (mem.mustChangePass || p === 'Guest') {
+          hideAllPanes();
+          document.getElementById('view-force-pwd').className = 'view-pane active';
+          document.getElementById('btn-logout').style.display = 'inline-flex';
+          showToast("Veuillez définir votre mot de passe", false);
+          return;
+        }
+
+        showToast("Bienvenue " + currentUser.name, false);
+        completeLogin();
+      } else {
+        showToast("Identifiant ou mot de passe incorrect", true);
+      }
+    }
+
+    function submitNewPassword() {
+      var p1 = document.getElementById('in-new-pwd').value.trim();
+      var p2 = document.getElementById('in-confirm-pwd').value.trim();
+
+      if (p1.length < 4) { showToast("Au moins 4 caractères requis", true); return; }
+      if (p1 !== p2) { showToast("Les mots de passe ne correspondent pas", true); return; }
+
+      var mem = members.find(function(m) { return m.user === currentUser.user; });
+      if (mem) {
+        mem.pass = p1;
+        mem.mustChangePass = false;
+        saveState();
+        showToast("Mot de passe enregistré !", false);
+        completeLogin();
+      }
+    }
+
+    function completeLogin() {
+      document.getElementById('view-login').className = 'view-pane';
+      document.getElementById('view-force-pwd').className = 'view-pane';
+      document.getElementById('btn-logout').style.display = 'inline-flex';
+
+      if (currentUser.role === 'admin') {
+        document.getElementById('brand-badge').innerText = "Chez Nadya";
+        document.getElementById('app-title-header').innerText = "Mode Admin";
+      } else {
+        document.getElementById('brand-badge').innerText = "Chez Nadya";
+        document.getElementById('app-title-header').innerText = "Espace Membre (" + currentUser.name + ")";
+      }
+      
+      setupBottomBar();
+      switchTab(currentUser.role === 'admin' ? 'view-a-kpi' : 'view-g-plan');
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById('btn-logout').style.display = 'none';
+      document.getElementById('bottom-bar').style.display = 'none';
+      document.getElementById('brand-badge').innerText = "Chez Nadya";
+      document.getElementById('app-title-header').innerText = "Reformer Studio";
+      document.getElementById('in-user').value = '';
+      document.getElementById('in-pass').value = '';
+
+      hideAllPanes();
+      document.getElementById('view-login').className = 'view-pane active';
+      showToast("Déconnexion réussie", false);
+    }
+
+    function hideAllPanes() {
+      ['view-login', 'view-force-pwd', 'view-g-plan', 'view-g-my', 'view-g-profile', 'view-a-kpi', 'view-a-sched', 'view-a-add', 'view-a-members', 'view-a-profile'].forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.className = 'view-pane';
+      });
+    }
+
+    function setupBottomBar() {
+      var bar = document.getElementById('bottom-bar');
+      bar.innerHTML = '';
+      bar.style.display = 'flex';
+
+      var tabs = (currentUser.role === 'admin') ? [
+        { id: 'view-a-kpi', icon: '📊', label: 'Supervision' },
+        { id: 'view-a-sched', icon: '🗓️', label: 'Planning' },
+        { id: 'view-a-add', icon: '➕', label: 'Séances' },
+        { id: 'view-a-members', icon: '👥', label: 'Membres' },
+        { id: 'view-a-profile', icon: '⚙️', label: 'Profil' }
+      ] : [
+        { id: 'view-g-plan', icon: '📅', label: 'Planning' },
+        { id: 'view-g-my', icon: '🎟️', label: 'Mes Séances' },
+        { id: 'view-g-profile', icon: '💳', label: 'Mon Profil & Pass' }
+      ];
+
+      tabs.forEach(function(t) {
+        var btn = document.createElement('button');
+        btn.id = 'btn-' + t.id;
+        btn.className = 'nav-item';
+        btn.innerHTML = '<span class="icon">' + t.icon + '</span><span>' + t.label + '</span>';
+        btn.onclick = function() { switchTab(t.id); };
+        bar.appendChild(btn);
+      });
+    }
+
+    function switchTab(viewId) {
+      activeTab = viewId;
+      hideAllPanes();
+      document.getElementById(viewId).className = 'view-pane active';
+
+      document.querySelectorAll('.nav-item').forEach(function(b) { b.className = 'nav-item'; });
+      var activeNav = document.getElementById('btn-' + viewId);
+      if (activeNav) activeNav.className = 'nav-item active';
+
+      renderActiveView();
+    }
+
+    function renderActiveView() {
+      if (!currentUser) return;
+      if (currentUser.role === 'guest') {
+        if (activeTab === 'view-g-plan') renderGuestPlanning();
+        if (activeTab === 'view-g-my') renderGuestMyBookings();
+        if (activeTab === 'view-g-profile') renderGuestProfileView();
+      } else {
+        if (activeTab === 'view-a-kpi') renderAdminKPI();
+        if (activeTab === 'view-a-sched') renderAdminSchedule();
+        if (activeTab === 'view-a-members') renderAdminMembers();
+        if (activeTab === 'view-a-profile') renderAdminProfileView();
+        if (activeTab === 'view-a-add') {
+          if (!document.getElementById('edit-session-id').value) {
+            document.getElementById('add-date').value = selectedDate;
+          }
+        }
+      }
+    }
+
+    // --- GUEST RENDERS & CALENDAR EXPORTS ---
+    function renderGuestPlanning() {
+      var strip = document.getElementById('g-date-strip');
+      strip.innerHTML = '';
+      var today = new Date();
+
+      for (var i = 0; i < 21; i++) {
+        var d = new Date(today);
+        d.setDate(today.getDate() + i);
+        var iso = d.toISOString().split('T')[0];
+        var isSel = (iso === selectedDate);
+        var dayName = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+
+        var hasBooking = sessions.some(function(s) {
+          return s.date === iso && s.users.indexOf(currentUser.user) !== -1;
+        });
+
+        var chip = document.createElement('div');
+        chip.className = isSel ? 'date-chip active' : 'date-chip';
+        chip.innerHTML = 
+          (hasBooking ? '<div class="has-booking-dot" title="Séance réservée"></div>' : '') +
+          '<div class="day">' + dayName + '</div><div class="num">' + d.getDate() + '</div>';
+        
+        chip.onclick = (function(targetIso, targetName) {
+          return function() {
+            selectedDate = targetIso;
+            document.getElementById('g-date-lbl').innerText = targetName;
+            renderGuestPlanning();
+          };
+        })(iso, (i === 0 ? "Aujourd'hui" : d.getDate() + " " + d.toLocaleDateString('fr-FR', { month: 'short' })));
+        
+        strip.appendChild(chip);
+      }
+
+      var list = document.getElementById('g-session-list');
+      var daySessions = sessions.filter(function(s) { return s.date === selectedDate; });
+
+      if (daySessions.length === 0) {
+        list.innerHTML = '<p style="font-size:11px; color:rgba(255,255,255,0.4); text-align:center; padding:12px;">Aucun cours programmé à cette date.</p>';
+        return;
+      }
+
+      list.innerHTML = '';
+      daySessions.forEach(function(s) {
+        var isBooked = s.users.indexOf(currentUser.user) !== -1;
+        var isFull = s.users.length >= s.cap;
+        var pct = Math.round((s.users.length / s.cap) * 100);
+
+        var box = document.createElement('div');
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.innerHTML = 
+          '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+            '<div>' +
+              '<div style="display:flex; align-items:center; gap:6px;">' +
+                '<span style="font-size:9px; color:var(--accent); font-weight:700; font-family:monospace;">⏰ ' + s.time + '</span>' +
+                '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
+              '</div>' +
+              '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
+              '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div>' +
+            '</div>' +
+            '<span style="font-size:10px; font-weight:700; color:' + (isFull ? '#f87171' : '#34d399') + ';">' + (s.cap - s.users.length) + ' place(s)</span>' +
+          '</div>' +
+          '<div class="prog-track"><div class="prog-fill" style="width:' + pct + '%;"></div></div>' +
+          '<div style="margin-top:2px;">' +
+            (isBooked 
+              ? '<button class="btn btn-danger" style="width:100%;" onclick="guestCancel(\'' + s.id + '\')">✓ Inscrit(e) — Annuler ma place</button>'
+              : '<button class="btn btn-accent" style="width:100%;" ' + (isFull ? 'disabled style="opacity:0.4;"' : '') + ' onclick="guestBook(\'' + s.id + '\')">' + (isFull ? 'Complet' : 'Réserver cette séance') + '</button>') +
+          '</div>';
+        list.appendChild(box);
+      });
+    }
+
+    function guestBook(id) {
+      var s = sessions.find(function(x) { return x.id === id; });
+      if (!s || s.users.length >= s.cap) return;
+
+      var mem = members.find(function(m) { return m.user === currentUser.user; });
+      var myBookingsCount = sessions.filter(function(x) { return x.users.indexOf(currentUser.user) !== -1; }).length;
+      var totalPass = mem ? (mem.totalCredits || 10) : 10;
+
+      if (myBookingsCount >= totalPass) {
+        showToast("Votre pass est épuisé. Veuillez contacter le studio.", true);
+        return;
+      }
+
+      s.users.push(currentUser.user);
+      showToast("Réservation confirmée pour " + s.title, false);
+      saveState();
+    }
+
+    function guestCancel(id) {
+      var s = sessions.find(function(x) { return x.id === id; });
+      if (!s) return;
+      s.users = s.users.filter(function(u) { return u !== currentUser.user; });
+      showToast("Réservation annulée", false);
+      saveState();
+    }
+
+    function renderGuestMyBookings() {
+      var list = document.getElementById('g-my-list');
+      var my = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; });
+
+      if (my.length === 0) {
+        list.innerHTML = '<p style="font-size:11px; color:rgba(255,255,255,0.4); text-align:center; padding:12px;">Aucune séance réservée pour le moment.</p>';
+        return;
+      }
+
+      list.innerHTML = '';
+      my.forEach(function(s) {
+        var box = document.createElement('div');
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:8px;";
+        box.innerHTML = 
+          '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+            '<div><span style="font-size:9px; color:var(--accent); font-family:monospace;">📅 ' + s.date + ' à ' + s.time + ' (' + (s.duration || 50) + ' min)</span>' +
+            '<div style="font-size:12px; font-weight:800;">' + s.title + '</div>' +
+            '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach : ' + s.coach + '</div></div>' +
+            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="guestCancel(\'' + s.id + '\')">Annuler</button>' +
+          '</div>' +
+          '<div style="display:flex; gap:4px; border-top:1px solid rgba(255,255,255,0.04); padding-top:6px;">' +
+            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📅 Google</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToOutlook(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📧 Outlook</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:3px 6px; font-size:9px;" onclick="exportToICS(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">🍏 Apple / iCal</button>' +
+          '</div>';
+        list.appendChild(box);
+      });
+    }
+
+    // Exports Calendriers
+    function exportToGoogle(title, dateStr, timeStr, dur) {
+      var start = new Date(dateStr + "T" + timeStr);
+      var end = new Date(start.getTime() + (dur || 50) * 60000);
+      var fStart = start.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      var fEnd = end.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      var url = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent("Chez Nadya : " + title) + "&dates=" + fStart + "/" + fEnd + "&details=" + encodeURIComponent("Séance Pilates Reformer Chez Nadya");
+      window.open(url, '_blank');
+    }
+
+    function exportToOutlook(title, dateStr, timeStr, dur) {
+      var start = new Date(dateStr + "T" + timeStr);
+      var end = new Date(start.getTime() + (dur || 50) * 60000);
+      var url = "https://outlook.live.com/calendar/0/deeplink/compose?subject=" + encodeURIComponent("Chez Nadya : " + title) + "&startdt=" + start.toISOString() + "&enddt=" + end.toISOString();
+      window.open(url, '_blank');
+    }
+
+    function exportToICS(title, dateStr, timeStr, dur) {
+      var start = new Date(dateStr + "T" + timeStr);
+      var end = new Date(start.getTime() + (dur || 50) * 60000);
+      var fStart = start.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      var fEnd = end.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      var ics = "BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Chez Nadya : " + title + "\nDTSTART:" + fStart + "\nDTEND:" + fEnd + "\nDESCRIPTION:Séance Pilates Reformer\nEND:VEVENT\nEND:VCALENDAR";
+      var blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "seance_reformer.ics";
+      a.click();
+      showToast("Fichier calendrier iCal téléchargé !", false);
+    }
+
+    function renderGuestProfileView() {
+      var mem = members.find(function(m) { return m.user === currentUser.user; }) || {};
+      var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; }).length;
+      var total = mem.totalCredits || 10;
+      var remaining = Math.max(0, total - myBookingsCount);
+
+      document.getElementById('prof-pass-name').innerText = mem.passType || "Pass 10 Séances";
+      document.getElementById('prof-pass-dates').innerText = "Validité : " + (mem.startDate || "01/01/2026") + " au " + (mem.expiryDate || "31/12/2026");
+      document.getElementById('prof-pass-count').innerText = remaining + " / " + total;
+      document.getElementById('prof-pass-bar').style.width = ((remaining / total) * 100) + "%";
+
+      document.getElementById('prof-user').value = currentUser.user;
+      document.getElementById('prof-phone').value = mem.phone || "";
+      document.getElementById('prof-emergency').value = mem.emergency || "";
+      document.getElementById('prof-pwd').value = "";
+    }
+
+    function saveGuestProfile() {
+      var mem = members.find(function(m) { return m.user === currentUser.user; });
+      if (mem) {
+        mem.phone = document.getElementById('prof-phone').value.trim();
+        mem.emergency = document.getElementById('prof-emergency').value.trim();
+        var newP = document.getElementById('prof-pwd').value.trim();
+        if (newP) {
+          if (newP.length < 4) { showToast("Mot de passe trop court", true); return; }
+          mem.pass = newP;
+        }
+        saveState();
+        showToast("Profil & mot de passe mis à jour !", false);
+      }
+    }
+
+    // --- ADMIN RENDERS & ANALYTICS ---
+    function renderAdminKPI() {
+      var tot = sessions.length;
+      var booked = sessions.reduce(function(acc, s) { return acc + s.users.length; }, 0);
+      var cap = sessions.reduce(function(acc, s) { return acc + s.cap; }, 0);
+      var occ = cap > 0 ? Math.round((booked / cap) * 100) : 0;
+
+      document.getElementById('adm-kpi-occ').innerText = occ + "%";
+      document.getElementById('adm-kpi-book').innerText = booked;
+      document.getElementById('adm-kpi-tot').innerText = tot;
+
+      showKpiDetail('booked');
+    }
+
+    function toggleAnalyticsView(mode) {
+      var card = document.getElementById('analytics-chart-card');
+      var container = document.getElementById('chart-svg-container');
+      var title = document.getElementById('chart-title');
+      card.style.display = 'flex';
+
+      if (mode === 'histo') {
+        title.innerText = "📊 Histogramme : Inscriptions par Jour";
+        container.innerHTML = `
+          <svg width="280" height="140" viewBox="0 0 280 140">
+            <line x1="20" y1="120" x2="260" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+            <rect x="35" y="40" width="22" height="80" fill="#10b981" rx="4"/>
+            <rect x="70" y="25" width="22" height="95" fill="#10b981" rx="4"/>
+            <rect x="105" y="60" width="22" height="60" fill="#10b981" rx="4"/>
+            <rect x="140" y="30" width="22" height="90" fill="#10b981" rx="4"/>
+            <rect x="175" y="15" width="22" height="105" fill="#34d399" rx="4"/>
+            <rect x="210" y="50" width="22" height="70" fill="#10b981" rx="4"/>
+            <text x="46" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Lun</text>
+            <text x="81" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mar</text>
+            <text x="116" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mer</text>
+            <text x="151" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Jeu</text>
+            <text x="186" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Ven</text>
+            <text x="221" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Sam</text>
+          </svg>
+        `;
+      } else {
+        title.innerText = "📈 Courbe : Ventes & Évolution des Abonnements";
+        container.innerHTML = `
+          <svg width="280" height="140" viewBox="0 0 280 140">
+            <defs>
+              <linearGradient id="gradCurve" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 30 100 Q 80 80, 130 50 T 250 20 L 250 120 L 30 120 Z" fill="url(#gradCurve)"/>
+            <path d="M 30 100 Q 80 80, 130 50 T 250 20" fill="none" stroke="#10b981" stroke-width="3"/>
+            <circle cx="30" cy="100" r="4" fill="#34d399"/>
+            <circle cx="130" cy="50" r="4" fill="#34d399"/>
+            <circle cx="250" cy="20" r="4" fill="#34d399"/>
+            <text x="30" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Jan</text>
+            <text x="130" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Fév</text>
+            <text x="250" y="132" fill="rgba(255,255,255,0.5)" font-size="8" text-anchor="middle">Mar</text>
+          </svg>
+        `;
+      }
+    }
+
+    function showKpiDetail(type) {
+      var container = document.getElementById('kpi-detail-content');
+      var title = document.getElementById('kpi-detail-title');
+
+      if (type === 'booked') {
+        title.innerText = "Détail des Réservations par Séance (Inscrits & Dates)";
+        var bookedSessions = sessions.filter(function(s) { return s.users.length > 0; });
+
+        if (bookedSessions.length === 0) {
+          container.innerHTML = "<p style='color:rgba(255,255,255,0.4); text-align:center;'>Aucune réservation enregistrée pour le moment.</p>";
+          return;
+        }
+
+        container.innerHTML = bookedSessions.map(function(s) {
+          return "<div style='background:rgba(0,0,0,0.3); padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.05);'>" +
+            "<div style='display:flex; justify-content:space-between; font-weight:700; color:#fff;'>" +
+              "<span>" + s.title + "</span>" +
+              "<span style='color:var(--accent); font-family:monospace;'>" + s.date + " à " + s.time + "</span>" +
+            "</div>" +
+            "<div style='font-size:10px; color:rgba(255,255,255,0.5); margin-top:2px;'>Membres inscrits (" + s.users.length + "/" + s.cap + ") : <b style='color:#34d399;'>" + s.users.join(', ') + "</b></div>" +
+          "</div>";
+        }).join('');
+      } else if (type === 'occ') {
+        title.innerText = "Analyse du Remplissage du Studio";
+        container.innerHTML = "<p>Le taux global est calculé sur l'ensemble des créneaux actifs. Les séances avec 6/6 machines réservées sont marquées complètes automatiquement.</p>";
+      } else {
+        title.innerText = "Catalogue des Séances Programmées";
+        container.innerHTML = "<p>Total de " + sessions.length + " créneaux actifs sur le planning du studio.</p>";
+      }
+    }
+
+    // --- ADMIN PLANNING & DISTINCTION OCCURRENCE / SÉRIE ---
+    function renderAdminSchedule() {
+      var list = document.getElementById('adm-session-list');
+      list.innerHTML = '';
+
+      sessions.forEach(function(s) {
+        var box = document.createElement('div');
+        box.style.cssText = "background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.innerHTML = 
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
+            '<div>' +
+              '<div style="display:flex; align-items:center; gap:6px;">' +
+                '<span style="font-size:9px; color:var(--accent); font-family:monospace;">📅 ' + s.date + ' (' + s.time + ')</span>' +
+                '<span style="font-size:9px; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; font-weight:700;">⏱ ' + (s.duration || 50) + ' min</span>' +
+              '</div>' +
+              '<div style="font-size:12px; font-weight:800; margin-top:2px;">' + s.title + '</div>' +
+              '<div style="font-size:10px; color:rgba(255,255,255,0.4);">Coach: ' + s.coach + ' | Inscrits: ' + s.users.length + '/' + s.cap + ' (' + (s.users.join(', ') || 'aucun') + ')</div>' +
+            '</div>' +
+            '<span style="font-size:9px; font-weight:700; color:' + (s.status === 'active' ? '#34d399' : '#f87171') + ';">● ' + s.status.toUpperCase() + '</span>' +
+          '</div>' +
+          '<div style="display:flex; gap:4px; margin-top:4px;">' +
+            '<button class="btn btn-accent" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">✏️ Modifier</button>' +
+            '<button class="btn btn-ghost" style="flex:1; padding:5px 6px; font-size:10px;" onclick="adminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Annuler Séance' : '✅ Réactiver') + '</button>' +
+            '<button class="btn btn-danger" style="padding:5px 6px; font-size:10px;" onclick="adminDeletePrompt(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
+          '</div>';
+        list.appendChild(box);
+      });
+    }
+
+    function adminToggleOccurrence(id) {
+      var s = sessions.find(function(x) { return x.id === id; });
+      if (!s) return;
+      s.status = s.status === 'active' ? 'cancelled' : 'active';
+      showToast("Statut de la séance " + s.date + " mis à jour", false);
+      saveState();
+    }
+
+    function adminDeletePrompt(id, seriesId) {
+      var s = sessions.find(function(x) { return x.id === id; });
+      if (!s) return;
+
+      var hasSeries = seriesId && sessions.filter(function(x) { return x.seriesId === seriesId; }).length > 1;
+
+      if (hasSeries) {
+        var choice = confirm("Cette séance fait partie d'une série récurrente.\n\n• Cliquez sur [OK] pour supprimer UNIQUEMENT cette séance du " + s.date + ".\n• Cliquez sur [ANNULER] pour SUPPRIMER TOUTE LA SÉRIE.");
+        if (choice) {
+          sessions = sessions.filter(function(x) { return x.id !== id; });
+          showToast("Séance unique supprimée", false);
+        } else {
+          sessions = sessions.filter(function(x) { return x.seriesId !== seriesId; });
+          showToast("Toute la série récurrente a été supprimée", false);
+        }
+      } else {
+        sessions = sessions.filter(function(x) { return x.id !== id; });
+        showToast("Séance supprimée", false);
+      }
+      saveState();
+    }
+
+    function adminEditSessionPrompt(id) {
+      var s = sessions.find(function(x) { return x.id === id; });
+      if (!s) return;
+
+      document.getElementById('edit-session-id').value = s.id;
+      document.getElementById('add-title').value = s.title;
+      document.getElementById('add-coach').value = s.coach;
+      document.getElementById('add-dur').value = s.duration || 50;
+      document.getElementById('add-cap').value = s.cap;
+      document.getElementById('add-date').value = s.date;
+      document.getElementById('add-time').value = s.time;
+
+      document.getElementById('recurrent-opt').style.display = 'none';
+      document.getElementById('form-card-title').innerText = "✏️ Modifier la Séance";
+      document.getElementById('btn-submit-session').innerText = "Enregistrer Modifications";
+      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+
+      switchTab('view-a-add');
+    }
+
+    function cancelEditMode() {
+      document.getElementById('edit-session-id').value = '';
+      document.getElementById('add-title').value = '';
+      document.getElementById('form-card-title').innerText = "Ajouter une Séance Reformer";
+      document.getElementById('btn-submit-session').innerText = "Publier la Séance";
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+      document.getElementById('recurrent-opt').style.display = 'flex';
+      switchTab('view-a-sched');
+    }
+
+    function adminSaveSession() {
+      var editId = document.getElementById('edit-session-id').value;
+      var title = document.getElementById('add-title').value.trim();
+      var coach = document.getElementById('add-coach').value.trim();
+      var dur = parseInt(document.getElementById('add-dur').value) || 50;
+      var cap = parseInt(document.getElementById('add-cap').value) || 6;
+      var date = document.getElementById('add-date').value;
+      var time = document.getElementById('add-time').value;
+      var isRec = document.getElementById('add-rec').checked;
+
+      if (!title || !date) { showToast("Veuillez renseigner le titre et la date", true); return; }
+
+      if (editId) {
+        var s = sessions.find(function(x) { return x.id === editId; });
+        if (s) {
+          s.title = title;
+          s.coach = coach;
+          s.duration = dur;
+          s.cap = cap;
+          s.date = date;
+          s.time = time;
+          showToast("Séance modifiée avec succès", false);
+        }
+        cancelEditMode();
+      } else {
+        var occurrences = isRec ? 4 : 1;
+        var sId = "ser_" + Date.now();
+        for (var i = 0; i < occurrences; i++) {
+          var d = new Date(date);
+          d.setDate(d.getDate() + (i * 7));
+          sessions.push({
+            id: "s_" + Date.now() + "_" + i,
+            seriesId: isRec ? sId : null,
+            title: title,
+            coach: coach,
+            duration: dur,
+            date: d.toISOString().split('T')[0],
+            time: time,
+            cap: cap,
+            users: [],
+            status: "active"
+          });
+        }
+        showToast(isRec ? "4 séances récurrentes créées" : "Séance publiée", false);
+        document.getElementById('add-title').value = '';
+        switchTab('view-a-sched');
+      }
+      saveState();
+    }
+
+    // --- ADMIN MEMBERS & PASS MANAGEMENT ---
+    function renderAdminMembers() {
+      var list = document.getElementById('adm-members-list');
+      list.innerHTML = '';
+
+      members.forEach(function(m, idx) {
+        var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(m.user) !== -1; }).length;
+        var total = m.totalCredits || 10;
+        var remaining = Math.max(0, total - myBookingsCount);
+
+        var box = document.createElement('div');
+        box.style.cssText = "background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:10px; display:flex; flex-direction:column; gap:6px;";
+        box.innerHTML = 
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
+            '<div>' +
+              '<div style="font-size:12px; font-weight:800; color:#fff;">👤 ' + (m.name || m.user) + ' <span style="font-size:9px; color:rgba(255,255,255,0.4); font-mono">(@' + m.user + ')</span></div>' +
+              '<div style="font-size:10px; color:var(--accent); font-weight:700;">' + (m.passType || "Pass 10 Séances") + '</div>' +
+              '<div style="font-size:9px; color:rgba(255,255,255,0.4);">Validité : ' + (m.startDate || "01/01/2026") + ' au ' + (m.expiryDate || "31/12/2026") + '</div>' +
+              (m.phone ? '<div style="font-size:9px; color:rgba(255,255,255,0.5);">📞 ' + m.phone + '</div>' : '') +
+            '</div>' +
+            '<div style="text-align:right;">' +
+              '<span style="font-size:14px; font-weight:900; color:#34d399; font-family:monospace;">' + remaining + ' / ' + total + '</span>' +
+              '<div style="font-size:8px; color:rgba(255,255,255,0.4);">séances dispo</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; gap:6px; margin-top:2px;">' +
+            '<button class="btn btn-accent" style="flex:1; padding:4px 8px; font-size:10px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier Profil</button>' +
+            '<button class="btn btn-ghost" style="padding:4px 8px; font-size:10px;" onclick="adminRechargeMember(' + idx + ')">💳 +5</button>' +
+            '<button class="btn btn-danger" style="padding:4px 8px; font-size:10px;" onclick="adminDeleteMember(' + idx + ')">🗑️</button>' +
+          '</div>';
+        list.appendChild(box);
+      });
+    }
+
+    function adminEditMemberPrompt(idx) {
+      var m = members[idx];
+      if (!m) return;
+
+      document.getElementById('edit-mem-idx').value = idx;
+      document.getElementById('new-mem-user').value = m.user;
+      document.getElementById('new-mem-pass').value = m.passType || "Pass 10 Séances";
+      document.getElementById('new-mem-credits').value = m.totalCredits || 10;
+      document.getElementById('new-mem-expiry').value = m.expiryDate || "2026-12-31";
+      document.getElementById('new-mem-phone').value = m.phone || "";
+      document.getElementById('new-mem-emergency').value = m.emergency || "";
+
+      handlePassSelection(m.passType || "Pass 10 Séances");
+
+      document.getElementById('form-mem-title').innerText = "✏️ Modifier le Membre : " + m.user;
+      document.getElementById('btn-save-member').innerText = "Enregistrer Modifications";
+      document.getElementById('btn-cancel-mem-edit').style.display = 'inline-flex';
+    }
+
+    function cancelMemEdit() {
+      document.getElementById('edit-mem-idx').value = '';
+      document.getElementById('new-mem-user').value = '';
+      document.getElementById('new-mem-phone').value = '';
+      document.getElementById('new-mem-emergency').value = '';
+      document.getElementById('form-mem-title').innerText = "Ajouter un Nouveau Membre";
+      document.getElementById('btn-save-member').innerText = "+ Créer le Compte Membre";
+      document.getElementById('btn-cancel-mem-edit').style.display = 'none';
+      handlePassSelection("Pass 10 Séances");
+    }
+
+    function adminSaveMember() {
+      var editIdx = document.getElementById('edit-mem-idx').value;
+      var u = document.getElementById('new-mem-user').value.trim();
+      var passType = document.getElementById('new-mem-pass').value;
+      var credits = parseInt(document.getElementById('new-mem-credits').value) || 10;
+      var expiry = document.getElementById('new-mem-expiry').value;
+      var phone = document.getElementById('new-mem-phone').value.trim();
+      var emergency = document.getElementById('new-mem-emergency').value.trim();
+
+      if (!u) { showToast("Veuillez renseigner un identifiant", true); return; }
+
+      if (editIdx !== "") {
+        var m = members[parseInt(editIdx)];
+        if (m) {
+          m.user = u;
+          m.name = u;
+          m.passType = passType;
+          m.totalCredits = credits;
+          m.expiryDate = expiry;
+          m.phone = phone;
+          m.emergency = emergency;
+          showToast("Profil membre mis à jour", false);
+        }
+        cancelMemEdit();
+      } else {
+        if (members.some(function(x) { return x.user.toLowerCase() === u.toLowerCase(); })) {
+          showToast("Cet identifiant existe déjà", true);
+          return;
+        }
+
+        members.push({
+          user: u,
+          pass: "Guest",
+          name: u,
+          passType: passType,
+          totalCredits: credits,
+          startDate: new Date().toISOString().split('T')[0],
+          expiryDate: expiry,
+          mustChangePass: true,
+          phone: phone,
+          emergency: emergency
+        });
+
+        showToast("Compte membre créé (MDP initial : Guest)", false);
+        cancelMemEdit();
+      }
+      saveState();
+    }
+
+    function adminRechargeMember(idx) {
+      members[idx].totalCredits = (members[idx].totalCredits || 10) + 5;
+      showToast("+5 séances ajoutées pour " + members[idx].user, false);
+      saveState();
+    }
+
+    function adminDeleteMember(idx) {
+      if (members[idx].user === 'Guest') { showToast("Impossible de supprimer le compte Guest par défaut", true); return; }
+      members.splice(idx, 1);
+      showToast("Compte membre supprimé", false);
+      saveState();
+    }
+
+    // --- PROFIL ADMIN ---
+    function renderAdminProfileView() {
+      document.getElementById('adm-email').value = adminData.email || "contact@cheznadya-reformer.com";
+      document.getElementById('adm-new-pwd').value = "";
+    }
+
+    function saveAdminProfile() {
+      adminData.email = document.getElementById('adm-email').value.trim();
+      var p = document.getElementById('adm-new-pwd').value.trim();
+      if (p) {
+        if (p.length < 4) { showToast("Mot de passe trop court", true); return; }
+        adminData.pass = p;
+      }
+      saveState();
+      showToast("Profil & mot de passe Admin mis à jour !", false);
+    }
+
+    // Initialisation
+    window.onload = function() {
+      handlePassSelection("Pass 10 Séances");
+    };
+  </script>
+</body>
+</html>
