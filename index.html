@@ -591,7 +591,7 @@
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
-    // --- BASE DE DONNÉES LOCALE ---
+    // --- 1. MODÈLES DE BASE PAR DÉFAUT ---
     var defaultMembers = [
       { user: "Guest", pass: "Guest", name: "Guest (Test)", passType: "Pass 10 Séances", totalCredits: 10, startDate: "2026-01-01", expiryDate: "2026-12-31", mustChangePass: false, status: "active", phone: "06 00 00 00 01", emergency: "Contact Test" },
       { user: "Sophie", pass: "Guest", name: "Sophie M.", passType: "Pass Découverte (5)", totalCredits: 5, startDate: "2026-02-01", expiryDate: "2026-12-31", mustChangePass: true, status: "active", phone: "06 55 44 33 22", emergency: "Paul (06 11 22 33 44)" },
@@ -604,8 +604,12 @@
       { id: "s3", seriesId: "ser_03", title: "Reformer Cardio Jump", coach: "Nadya", duration: 45, date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: "18:00", cap: 6, users: [], status: "active" }
     ];
 
-    var members = JSON.parse(localStorage.getItem('cn_members_v4')) || defaultMembers;
-    var sessions = JSON.parse(localStorage.getItem('cn_sessions_v4')) || defaultSessions;
+    // --- 2. RESTAURATION & RÉTENTION DE VOS DONNÉES DE TESTS ---
+    var savedMembers = localStorage.getItem('cn_members_v4') || localStorage.getItem('cn_members_v3') || localStorage.getItem('cn_members') || null;
+    var savedSessions = localStorage.getItem('cn_sessions_v4') || localStorage.getItem('cn_sessions_v3') || localStorage.getItem('cn_sessions_v2') || localStorage.getItem('cn_sessions') || null;
+
+    var members = savedMembers ? JSON.parse(savedMembers) : defaultMembers;
+    var sessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
     var adminData = JSON.parse(localStorage.getItem('cn_admin')) || { user: 'Nadya', pass: '0312', email: 'contact@cheznadya-reformer.com' };
 
     var currentUser = null;
@@ -619,6 +623,9 @@
       localStorage.setItem('cn_admin', JSON.stringify(adminData));
       renderActiveView();
     }
+
+    // Sauvegarde initiale unifiée
+    saveState();
 
     function showToast(text, isError) {
       var t = document.getElementById('toast');
@@ -647,13 +654,11 @@
       };
     }
 
-    // --- LIBELLÉ PASS MEMBRE (Masquage des termes techniques d'admin) ---
     function getDisplayPassName(passType) {
       if (passType === "Platinum (Sur-mesure)") return "Pass Platinum Privilège";
       return passType || "Pass 10 Séances";
     }
 
-    // --- GESTION DU TYPE DE PASS CÔTÉ ADMIN ---
     function handlePassSelection(passName) {
       var inputCredits = document.getElementById('new-mem-credits');
       var lbl = document.getElementById('lbl-mem-credits');
@@ -878,7 +883,6 @@
         var isFull = s.users.length >= s.cap;
         var pct = Math.round((s.users.length / s.cap) * 100);
         
-        // Détection de série
         var isSeries = s.seriesId ? true : false;
         var seriesSessions = isSeries ? sessions.filter(function(x) { return x.seriesId === s.seriesId; }) : [];
         var isSeriesMulti = seriesSessions.length > 1;
@@ -1374,7 +1378,6 @@
         willDisable ? "Le membre sera retiré de toutes ses réservations futures et son compte passera en statut Désactivé." : "Le compte du membre sera réactivé avec ses informations conservées.", function() {
           if (willDisable) {
             m.status = "disabled";
-            // Retirer de toutes les séances
             sessions.forEach(function(s) {
               s.users = s.users.filter(function(u) { return u !== m.user; });
             });
