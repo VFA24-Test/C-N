@@ -3,53 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
   <title>Chez Nadya — Studio Pilates Reformer</title>
 
-  <!-- Configuration PWA & Mobile -->
+  <!-- Configuration PWA & Mobile Web App -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#F9F8F5">
+  <meta name="theme-color" content="#F8FAF7">
 
-  <!-- Typographies Google Fonts -->
+  <!-- Google Fonts : Cormorant Garamond (Titres) & Plus Jakarta Sans (Interface & Chiffres) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* Charte Graphique Vert Sauge & Lin */
-      --sage-primary: #6E9075;
-      --sage-dark: #2C4233;
-      --sage-medium: #54755C;
+      /* Palette Studio Vert Sauge & Lin Naturel */
+      --sage-primary: #5A7E65;
+      --sage-dark: #223829;
+      --sage-medium: #4D6F57;
       --sage-light: #EBF2ED;
-      --sage-surface: #F2F6F3;
-      --sage-border: #D8E4DB;
+      --sage-surface: #F2F7F4;
+      --sage-border: #D6E3D9;
+      --sage-border-subtle: #E5EFE7;
       
-      --sand-accent: #C29D72;
+      --sand-accent: #B89267;
       --sand-light: #F7F3EE;
-      --sand-border: #E8DEC8;
+      --sand-border: #E8DECE;
 
-      --bg-warm: #F9F8F5;
+      --bg-app: #F8FAF7;
       --bg-card: #FFFFFF;
-      --text-main: #243328;
-      --text-muted: #6B7C70;
-      --text-light: #94A398;
+      --text-main: #1F2E23;
+      --text-muted: #617366;
+      --text-light: #8E9F93;
       
-      --danger: #D9534F;
+      --danger: #C84848;
       --danger-bg: #FDF2F2;
-      --danger-border: #F8D7DA;
+      --danger-border: #F5CACA;
 
-      --shadow-sm: 0 2px 8px rgba(44, 66, 51, 0.04);
-      --shadow-md: 0 8px 24px -4px rgba(44, 66, 51, 0.07), 0 2px 6px -1px rgba(44, 66, 51, 0.03);
-      --shadow-lg: 0 16px 36px -6px rgba(44, 66, 51, 0.12), 0 4px 12px -2px rgba(44, 66, 51, 0.04);
+      --shadow-xs: 0 1px 3px rgba(34, 56, 41, 0.04);
+      --shadow-sm: 0 2px 8px rgba(34, 56, 41, 0.05);
+      --shadow-md: 0 6px 20px -2px rgba(34, 56, 41, 0.06), 0 2px 6px -1px rgba(34, 56, 41, 0.02);
+      --shadow-lg: 0 16px 36px -6px rgba(34, 56, 41, 0.1), 0 4px 12px -2px rgba(34, 56, 41, 0.03);
       
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 22px;
-      --radius-xl: 28px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 26px;
       
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
     
     * { 
@@ -61,10 +64,7 @@
     }
     
     body {
-      background-color: var(--bg-warm);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(235, 242, 237, 0.8) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(247, 243, 238, 0.7) 0px, transparent 50%);
+      background-color: var(--bg-app);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -72,71 +72,104 @@
       overflow-x: hidden;
       padding-top: env(safe-area-inset-top);
       padding-bottom: env(safe-area-inset-bottom);
+      -webkit-font-smoothing: antialiased;
     }
 
     .font-serif {
       font-family: 'Cormorant Garamond', Georgia, serif;
     }
 
-    /* En-tête */
+    .font-num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .svg-icon {
+      width: 16px;
+      height: 16px;
+      stroke-width: 1.8;
+      stroke: currentColor;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    /* Header */
     header {
       height: 64px;
-      background: rgba(249, 248, 245, 0.88);
+      background: rgba(248, 250, 247, 0.94);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--sage-border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 0 18px;
       position: sticky;
       top: 0;
       z-index: 30;
       flex-shrink: 0;
-      transition: all 0.3s var(--ease-out);
     }
     
     .brand-container {
       display: flex;
       align-items: center;
       gap: 10px;
-      text-decoration: none;
     }
 
     .brand-logo-icon {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 12px;
-      background: linear-gradient(135deg, var(--sage-light) 0%, #FFFFFF 100%);
+      background: #FFFFFF;
       border: 1px solid var(--sage-border);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-xs);
     }
 
     .brand-title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 20px;
+      font-size: 21px;
       font-weight: 700;
       color: var(--sage-dark);
+      line-height: 1;
       letter-spacing: -0.2px;
-      line-height: 1.1;
     }
 
     .brand-subtitle {
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 700;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--sand-accent);
+      margin-top: 2px;
     }
 
-    /* Modal Universel de Confirmation */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .role-badge {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--sage-dark);
+      background: var(--sage-light);
+      border: 1px solid var(--sage-border);
+      padding: 4px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Modal Universel */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(36, 51, 40, 0.4);
+      background: rgba(31, 46, 35, 0.4);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       display: none;
@@ -145,14 +178,14 @@
       z-index: 150;
       padding: 20px;
       opacity: 0;
-      transition: opacity 0.25s var(--ease-out);
+      transition: opacity 0.2s var(--ease);
     }
     .vfa-modal-overlay.show {
       display: flex;
       opacity: 1;
     }
     .vfa-modal-box {
-      background: var(--bg-card);
+      background: #FFFFFF;
       border: 1px solid var(--sage-border);
       border-radius: var(--radius-lg);
       padding: 24px;
@@ -163,7 +196,7 @@
       flex-direction: column;
       gap: 16px;
       transform: scale(0.95);
-      transition: transform 0.25s var(--ease-out);
+      transition: transform 0.2s var(--ease);
     }
     .vfa-modal-overlay.show .vfa-modal-box {
       transform: scale(1);
@@ -179,19 +212,17 @@
       border: 1px solid var(--sage-border);
       box-shadow: var(--shadow-lg);
       border-radius: 999px;
-      padding: 12px 22px;
+      padding: 10px 20px;
       font-size: 12px;
       font-weight: 600;
       color: var(--sage-dark);
       z-index: 200;
       opacity: 0;
       pointer-events: none;
-      transition: all 0.35s var(--ease-out);
-      max-width: 90%;
-      width: auto;
+      transition: all 0.3s var(--ease);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .toast.show { 
       opacity: 1; 
@@ -202,12 +233,12 @@
     /* Conteneur Principal */
     main {
       flex: 1;
-      padding: 18px;
-      padding-bottom: 96px;
+      padding: 16px;
+      padding-bottom: 92px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      max-width: 580px;
+      gap: 16px;
+      max-width: 560px;
       width: 100%;
       margin: 0 auto;
     }
@@ -215,131 +246,126 @@
     .view-pane { 
       display: none; 
       flex-direction: column; 
-      gap: 16px; 
+      gap: 14px; 
     }
     
     .view-pane.active { 
       display: flex; 
-      animation: fadeUp 0.35s var(--ease-out) forwards;
+      animation: fadeUp 0.3s var(--ease) forwards;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cartes & Panneaux */
+    /* Cartes */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--sage-border);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 14px;
-      box-shadow: var(--shadow-md);
-      transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+      box-shadow: var(--shadow-sm);
     }
     
-    .card-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--sage-dark);
-      letter-spacing: -0.2px;
+    .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--sage-dark);
+      line-height: 1.1;
     }
 
     .card-subtitle {
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--text-muted);
-      margin-top: -8px;
       line-height: 1.4;
     }
 
     /* Hero Banner */
     .hero-banner {
-      background: linear-gradient(135deg, #E6EFE8 0%, #FAF6EE 100%);
+      background: linear-gradient(135deg, #EFF5F0 0%, #FAF7F2 100%);
       border: 1px solid var(--sage-border);
-      border-radius: var(--radius-xl);
-      padding: 22px 20px;
+      border-radius: var(--radius-lg);
+      padding: 20px;
       display: flex;
       align-items: center;
       gap: 16px;
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
-    }
-    .hero-banner::after {
-      content: "♐";
-      position: absolute;
-      right: -10px;
-      bottom: -15px;
-      font-size: 80px;
-      opacity: 0.08;
-      color: var(--sage-dark);
-      pointer-events: none;
+      box-shadow: var(--shadow-xs);
     }
 
     /* Formulaires */
-    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
     .field label { 
-      font-size: 11px; 
+      font-size: 10px; 
       font-weight: 700; 
       color: var(--text-muted); 
       text-transform: uppercase; 
       letter-spacing: 0.6px; 
     }
     .field input, .field select {
-      background: var(--sand-light);
+      background: var(--sage-surface);
       border: 1px solid var(--sage-border);
       color: var(--text-main);
-      padding: 12px 14px;
+      padding: 11px 13px;
       border-radius: var(--radius-sm);
       font-size: 13px;
       outline: none;
       width: 100%;
-      transition: all 0.2s var(--ease-out);
+      transition: all 0.2s var(--ease);
     }
     .field input:focus, .field select:focus { 
       border-color: var(--sage-primary); 
       background: #FFFFFF;
-      box-shadow: 0 0 0 3px rgba(110, 144, 117, 0.15);
+      box-shadow: 0 0 0 3px rgba(90, 126, 101, 0.12);
     }
 
     /* Boutons */
     .btn {
-      padding: 12px 18px;
+      height: 40px;
+      padding: 0 16px;
       border-radius: var(--radius-md);
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 12.5px;
+      font-weight: 600;
       cursor: pointer;
       border: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: transform 0.15s var(--ease-out), all 0.2s var(--ease-out);
+      gap: 7px;
+      white-space: nowrap;
+      transition: transform 0.12s var(--ease), background 0.15s var(--ease), border-color 0.15s var(--ease);
     }
     .btn:active { transform: scale(0.97); }
     
     .btn-accent { 
-      background: linear-gradient(135deg, var(--sage-primary) 0%, var(--sage-medium) 100%); 
+      background: var(--sage-primary); 
       color: #FFFFFF; 
-      font-weight: 700; 
-      box-shadow: 0 4px 14px rgba(110, 144, 117, 0.3);
+      box-shadow: 0 2px 8px rgba(90, 126, 101, 0.25);
     }
     .btn-accent:hover {
-      box-shadow: 0 6px 20px rgba(110, 144, 117, 0.4);
+      background: var(--sage-medium);
     }
 
     .btn-sand {
-      background: linear-gradient(135deg, #D4B58E 0%, var(--sand-accent) 100%);
-      color: #FFFFFF;
-      font-weight: 700;
-      box-shadow: 0 4px 12px rgba(194, 157, 114, 0.25);
+      background: #FFFFFF;
+      color: var(--sand-accent);
+      border: 1px solid var(--sand-border);
+    }
+    .btn-sand:hover {
+      background: var(--sand-light);
     }
 
     .btn-ghost { 
@@ -360,12 +386,18 @@
       background: #FCE8E8; 
     }
 
+    .btn-icon-only {
+      width: 40px;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
     /* Date Strip */
     .date-strip { 
       display: flex; 
       gap: 8px; 
       overflow-x: auto; 
-      padding: 4px 2px 8px 2px; 
+      padding: 4px 2px 6px 2px; 
       scrollbar-width: none;
     }
     .date-strip::-webkit-scrollbar { display: none; }
@@ -373,33 +405,33 @@
     .date-chip {
       position: relative;
       flex-shrink: 0;
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: var(--radius-md);
       border: 1px solid var(--sage-border);
-      background: var(--bg-card);
+      background: #FFFFFF;
       text-align: center;
       cursor: pointer;
-      min-width: 60px;
-      transition: all 0.25s var(--ease-out);
-      box-shadow: var(--shadow-sm);
+      min-width: 58px;
+      transition: all 0.2s var(--ease);
+      box-shadow: var(--shadow-xs);
     }
     .date-chip:active { transform: scale(0.95); }
     .date-chip.active { 
       border-color: var(--sage-primary); 
-      background: linear-gradient(135deg, var(--sage-primary) 0%, var(--sage-medium) 100%); 
+      background: var(--sage-primary); 
       color: #FFFFFF; 
-      box-shadow: 0 6px 16px rgba(110, 144, 117, 0.35);
+      box-shadow: 0 4px 12px rgba(90, 126, 101, 0.3);
     }
     .date-chip .day { 
-      font-size: 10px; 
+      font-size: 9.5px; 
       text-transform: uppercase; 
       font-weight: 700; 
       color: var(--text-muted); 
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
     }
     .date-chip.active .day { color: rgba(255,255,255,0.85); }
     .date-chip .num { 
-      font-size: 17px; 
+      font-size: 16px; 
       font-weight: 800; 
       margin-top: 2px; 
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -407,14 +439,13 @@
     
     .has-booking-dot {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 7px;
-      height: 7px;
+      top: 5px;
+      right: 5px;
+      width: 6px;
+      height: 6px;
       background: var(--sand-accent);
       border-radius: 50%;
       border: 1.5px solid #FFFFFF;
-      box-shadow: 0 0 6px rgba(194, 157, 114, 0.8);
     }
 
     /* Cartes de Séances */
@@ -426,23 +457,23 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s var(--ease-out);
+      box-shadow: var(--shadow-xs);
+      transition: border-color 0.2s var(--ease);
     }
     .session-card:hover {
       border-color: var(--sage-primary);
-      box-shadow: var(--shadow-md);
     }
 
-    /* Badges & Tags */
+    /* Badges & Pilules */
     .badge-pill {
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
       border-radius: 999px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+      line-height: 1.2;
     }
     .badge-sage {
       background: var(--sage-light);
@@ -451,20 +482,23 @@
     }
     .badge-sand {
       background: var(--sand-light);
-      color: #8C6A43;
+      color: var(--sand-accent);
       border: 1px solid var(--sand-border);
     }
     .badge-series {
       background: #F3E8FF;
       border: 1px solid #E9D5FF;
       color: #7E22CE;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+    }
+    .badge-active {
+      background: #E8F5E9;
+      color: #2E7D32;
+      border: 1px solid #C8E6C9;
+    }
+    .badge-paused {
+      background: #FFF8E1;
+      color: #F57F17;
+      border: 1px solid #FFECB3;
     }
 
     /* KPIs */
@@ -473,16 +507,16 @@
       background: #FFFFFF;
       border: 1px solid var(--sage-border);
       border-radius: var(--radius-md);
-      padding: 14px 10px;
+      padding: 14px 8px;
       text-align: center;
       cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.2s var(--ease-out);
+      box-shadow: var(--shadow-xs);
+      transition: all 0.2s var(--ease);
     }
     .kpi-box:hover, .kpi-box:active { 
       border-color: var(--sage-primary); 
       transform: translateY(-2px); 
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
     }
     .kpi-lbl { 
       font-size: 10px; 
@@ -492,43 +526,44 @@
       letter-spacing: 0.5px;
     }
     .kpi-val { 
-      font-size: 22px; 
+      font-size: 24px; 
       font-weight: 800; 
       color: var(--sage-dark); 
       margin-top: 4px; 
-      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Progression */
+    /* Barre de Progression */
     .prog-track { 
-      height: 7px; 
+      height: 6px; 
       background: var(--sage-surface); 
       border-radius: 999px; 
       overflow: hidden; 
-      border: 1px solid var(--sage-border);
+      border: 1px solid var(--sage-border-subtle);
     }
     .prog-fill { 
       height: 100%; 
-      background: linear-gradient(90deg, var(--sage-primary), var(--sage-medium)); 
+      background: var(--sage-primary); 
       border-radius: 999px;
-      transition: width 0.35s var(--ease-out); 
+      transition: width 0.3s var(--ease); 
     }
 
     /* Barre de Navigation Inférieure */
     .bottom-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      height: 68px;
-      background: rgba(249, 248, 245, 0.94);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      height: 66px;
+      background: rgba(248, 250, 247, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--sage-border);
       display: flex;
       align-items: center;
       justify-content: space-around;
       z-index: 40;
       padding-bottom: env(safe-area-inset-bottom);
-      box-shadow: 0 -4px 20px rgba(44, 66, 51, 0.05);
+      box-shadow: 0 -4px 16px rgba(34, 56, 41, 0.03);
     }
     .nav-item {
       display: flex;
@@ -544,27 +579,30 @@
       height: 100%;
       cursor: pointer;
       flex: 1;
-      transition: all 0.2s var(--ease-out);
+      transition: color 0.15s var(--ease);
     }
-    .nav-item:active { transform: scale(0.92); }
+    .nav-item:active { transform: scale(0.94); }
     .nav-item.active { 
       color: var(--sage-dark); 
-      font-weight: 800;
+      font-weight: 700;
     }
-    .nav-item .icon-wrapper {
+    .nav-item .icon-box {
       width: 32px;
-      height: 32px;
-      border-radius: 10px;
+      height: 28px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s var(--ease-out);
+      transition: background 0.15s var(--ease);
     }
-    .nav-item.active .icon-wrapper {
+    .nav-item.active .icon-box {
       background: var(--sage-light);
       color: var(--sage-dark);
     }
-    .nav-item span.icon { font-size: 18px; }
+    .nav-item.active .icon-box svg {
+      stroke: var(--sage-dark);
+      stroke-width: 2.2;
+    }
   </style>
 </head>
 <body>
@@ -573,8 +611,8 @@
   <div id="vfa-confirm-modal" class="vfa-modal-overlay">
     <div class="vfa-modal-box">
       <div id="confirm-modal-title" class="font-serif" style="font-size:20px; font-weight:700; color:var(--sage-dark);">Confirmation</div>
-      <p id="confirm-modal-msg" style="font-size:12px; color:var(--text-muted); line-height:1.5;">Êtes-vous certain de vouloir effectuer cette action ?</p>
-      <div style="display:flex; gap:10px; margin-top:8px;">
+      <p id="confirm-modal-msg" style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">Êtes-vous certain de vouloir effectuer cette action ?</p>
+      <div style="display:flex; gap:10px; margin-top:6px;">
         <button id="btn-modal-cancel" class="btn btn-ghost" style="flex:1;">Annuler</button>
         <button id="btn-modal-confirm" class="btn btn-accent" style="flex:1;">Confirmer</button>
       </div>
@@ -583,7 +621,7 @@
 
   <!-- Toast Notification -->
   <div id="toast" class="toast">
-    <span id="toast-icon">✨</span>
+    <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
     <span id="toast-text">Message</span>
   </div>
 
@@ -591,7 +629,7 @@
   <header>
     <div class="brand-container">
       <div class="brand-logo-icon">
-        <!-- Logo Vectoriel : Sagittaire & Posture de Yoga / Pilates -->
+        <!-- Logo Vectoriel Stylisé : Sagittaire & Posture Pilates / Archer Yoga -->
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage-dark);">
           <circle cx="12" cy="5" r="2" stroke="var(--sand-accent)" stroke-width="1.8"/>
           <path d="M12 7v6l4 3" stroke="var(--sage-dark)"/>
@@ -606,9 +644,13 @@
         <div class="brand-subtitle">Pilates Reformer Studio</div>
       </div>
     </div>
-    <div style="display:flex; align-items:center; gap:8px;">
-      <span id="app-title-header" style="font-size:11px; font-weight:600; color:var(--text-muted); display:none;">Espace</span>
-      <button id="btn-logout" class="btn btn-ghost" style="padding:6px 12px; font-size:11px; display:none;" onclick="logout()">Déconnexion</button>
+    
+    <div class="header-actions">
+      <span id="app-title-header" class="role-badge" style="display:none;">Espace</span>
+      <button id="btn-logout" class="btn btn-ghost" style="height:32px; padding:0 10px; font-size:11px; display:none;" onclick="logout()">
+        <svg class="svg-icon" style="width:13px; height:13px;" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        <span>Déconnexion</span>
+      </button>
     </div>
   </header>
 
@@ -619,17 +661,19 @@
       <div class="hero-banner">
         <div>
           <div class="font-serif" style="font-size:22px; font-weight:700; color:var(--sage-dark);">Harmonie, Respiration & Posture</div>
-          <p style="font-size:11px; color:var(--text-muted); margin-top:4px; line-height:1.4;">
-            Retrouvez l'équilibre du corps et de l'esprit sur machine Reformer dans une ambiance apaisante et bienveillante.
+          <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px; line-height:1.45;">
+            L'excellence du Pilates Reformer dans un cadre serein, bienveillant et apaisant.
           </p>
         </div>
       </div>
 
-      <div class="card" style="padding:24px;">
-        <div class="card-title">Accès au Studio</div>
-        <div class="card-subtitle">Connectez-vous pour réserver vos créneaux ou superviser le studio.</div>
+      <div class="card">
+        <div>
+          <div class="card-title">Accès au Studio</div>
+          <div class="card-subtitle" style="margin-top:2px;">Identifiez-vous pour réserver vos séances ou superviser le studio.</div>
+        </div>
         
-        <div class="field" style="margin-top:8px;">
+        <div class="field">
           <label>Identifiant ou Prénom</label>
           <input type="text" id="in-user" placeholder="ex: Guest ou Nadya" autocomplete="off">
         </div>
@@ -638,23 +682,26 @@
           <input type="password" id="in-pass" placeholder="••••••••" autocomplete="off">
         </div>
 
-        <button class="btn btn-accent" style="margin-top:10px; padding:14px;" onclick="login()">Entrer dans le Studio</button>
+        <button class="btn btn-accent" style="height:44px; margin-top:4px;" onclick="login()">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          <span>Se Connecter</span>
+        </button>
         
-        <div style="text-align:center; margin-top:6px;">
+        <div style="text-align:center; padding-top:4px;">
           <span style="font-size:11px; color:var(--text-light);">Accès démo : <b>Guest</b> / <b>Guest</b> ou <b>Nadya</b> / <b>0312</b></span>
         </div>
       </div>
     </div>
 
-    <!-- 2. VUE : PREMIÈRE CONNEXION (SÉCURITÉ MOT DE PASSE) -->
+    <!-- 2. VUE : PREMIÈRE CONNEXION (MOT DE PASSE) -->
     <div id="view-force-pwd" class="view-pane">
       <div class="card" style="border-color: var(--sand-border);">
-        <div class="card-title" style="color:var(--sand-accent);">🔐 Première Connexion — Votre Espace Personnel</div>
+        <div class="card-title" style="color:var(--sand-accent);">Sécurisation de votre Compte</div>
         <p style="font-size:12px; color:var(--text-muted); line-height:1.5;">
-          Afin de sécuriser vos réservations et vos coordonnées, veuillez définir votre mot de passe personnel pour vos prochaines visites.
+          Pour votre première connexion, veuillez choisir votre mot de passe personnel pour vos prochaines visites.
         </p>
 
-        <div class="field" style="margin-top:6px;">
+        <div class="field">
           <label>Nouveau mot de passe</label>
           <input type="password" id="in-new-pwd" placeholder="Au moins 4 caractères">
         </div>
@@ -663,61 +710,67 @@
           <input type="password" id="in-confirm-pwd" placeholder="Répéter le mot de passe">
         </div>
 
-        <button class="btn btn-accent" style="margin-top:8px;" onclick="submitNewPassword()">Enregistrer et Continuer</button>
+        <button class="btn btn-accent" style="margin-top:6px;" onclick="submitNewPassword()">
+          <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Enregistrer et Continuer</span>
+        </button>
       </div>
     </div>
 
-    <!-- 3. VUE CLIENT : PLANNING & RÉSERVATION -->
+    <!-- 3. VUE CLIENT : PLANNING -->
     <div id="view-g-plan" class="view-pane">
-      <div class="card" style="padding:16px;">
-        <div class="card-title">
-          <span>Planning des Séances</span>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Planning des Séances</div>
+            <div class="card-subtitle" style="margin-top:2px;">Consultez les disponibilités des machines Reformer.</div>
+          </div>
           <span id="g-date-lbl" class="badge-pill badge-sage">Aujourd'hui</span>
         </div>
-        <div class="card-subtitle">Sélectionnez une date pour consulter les disponibilités des Reformers.</div>
-        <div class="date-strip" id="g-date-strip" style="margin-top:8px;"></div>
+        <div class="date-strip" id="g-date-strip"></div>
       </div>
 
       <div class="card">
-        <div class="card-title">
-          <span>Créneaux Disponibles</span>
-          <span style="font-size:12px; font-weight:600; color:var(--text-muted);">6 Reformers par cours</span>
+        <div class="card-header">
+          <div class="card-title">Séances du Jour</div>
+          <span class="badge-pill badge-sand">6 Reformers par cours</span>
         </div>
-        <div id="g-session-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+        <div id="g-session-list" style="display:flex; flex-direction:column; gap:10px;"></div>
       </div>
     </div>
 
-    <!-- 4. VUE CLIENT : MES SÉANCES RÉSERVÉES -->
+    <!-- 4. VUE CLIENT : MES SÉANCES -->
     <div id="view-g-my" class="view-pane">
       <div class="card">
-        <div class="card-title">Mes Séances Réservées</div>
-        <div class="card-subtitle">Consultez votre carnet de cours et synchronisez-les directement avec vos calendriers.</div>
-        <div id="g-my-list" style="display:flex; flex-direction:column; gap:12px; margin-top:4px;"></div>
+        <div>
+          <div class="card-title">Mes Séances Réservées</div>
+          <div class="card-subtitle" style="margin-top:2px;">Retrouvez vos cours et synchronisez-les avec vos calendriers.</div>
+        </div>
+        <div id="g-my-list" style="display:flex; flex-direction:column; gap:10px;"></div>
       </div>
     </div>
 
-    <!-- 5. VUE CLIENT : MON PROFIL & MON PASS -->
+    <!-- 5. VUE CLIENT : MON PROFIL & PASS -->
     <div id="view-g-profile" class="view-pane">
       <div class="card">
-        <div class="card-title">Mon Pass Reformer</div>
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:4px;">
+        <div class="card-header">
           <div>
-            <div id="prof-pass-name" class="font-serif" style="font-size:20px; font-weight:700; color:var(--sage-dark);">Pass 10 Séances</div>
-            <div id="prof-pass-dates" style="font-size:11px; color:var(--text-muted); margin-top:2px;">Validité : 01/01/2026 au 31/12/2026</div>
+            <div class="card-title" id="prof-pass-name">Pass 10 Séances</div>
+            <div id="prof-pass-dates" class="card-subtitle" style="margin-top:2px;">Validité : 01/01/2026 au 31/12/2026</div>
           </div>
           <div style="text-align:right;">
-            <span id="prof-pass-count" class="font-serif" style="font-size:26px; font-weight:800; color:var(--sage-primary);">0 / 10</span>
-            <div style="font-size:10px; color:var(--text-muted);">séances restantes</div>
+            <div id="prof-pass-count" class="font-num" style="font-size:22px; font-weight:800; color:var(--sage-dark);">0 / 10</div>
+            <div style="font-size:9.5px; color:var(--text-muted);">séances restantes</div>
           </div>
         </div>
-        <div class="prog-track" style="margin-top:8px;"><div id="prof-pass-bar" class="prog-fill" style="width:0%;"></div></div>
+        <div class="prog-track"><div id="prof-pass-bar" class="prog-fill" style="width:0%;"></div></div>
       </div>
 
       <div class="card">
-        <div class="card-title">Coordonnées & Préférences</div>
+        <div class="card-title">Mes Coordonnées</div>
         <div class="field">
           <label>Identifiant</label>
-          <input type="text" id="prof-user" disabled style="opacity:0.7; background:#ECEEE9;">
+          <input type="text" id="prof-user" disabled style="opacity:0.7; background:#EFF3F0;">
         </div>
         <div class="field">
           <label>Numéro de Téléphone</label>
@@ -727,97 +780,116 @@
           <label>Contact en cas d'urgence</label>
           <input type="text" id="prof-emergency" placeholder="Nom et Téléphone">
         </div>
-        <div class="field" style="margin-top:4px; padding-top:12px; border-top:1px solid var(--sage-border);">
+        <div class="field" style="padding-top:8px; border-top:1px solid var(--sage-border-subtle);">
           <label>Modifier mon Mot de Passe</label>
           <input type="password" id="prof-pwd" placeholder="Nouveau mot de passe personnel">
         </div>
-        <button class="btn btn-accent" style="margin-top:6px;" onclick="saveGuestProfile()">Mettre à jour mon profil</button>
+        <button class="btn btn-accent" style="margin-top:4px;" onclick="saveGuestProfile()">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Mettre à jour mon profil</span>
+        </button>
       </div>
 
       <div class="card">
-        <div class="card-title">Rappels & Notifications</div>
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--sage-surface);">
+        <div class="card-title">Préférences de Notifications</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--sage-surface);">
           <div>
             <div style="font-size:12px; font-weight:600; color:var(--text-main);">Rappel de séance (24h avant)</div>
-            <div style="font-size:10px; color:var(--text-muted);">Recevoir une confirmation par notification</div>
+            <div style="font-size:10px; color:var(--text-muted);">Confirmation par notification avant chaque cours</div>
           </div>
-          <input type="checkbox" id="notif-g-reminder" checked style="width:20px; height:20px; accent-color:var(--sage-primary);">
+          <input type="checkbox" id="notif-g-reminder" checked style="width:18px; height:18px; accent-color:var(--sage-primary);">
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0;">
           <div>
             <div style="font-size:12px; font-weight:600; color:var(--text-main);">Alerte fin de pass (≤ 2 séances)</div>
-            <div style="font-size:10px; color:var(--text-muted);">Être averti pour renouveler son forfait</div>
+            <div style="font-size:10px; color:var(--text-muted);">Alerte pour renouveler votre forfait en temps voulu</div>
           </div>
-          <input type="checkbox" id="notif-g-expiry" checked style="width:20px; height:20px; accent-color:var(--sage-primary);">
+          <input type="checkbox" id="notif-g-expiry" checked style="width:18px; height:18px; accent-color:var(--sage-primary);">
         </div>
       </div>
     </div>
 
-    <!-- 6. VUE ADMIN : SUPERVISION & ANALYTIQUE -->
+    <!-- 6. VUE ADMIN : SUPERVISION & KPIS -->
     <div id="view-a-kpi" class="view-pane">
       <div class="kpi-grid">
         <div class="kpi-box" onclick="showKpiDetail('occ')">
-          <div class="kpi-lbl">Remplissage ℹ️</div>
+          <div class="kpi-lbl">Remplissage</div>
           <div class="kpi-val" id="adm-kpi-occ">0%</div>
         </div>
         <div class="kpi-box" onclick="showKpiDetail('booked')">
-          <div class="kpi-lbl">Inscrits ℹ️</div>
+          <div class="kpi-lbl">Inscrits</div>
           <div class="kpi-val" id="adm-kpi-book">0</div>
         </div>
         <div class="kpi-box" onclick="showKpiDetail('total')">
-          <div class="kpi-lbl">Séances ℹ️</div>
+          <div class="kpi-lbl">Séances</div>
           <div class="kpi-val" id="adm-kpi-tot">0</div>
         </div>
       </div>
 
       <div style="display:flex; gap:8px;">
-        <button class="btn btn-ghost" style="flex:1; font-size:11px;" onclick="toggleAnalyticsView('histo')">📊 Fréquentation</button>
-        <button class="btn btn-ghost" style="flex:1; font-size:11px;" onclick="toggleAnalyticsView('curve')">📈 Évolution Pass</button>
-        <button class="btn btn-sand" style="flex:1; font-size:11px;" onclick="exportFullDataJSON()">💾 Sauvegarde</button>
+        <button class="btn btn-ghost" style="flex:1; font-size:11.5px;" onclick="toggleAnalyticsView('histo')">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          <span>Fréquentation</span>
+        </button>
+        <button class="btn btn-ghost" style="flex:1; font-size:11.5px;" onclick="toggleAnalyticsView('curve')">
+          <svg class="svg-icon" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+          <span>Évolution Pass</span>
+        </button>
+        <button class="btn btn-sand" style="flex:1; font-size:11.5px;" onclick="exportFullDataJSON()">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Sauvegarde</span>
+        </button>
       </div>
 
       <div class="card" id="analytics-chart-card" style="display:none; padding:18px;">
-        <div class="card-title">
-          <span id="chart-title">Graphique d'Activité</span>
+        <div class="card-header">
+          <span class="card-title" id="chart-title">Graphique d'Activité</span>
           <div style="display:flex; gap:6px; align-items:center;">
-            <select id="chart-granularity" onchange="refreshChartData()" style="font-size:10px; padding:4px 8px; border-radius:6px; background:var(--sand-light); border:1px solid var(--sage-border);">
+            <select id="chart-granularity" onchange="refreshChartData()" style="font-size:10.5px; padding:4px 8px; border-radius:6px; background:var(--sage-surface); border:1px solid var(--sage-border);">
               <option value="day">Vue Jours</option>
               <option value="month" selected>Vue Mois</option>
               <option value="year">Vue Année</option>
             </select>
-            <button class="btn btn-ghost" style="padding:4px 8px; font-size:10px;" onclick="document.getElementById('analytics-chart-card').style.display='none'">✕</button>
+            <button class="btn btn-ghost" style="height:26px; padding:0 8px; font-size:10px;" onclick="document.getElementById('analytics-chart-card').style.display='none'">✕</button>
           </div>
         </div>
-        <div id="chart-legend" style="font-size:10px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:4px;"></div>
-        <div id="chart-svg-container" style="margin-top:14px; width:100%; display:flex; justify-content:center; overflow-x:auto;"></div>
+        <div id="chart-legend" style="font-size:10px; color:var(--text-muted); display:flex; justify-content:space-between; margin-top:2px;"></div>
+        <div id="chart-svg-container" style="margin-top:10px; width:100%; display:flex; justify-content:center; overflow-x:auto;"></div>
       </div>
 
-      <div class="card" id="kpi-detail-card" style="border-color: var(--sage-border);">
-        <div class="card-title">
-          <span id="kpi-detail-title">Inscriptions par Créneau</span>
-          <button class="btn btn-ghost" style="padding:4px 10px; font-size:11px;" onclick="renderAdminKPI()">Actualiser</button>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="kpi-detail-title">Inscriptions par Cours Reformer</div>
+          <button class="btn btn-ghost" style="height:30px; padding:0 10px; font-size:11px;" onclick="renderAdminKPI()">
+            <svg class="svg-icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>Actualiser</span>
+          </button>
         </div>
-        <div id="kpi-detail-content" style="font-size:12px; color:var(--text-main); display:flex; flex-direction:column; gap:8px;"></div>
+        <div id="kpi-detail-content" style="font-size:12px; display:flex; flex-direction:column; gap:8px;"></div>
       </div>
     </div>
 
-    <!-- 7. VUE ADMIN : PLANNING STUDIO -->
+    <!-- 7. VUE ADMIN : PLANNING DES CRÉNEAUX -->
     <div id="view-a-sched" class="view-pane">
       <div class="card">
-        <div class="card-title">Créneaux du Studio</div>
-        <div class="card-subtitle">Gérez les horaires, le statut des cours et les présences.</div>
-        <div id="adm-session-list" style="display:flex; flex-direction:column; gap:12px; margin-top:4px;"></div>
+        <div>
+          <div class="card-title">Créneaux du Studio</div>
+          <div class="card-subtitle" style="margin-top:2px;">Gérez les horaires, l'état des cours et la liste des participants.</div>
+        </div>
+        <div id="adm-session-list" style="display:flex; flex-direction:column; gap:12px;"></div>
       </div>
     </div>
 
-    <!-- 8. VUE ADMIN : AJOUT / ÉDITION SÉANCE -->
+    <!-- 8. VUE ADMIN : PROGRAMMATION D'UN COURS -->
     <div id="view-a-add" class="view-pane">
       <div class="card">
-        <div class="card-title" id="form-card-title">Programmer un Cours Reformer</div>
-        <div class="card-subtitle">Définissez les détails de la séance et son éventuelle récurrence hebdomadaire.</div>
+        <div>
+          <div class="card-title" id="form-card-title">Programmer un Cours Reformer</div>
+          <div class="card-subtitle" style="margin-top:2px;">Paramétrez la durée, l'horaire et la répétition en cycle.</div>
+        </div>
         <input type="hidden" id="edit-session-id" value="">
         
-        <div class="field" style="margin-top:4px;">
+        <div class="field">
           <label>Intitulé du Cours</label>
           <input type="text" id="add-title" placeholder="ex: Reformer Flow & Posture">
         </div>
@@ -855,22 +927,28 @@
           <input type="date" id="add-date">
         </div>
 
-        <div id="recurrent-opt" style="display:flex; align-items:center; gap:10px; padding:8px 0;">
-          <input type="checkbox" id="add-rec" style="width:18px; height:18px; accent-color:var(--sage-primary);">
-          <label for="add-rec" style="font-size:12px; color:var(--text-main); cursor:pointer; text-transform:none;">Répéter chaque semaine (série de 4 semaines consécutives)</label>
+        <div id="recurrent-opt" style="display:flex; align-items:center; gap:8px; padding:6px 0;">
+          <input type="checkbox" id="add-rec" style="width:17px; height:17px; accent-color:var(--sage-primary);">
+          <label for="add-rec" style="font-size:12px; color:var(--text-main); cursor:pointer; text-transform:none;">Répéter chaque semaine (cycle de 4 séances consécutives)</label>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:6px;">
+        <div style="display:flex; gap:8px; margin-top:4px;">
           <button id="btn-cancel-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelEditMode()">Annuler</button>
-          <button id="btn-submit-session" class="btn btn-accent" style="flex:2;" onclick="requestAdminSaveSession()">Publier le Cours</button>
+          <button id="btn-submit-session" class="btn btn-accent" style="flex:2;" onclick="requestAdminSaveSession()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Publier le Cours</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- 9. VUE ADMIN : GESTION DES MEMBRES -->
+    <!-- 9. VUE ADMIN : MEMBRES & FORFAITS -->
     <div id="view-a-members" class="view-pane">
       <div class="card">
-        <div class="card-title" id="form-mem-title">Nouveau Membre</div>
+        <div>
+          <div class="card-title" id="form-mem-title">Nouveau Membre</div>
+          <div class="card-subtitle" style="margin-top:2px;">Enregistrez un nouveau profil et attribuez son forfait.</div>
+        </div>
         <input type="hidden" id="edit-mem-idx" value="">
 
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -892,7 +970,7 @@
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
           <div class="field">
             <label id="lbl-mem-credits">Nombre de séances</label>
-            <input type="number" id="new-mem-credits" value="10" min="1" max="500" disabled style="opacity:0.7; background:#ECEEE9;">
+            <input type="number" id="new-mem-credits" value="10" min="1" max="500" disabled style="opacity:0.7; background:#EFF3F0;">
           </div>
           <div class="field">
             <label>Validité jusqu'au</label>
@@ -911,16 +989,21 @@
           </div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:8px;">
+        <div style="display:flex; gap:8px; margin-top:6px;">
           <button id="btn-cancel-mem-edit" class="btn btn-ghost" style="flex:1; display:none;" onclick="cancelMemEdit()">Annuler</button>
-          <button id="btn-save-member" class="btn btn-accent" style="flex:2;" onclick="adminSaveMember()">+ Enregistrer le Membre</button>
+          <button id="btn-save-member" class="btn btn-accent" style="flex:2;" onclick="adminSaveMember()">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            <span>Enregistrer le Membre</span>
+          </button>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Annuaire des Membres</div>
-        <div class="card-subtitle">Consultez les forfaits actifs et rechargez les séances en un clic.</div>
-        <div id="adm-members-list" style="display:flex; flex-direction:column; gap:10px; margin-top:4px;"></div>
+        <div>
+          <div class="card-title">Annuaire des Membres</div>
+          <div class="card-subtitle" style="margin-top:2px;">Consultez les forfaits actifs et rechargez les séances.</div>
+        </div>
+        <div id="adm-members-list" style="display:flex; flex-direction:column; gap:10px;"></div>
       </div>
     </div>
 
@@ -930,7 +1013,7 @@
         <div class="card-title">Paramètres Gestionnaire (Nadya)</div>
         <div class="field">
           <label>Identifiant Studio</label>
-          <input type="text" value="Nadya" disabled style="opacity:0.7; background:#ECEEE9;">
+          <input type="text" value="Nadya" disabled style="opacity:0.7; background:#EFF3F0;">
         </div>
         <div class="field">
           <label>Email de Contact</label>
@@ -940,13 +1023,16 @@
           <label>Modifier le mot de passe Administrateur</label>
           <input type="password" id="adm-new-pwd" placeholder="Nouveau mot de passe">
         </div>
-        <button class="btn btn-accent" style="margin-top:8px;" onclick="saveAdminProfile()">Mettre à jour mes identifiants</button>
+        <button class="btn btn-accent" style="margin-top:6px;" onclick="saveAdminProfile()">
+          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Mettre à jour mes identifiants</span>
+        </button>
       </div>
     </div>
 
   </main>
 
-  <!-- Barre de Navigation Inférieure -->
+  <!-- Barre de Navigation Inférieure avec Icônes Vectorielles Unifiées -->
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
@@ -987,10 +1073,9 @@
 
     function showToast(text, isError) {
       var t = document.getElementById('toast');
-      document.getElementById('toast-icon').innerText = isError ? '🌿' : '✨';
       document.getElementById('toast-text').innerText = text;
       t.className = 'toast show';
-      setTimeout(function() { t.className = 'toast'; }, 2800);
+      setTimeout(function() { t.className = 'toast'; }, 2600);
     }
 
     // --- MODAL DE CONFIRMATION ---
@@ -1059,7 +1144,7 @@
 
       if (mem) {
         if (mem.status === "disabled") {
-          showToast("Ce compte est actuellement inactif auprès du studio.", true);
+          showToast("Ce compte est actuellement suspendu.", true);
           return;
         }
 
@@ -1069,7 +1154,7 @@
           hideAllPanes();
           document.getElementById('view-force-pwd').className = 'view-pane active';
           document.getElementById('btn-logout').style.display = 'inline-flex';
-          showToast("Veuillez définir votre mot de passe personnel", false);
+          showToast("Veuillez définir votre mot de passe", false);
           return;
         }
 
@@ -1107,7 +1192,7 @@
       if (currentUser.role === 'admin') {
         appTitle.innerText = "Directrice Studio";
       } else {
-        appTitle.innerText = "Membre : " + currentUser.name;
+        appTitle.innerText = currentUser.name;
       }
       
       setupBottomBar();
@@ -1140,22 +1225,54 @@
       bar.style.display = 'flex';
 
       var tabs = (currentUser.role === 'admin') ? [
-        { id: 'view-a-kpi', icon: '📊', label: 'Supervision' },
-        { id: 'view-a-sched', icon: '🗓️', label: 'Planning' },
-        { id: 'view-a-add', icon: '➕', label: 'Cours' },
-        { id: 'view-a-members', icon: '👥', label: 'Membres' },
-        { id: 'view-a-profile', icon: '⚙️', label: 'Profil' }
+        { 
+          id: 'view-a-kpi', 
+          label: 'Supervision', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>' 
+        },
+        { 
+          id: 'view-a-sched', 
+          label: 'Planning', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' 
+        },
+        { 
+          id: 'view-a-add', 
+          label: 'Cours', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>' 
+        },
+        { 
+          id: 'view-a-members', 
+          label: 'Membres', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' 
+        },
+        { 
+          id: 'view-a-profile', 
+          label: 'Profil', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>' 
+        }
       ] : [
-        { id: 'view-g-plan', icon: '📅', label: 'Planning' },
-        { id: 'view-g-my', icon: '🎟️', label: 'Mes Cours' },
-        { id: 'view-g-profile', icon: '💳', label: 'Mon Pass' }
+        { 
+          id: 'view-g-plan', 
+          label: 'Planning', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' 
+        },
+        { 
+          id: 'view-g-my', 
+          label: 'Mes Cours', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><line x1="13" y1="5" x2="13" y2="19" stroke-dasharray="2 2"/></svg>' 
+        },
+        { 
+          id: 'view-g-profile', 
+          label: 'Mon Pass', 
+          svg: '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' 
+        }
       ];
 
       tabs.forEach(function(t) {
         var btn = document.createElement('button');
         btn.id = 'btn-' + t.id;
         btn.className = 'nav-item';
-        btn.innerHTML = '<div class="icon-wrapper"><span class="icon">' + t.icon + '</span></div><span>' + t.label + '</span>';
+        btn.innerHTML = '<div class="icon-box">' + t.svg + '</div><span>' + t.label + '</span>';
         btn.onclick = function() { switchTab(t.id); };
         bar.appendChild(btn);
       });
@@ -1230,7 +1347,7 @@
       var daySessions = sessions.filter(function(s) { return s.date === selectedDate; });
 
       if (daySessions.length === 0) {
-        list.innerHTML = '<div style="background:var(--sand-light); border-radius:var(--radius-md); padding:20px; text-align:center; color:var(--text-muted); font-size:12px;">🌿 Aucun cours de Reformer n\'est programmé à cette date.</div>';
+        list.innerHTML = '<div style="background:var(--sage-surface); border:1px solid var(--sage-border); border-radius:var(--radius-md); padding:22px; text-align:center; color:var(--text-muted); font-size:12.5px;">Aucun cours de Reformer programmé à cette date.</div>';
         return;
       }
 
@@ -1247,26 +1364,37 @@
         var box = document.createElement('div');
         box.className = 'session-card';
         box.innerHTML = 
-          '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-                '<span class="badge-pill badge-sage">⏰ ' + s.time + '</span>' +
-                '<span class="badge-pill badge-sand">⏱ ' + (s.duration || 50) + ' min</span>' +
-                (isSeriesMulti ? '<span class="badge-series">🔁 Cycle Hebdo (' + seriesSessions.length + ' sem.)</span>' : '<span class="badge-pill badge-sage">Séance Découverte</span>') +
+                '<span class="badge-pill badge-sage">' +
+                  '<svg class="svg-icon" style="width:11px; height:11px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' +
+                  '<span>' + s.time + '</span>' +
+                '</span>' +
+                '<span class="badge-pill badge-sand">' + (s.duration || 50) + ' min</span>' +
+                (isSeriesMulti ? '<span class="badge-pill badge-series"><svg class="svg-icon" style="width:11px; height:11px;" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Cycle ' + seriesSessions.length + ' sem.</span>' : '') +
               '</div>' +
-              '<div class="font-serif" style="font-size:18px; font-weight:700; color:var(--sage-dark); margin-top:6px;">' + s.title + '</div>' +
-              '<div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Coachée par <b>' + s.coach + '</b></div>' +
+              '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:5px;">' + s.title + '</div>' +
+              '<div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Coachée par <b>' + s.coach + '</b></div>' +
             '</div>' +
             '<div style="text-align:right;">' +
-              '<span style="font-size:11px; font-weight:700; color:' + (isFull ? 'var(--danger)' : 'var(--sage-primary)') + ';">' + (s.cap - s.users.length) + ' place' + ((s.cap - s.users.length) > 1 ? 's' : '') + ' libre' + ((s.cap - s.users.length) > 1 ? 's' : '') + '</span>' +
+              '<span class="badge-pill ' + (isFull ? 'badge-sand' : 'badge-sage') + '" style="font-size:10.5px;">' +
+                (isFull ? 'Complet' : (s.cap - s.users.length) + ' place' + ((s.cap - s.users.length) > 1 ? 's' : '') + ' libre' + ((s.cap - s.users.length) > 1 ? 's' : '')) +
+              '</span>' +
             '</div>' +
           '</div>' +
           '<div class="prog-track"><div class="prog-fill" style="width:' + pct + '%;"></div></div>' +
-          '<div style="display:flex; gap:8px; margin-top:4px;">' +
+          '<div style="display:flex; gap:8px; margin-top:2px;">' +
             (isBooked 
-              ? '<button class="btn btn-danger" style="width:100%; font-size:12px;" onclick="requestGuestCancel(\'' + s.id + '\')">✓ Vous participez — Annuler ma place</button>'
-              : '<button class="btn btn-accent" style="flex:1; font-size:12px;" ' + (isFull ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' + (isFull ? 'Cours Complet' : 'Réserver ce créneau') + '</button>' +
-                (isSeriesMulti ? '<button class="btn btn-ghost" style="flex:1; font-size:12px; border-color:var(--sand-border); color:#8C6A43;" onclick="guestBookSeries(\'' + s.seriesId + '\')">🔁 Réserver le Cycle</button>' : '')) +
+              ? '<button class="btn btn-danger" style="width:100%;" onclick="requestGuestCancel(\'' + s.id + '\')">' +
+                  '<svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                  '<span>Inscrit(e) — Annuler ma place</span>' +
+                '</button>'
+              : '<button class="btn btn-accent" style="flex:1;" ' + (isFull ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' +
+                  '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
+                  '<span>' + (isFull ? 'Complet' : 'Réserver') + '</span>' +
+                '</button>' +
+                (isSeriesMulti ? '<button class="btn btn-ghost" style="flex:1; border-color:var(--sand-border); color:var(--sand-accent);" onclick="guestBookSeries(\'' + s.seriesId + '\')"><svg class="svg-icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg><span>Réserver le Cycle</span></button>' : '')) +
           '</div>';
         list.appendChild(box);
       });
@@ -1328,7 +1456,7 @@
       var my = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; });
 
       if (my.length === 0) {
-        list.innerHTML = '<div style="background:var(--sand-light); border-radius:var(--radius-md); padding:24px; text-align:center; color:var(--text-muted); font-size:12px;">🌿 Vous n\'avez aucun cours réservé pour le moment.<br><span style="font-size:11px; color:var(--text-light); margin-top:4px; display:inline-block;">Rendez-vous sur l\'onglet Planning pour choisir votre prochain créneau.</span></div>';
+        list.innerHTML = '<div style="background:var(--sage-surface); border:1px solid var(--sage-border); border-radius:var(--radius-md); padding:24px; text-align:center; color:var(--text-muted); font-size:12.5px;">Vous n\'avez aucun cours réservé pour le moment.<br><span style="font-size:11px; color:var(--text-light); margin-top:4px; display:inline-block;">Rendez-vous sur l\'onglet Planning pour choisir votre prochain créneau.</span></div>';
         return;
       }
 
@@ -1339,16 +1467,19 @@
         box.innerHTML = 
           '<div style="display:flex; justify-content:space-between; align-items:center;">' +
             '<div>' +
-              '<span class="badge-pill badge-sage" style="font-size:10px;">📅 ' + s.date + ' à ' + s.time + ' (' + (s.duration || 50) + ' min)</span>' +
-              '<div class="font-serif" style="font-size:18px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
-              '<div style="font-size:11px; color:var(--text-muted);">Coach : ' + s.coach + '</div>' +
+              '<span class="badge-pill badge-sage" style="font-size:10.5px;">' +
+                '<svg class="svg-icon" style="width:11px; height:11px;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+                s.date + ' à ' + s.time + ' (' + (s.duration || 50) + ' min)' +
+              '</span>' +
+              '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
+              '<div style="font-size:11.5px; color:var(--text-muted);">Coach : ' + s.coach + '</div>' +
             '</div>' +
-            '<button class="btn btn-danger" style="padding:6px 12px; font-size:11px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
+            '<button class="btn btn-danger" style="height:34px; padding:0 12px; font-size:11.5px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
           '</div>' +
-          '<div style="display:flex; gap:6px; border-top:1px solid var(--sage-surface); padding-top:10px; margin-top:4px;">' +
-            '<button class="btn btn-ghost" style="flex:1; padding:6px 8px; font-size:10px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📅 Google</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:6px 8px; font-size:10px;" onclick="exportToOutlook(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">📧 Outlook</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:6px 8px; font-size:10px;" onclick="exportToICS(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">🍏 Apple / iCal</button>' +
+          '<div style="display:flex; gap:6px; border-top:1px solid var(--sage-surface); padding-top:10px; margin-top:2px;">' +
+            '<button class="btn btn-ghost" style="flex:1; height:32px; font-size:11px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">Google</button>' +
+            '<button class="btn btn-ghost" style="flex:1; height:32px; font-size:11px;" onclick="exportToOutlook(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">Outlook</button>' +
+            '<button class="btn btn-ghost" style="flex:1; height:32px; font-size:11px;" onclick="exportToICS(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">Apple / iCal</button>' +
           '</div>';
         list.appendChild(box);
       });
@@ -1417,7 +1548,7 @@
       }
     }
 
-    // --- ADMIN RENDERS, KPIS, EXPORT & ANALYTICS ---
+    // --- ADMIN RENDERS, KPIS & ANALYTIQUES ---
     function renderAdminKPI() {
       var tot = sessions.length;
       var booked = sessions.reduce(function(acc, s) { return acc + s.users.length; }, 0);
@@ -1461,8 +1592,8 @@
       var legend = document.getElementById('chart-legend');
 
       if (mode === 'histo') {
-        title.innerText = "Fréquentation du Studio (" + (granularity === 'day' ? 'Par Jour' : (granularity === 'month' ? 'Par Mois' : 'Par Année')) + ")";
-        legend.innerHTML = "<span>Min: 0 réservations</span><span style='color:var(--sage-primary); font-weight:bold;'>Capacité max: 12 élèves/jour</span>";
+        title.innerText = "Fréquentation (" + (granularity === 'day' ? 'Par Jour' : (granularity === 'month' ? 'Par Mois' : 'Par Année')) + ")";
+        legend.innerHTML = "<span>Min: 0 réservations</span><span style='color:var(--sage-primary); font-weight:700;'>Capacité max: 12 places</span>";
         
         var points = [
           { label: "01/08", val: 4 }, { label: "05/08", val: 8 }, { label: "10/08", val: 6 },
@@ -1476,37 +1607,37 @@
           var x = 30 + (i * 48);
           var h = p.val * 8;
           var y = 120 - h;
-          svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#6E9075" rx="6"/>';
-          svgContent += '<text x="' + (x + 12) + '" y="' + (y - 5) + '" fill="#2C4233" font-size="10" font-weight="bold" text-anchor="middle">' + p.val + '</text>';
-          svgContent += '<text x="' + (x + 12) + '" y="136" fill="#6B7C70" font-size="9" font-weight="600" text-anchor="middle">' + p.label + '</text>';
+          svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#5A7E65" rx="5"/>';
+          svgContent += '<text x="' + (x + 12) + '" y="' + (y - 5) + '" fill="#223829" font-size="10" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">' + p.val + '</text>';
+          svgContent += '<text x="' + (x + 12) + '" y="135" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">' + p.label + '</text>';
         });
         svgContent += '</svg>';
         container.innerHTML = svgContent;
 
       } else {
-        title.innerText = "Évolution des Forfaits (" + (granularity === 'day' ? 'Journalier' : (granularity === 'month' ? 'Mensuel' : 'Annuel')) + ")";
-        legend.innerHTML = "<span>Forfaits souscrits</span><span style='color:var(--sand-accent); font-weight:bold;'>Actif: 24 Membres</span>";
+        title.innerText = "Forfaits Souscrits (" + (granularity === 'day' ? 'Par Jour' : (granularity === 'month' ? 'Par Mois' : 'Par Année')) + ")";
+        legend.innerHTML = "<span>Membres actifs</span><span style='color:var(--sand-accent); font-weight:700;'>Actif: 24 Pass</span>";
         
         container.innerHTML = `
           <svg width="340" height="150" viewBox="0 0 340 150">
             <defs>
               <linearGradient id="gradCurve" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#C29D72" stop-opacity="0.35"/>
-                <stop offset="100%" stop-color="#C29D72" stop-opacity="0.0"/>
+                <stop offset="0%" stop-color="#B89267" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#B89267" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
             <line x1="20" y1="120" x2="320" y2="120" stroke="var(--sage-border)" stroke-width="1.5"/>
             <path d="M 30 100 Q 100 80, 170 50 T 310 20 L 310 120 L 30 120 Z" fill="url(#gradCurve)"/>
-            <path d="M 30 100 Q 100 80, 170 50 T 310 20" fill="none" stroke="#C29D72" stroke-width="3"/>
-            <circle cx="30" cy="100" r="4.5" fill="#C29D72" stroke="#FFFFFF" stroke-width="1.5"/>
-            <text x="30" y="88" fill="#2C4233" font-size="9" font-weight="bold" text-anchor="middle">10</text>
-            <circle cx="170" cy="50" r="4.5" fill="#C29D72" stroke="#FFFFFF" stroke-width="1.5"/>
-            <text x="170" y="38" fill="#2C4233" font-size="9" font-weight="bold" text-anchor="middle">18</text>
-            <circle cx="310" cy="20" r="4.5" fill="#C29D72" stroke="#FFFFFF" stroke-width="1.5"/>
-            <text x="310" y="12" fill="#2C4233" font-size="9" font-weight="bold" text-anchor="middle">24</text>
-            <text x="30" y="136" fill="#6B7C70" font-size="9" font-weight="600" text-anchor="middle">Juin</text>
-            <text x="170" y="136" fill="#6B7C70" font-size="9" font-weight="600" text-anchor="middle">Juil</text>
-            <text x="310" y="136" fill="#6B7C70" font-size="9" font-weight="600" text-anchor="middle">Août</text>
+            <path d="M 30 100 Q 100 80, 170 50 T 310 20" fill="none" stroke="#B89267" stroke-width="2.5"/>
+            <circle cx="30" cy="100" r="4" fill="#B89267" stroke="#FFFFFF" stroke-width="1.5"/>
+            <text x="30" y="88" fill="#223829" font-size="9.5" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">10</text>
+            <circle cx="170" cy="50" r="4" fill="#B89267" stroke="#FFFFFF" stroke-width="1.5"/>
+            <text x="170" y="38" fill="#223829" font-size="9.5" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">18</text>
+            <circle cx="310" cy="20" r="4" fill="#B89267" stroke="#FFFFFF" stroke-width="1.5"/>
+            <text x="310" y="12" fill="#223829" font-size="9.5" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">24</text>
+            <text x="30" y="135" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">Juin</text>
+            <text x="170" y="135" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">Juil</text>
+            <text x="310" y="135" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">Août</text>
           </svg>
         `;
       }
@@ -1521,25 +1652,25 @@
         var bookedSessions = sessions.filter(function(s) { return s.users.length > 0; });
 
         if (bookedSessions.length === 0) {
-          container.innerHTML = "<p style='color:var(--text-muted); text-align:center; padding:10px;'>Aucune réservation active pour le moment.</p>";
+          container.innerHTML = "<p style='color:var(--text-muted); text-align:center; padding:12px;'>Aucune réservation active pour le moment.</p>";
           return;
         }
 
         container.innerHTML = bookedSessions.map(function(s) {
-          return "<div style='background:var(--sand-light); padding:12px; border-radius:var(--radius-md); border:1px solid var(--sage-border);'>" +
-            "<div style='display:flex; justify-content:space-between; font-weight:700; color:var(--sage-dark);'>" +
-              "<span>" + s.title + "</span>" +
-              "<span class='badge-pill badge-sage'>" + s.date + " à " + s.time + "</span>" +
+          return "<div style='background:var(--sage-surface); padding:12px; border-radius:var(--radius-md); border:1px solid var(--sage-border); display:flex; justify-content:space-between; align-items:center;'>" +
+            "<div>" +
+              "<div style='font-weight:700; color:var(--sage-dark);'>" + s.title + "</div>" +
+              "<div style='font-size:11px; color:var(--text-muted); margin-top:2px;'>Inscrits (" + s.users.length + "/" + s.cap + ") : <b style='color:var(--text-main);'>" + s.users.join(', ') + "</b></div>" +
             "</div>" +
-            "<div style='font-size:11px; color:var(--text-muted); margin-top:4px;'>Participants (" + s.users.length + "/" + s.cap + ") : <b style='color:var(--sage-dark);'>" + s.users.join(', ') + "</b></div>" +
+            "<span class='badge-pill badge-sage font-num'>" + s.date + " à " + s.time + "</span>" +
           "</div>";
         }).join('');
       } else if (type === 'occ') {
-        title.innerText = "Analyse du Remplissage";
-        container.innerHTML = "<p style='color:var(--text-muted);'>Le taux global est calculé sur l'ensemble des 6 Reformers disponibles par créneau.</p>";
+        title.innerText = "Taux de Remplissage Global";
+        container.innerHTML = "<p style='color:var(--text-muted); padding:4px 0;'>Le taux global est calculé sur l'ensemble des 6 Reformers disponibles par créneau.</p>";
       } else {
         title.innerText = "Catalogue des Cours";
-        container.innerHTML = "<p style='color:var(--text-muted);'>Total de " + sessions.length + " créneaux actifs sur le planning du studio.</p>";
+        container.innerHTML = "<p style='color:var(--text-muted); padding:4px 0;'>Total de " + sessions.length + " créneaux actifs sur le planning du studio.</p>";
       }
     }
 
@@ -1550,25 +1681,40 @@
 
       sessions.forEach(function(s) {
         var isSeries = s.seriesId ? true : false;
+        var isActive = s.status === 'active';
         var box = document.createElement('div');
         box.className = 'session-card';
         box.innerHTML = 
-          '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
+          '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-                '<span class="badge-pill badge-sage">📅 ' + s.date + ' (' + s.time + ')</span>' +
-                '<span class="badge-pill badge-sand">⏱ ' + (s.duration || 50) + ' min</span>' +
-                (isSeries ? '<span class="badge-series">🔁 Cycle</span>' : '') +
+                '<span class="badge-pill badge-sage font-num">' +
+                  '<svg class="svg-icon" style="width:11px; height:11px;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>' +
+                  s.date + ' (' + s.time + ')' +
+                '</span>' +
+                '<span class="badge-pill badge-sand">' + (s.duration || 50) + ' min</span>' +
+                (isSeries ? '<span class="badge-pill badge-series"><svg class="svg-icon" style="width:11px; height:11px;" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>Cycle</span>' : '') +
               '</div>' +
-              '<div class="font-serif" style="font-size:18px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
-              '<div style="font-size:11px; color:var(--text-muted); margin-top:2px;">Coach: ' + s.coach + ' | Inscrits: <b>' + s.users.length + '/' + s.cap + '</b> (' + (s.users.join(', ') || 'aucun') + ')</div>' +
+              '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:5px;">' + s.title + '</div>' +
+              '<div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Coach: ' + s.coach + ' • Inscrits: <b>' + s.users.length + '/' + s.cap + '</b> (' + (s.users.join(', ') || 'aucun') + ')</div>' +
             '</div>' +
-            '<span class="badge-pill ' + (s.status === 'active' ? 'badge-sage' : 'badge-sand') + '" style="font-size:10px;">● ' + s.status.toUpperCase() + '</span>' +
+            '<span class="badge-pill ' + (isActive ? 'badge-active' : 'badge-paused') + '">' +
+              '<span style="width:6px; height:6px; border-radius:50%; background:currentColor;"></span>' +
+              (isActive ? 'Actif' : 'En pause') +
+            '</span>' +
           '</div>' +
-          '<div style="display:flex; gap:8px; margin-top:6px;">' +
-            '<button class="btn btn-accent" style="flex:1; padding:8px; font-size:11px;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">✏️ Modifier</button>' +
-            '<button class="btn btn-ghost" style="flex:1; padding:8px; font-size:11px;" onclick="requestAdminToggleOccurrence(\'' + s.id + '\')">' + (s.status === 'active' ? '⚠️ Mettre en pause' : '✅ Réactiver') + '</button>' +
-            '<button class="btn btn-danger" style="padding:8px 12px; font-size:11px;" onclick="requestAdminDelete(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">🗑️</button>' +
+          '<div style="display:flex; gap:8px; margin-top:4px;">' +
+            '<button class="btn btn-accent" style="flex:1.5;" onclick="adminEditSessionPrompt(\'' + s.id + '\')">' +
+              '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
+              '<span>Modifier</span>' +
+            '</button>' +
+            '<button class="btn btn-ghost" style="flex:1.5;" onclick="requestAdminToggleOccurrence(\'' + s.id + '\')">' +
+              '<svg class="svg-icon" viewBox="0 0 24 24">' + (isActive ? '<circle cx="12" cy="12" r="10"/><line x1="10" y1="15" x2="10" y2="9"/><line x1="14" y1="15" x2="14" y2="9"/>' : '<polygon points="5 3 19 12 5 21 5 3"/>') + '</svg>' +
+              '<span>' + (isActive ? 'Mettre en pause' : 'Réactiver') + '</span>' +
+            '</button>' +
+            '<button class="btn btn-danger btn-icon-only" title="Supprimer" onclick="requestAdminDelete(\'' + s.id + '\',\'' + (s.seriesId || '') + '\')">' +
+              '<svg class="svg-icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>' +
+            '</button>' +
           '</div>';
         list.appendChild(box);
       });
@@ -1618,8 +1764,8 @@
       document.getElementById('add-time').value = s.time;
 
       document.getElementById('recurrent-opt').style.display = 'none';
-      document.getElementById('form-card-title').innerText = "✏️ Modifier le Cours";
-      document.getElementById('btn-submit-session').innerText = "Enregistrer Modifications";
+      document.getElementById('form-card-title').innerText = "Modifier le Cours";
+      document.getElementById('btn-submit-session').innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg><span>Enregistrer Modifications</span>';
       document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
 
       switchTab('view-a-add');
@@ -1629,7 +1775,7 @@
       document.getElementById('edit-session-id').value = '';
       document.getElementById('add-title').value = '';
       document.getElementById('form-card-title').innerText = "Programmer un Cours Reformer";
-      document.getElementById('btn-submit-session').innerText = "Publier le Cours";
+      document.getElementById('btn-submit-session').innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>Publier le Cours</span>';
       document.getElementById('btn-cancel-edit').style.display = 'none';
       document.getElementById('recurrent-opt').style.display = 'flex';
       switchTab('view-a-sched');
@@ -1707,24 +1853,27 @@
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px;">' +
-                '<span class="font-serif" style="font-size:18px; font-weight:700; color:var(--sage-dark);">👤 ' + (m.name || m.user) + '</span>' +
-                (isDisabled ? '<span class="badge-pill badge-sand" style="color:var(--danger);">Désactivé</span>' : '') +
+                '<span class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark);">' + (m.name || m.user) + '</span>' +
+                (isDisabled ? '<span class="badge-pill badge-sand" style="color:var(--danger); font-size:10px;">Suspendu</span>' : '') +
               '</div>' +
-              '<div style="font-size:11px; color:var(--sage-primary); font-weight:700; margin-top:2px;">' + (m.passType || "Pass 10 Séances") + '</div>' +
-              '<div style="font-size:10px; color:var(--text-muted);">Validité : ' + (m.startDate || "01/01/2026") + ' au ' + (m.expiryDate || "31/12/2026") + '</div>' +
-              (m.phone ? '<div style="font-size:10px; color:var(--text-muted); margin-top:2px;">📞 ' + m.phone + '</div>' : '') +
+              '<div style="font-size:11.5px; color:var(--sage-primary); font-weight:700; margin-top:2px;">' + (m.passType || "Pass 10 Séances") + '</div>' +
+              '<div style="font-size:10.5px; color:var(--text-muted);">Validité : ' + (m.startDate || "01/01/2026") + ' au ' + (m.expiryDate || "31/12/2026") + '</div>' +
+              (m.phone ? '<div style="font-size:10.5px; color:var(--text-muted); margin-top:2px;">Tél : ' + m.phone + '</div>' : '') +
             '</div>' +
             '<div style="text-align:right;">' +
-              '<span class="font-serif" style="font-size:22px; font-weight:800; color:var(--sage-dark);">' + remaining + ' / ' + total + '</span>' +
-              '<div style="font-size:9px; color:var(--text-muted);">séances dispo</div>' +
+              '<span class="font-num" style="font-size:20px; font-weight:800; color:var(--sage-dark);">' + remaining + ' / ' + total + '</span>' +
+              '<div style="font-size:9.5px; color:var(--text-muted);">séances dispo</div>' +
             '</div>' +
           '</div>' +
-          '<div style="display:flex; gap:6px; margin-top:6px;">' +
-            '<button class="btn btn-accent" style="flex:1; padding:7px; font-size:11px;" onclick="adminEditMemberPrompt(' + idx + ')">✏️ Modifier</button>' +
-            '<button class="btn btn-ghost" style="padding:7px 10px; font-size:11px;" onclick="adminRechargeMember(' + idx + ')">💳 +5 Séances</button>' +
+          '<div style="display:flex; gap:6px; margin-top:4px;">' +
+            '<button class="btn btn-accent" style="flex:1.5;" onclick="adminEditMemberPrompt(' + idx + ')">' +
+              '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>' +
+              '<span>Modifier</span>' +
+            '</button>' +
+            '<button class="btn btn-ghost" style="flex:1.2;" onclick="adminRechargeMember(' + idx + ')">+5 Séances</button>' +
             (isDisabled 
-              ? '<button class="btn btn-ghost" style="padding:7px 10px; font-size:11px; color:var(--sage-primary);" onclick="adminToggleMemberStatus(' + idx + ')">✅ Réactiver</button>'
-              : '<button class="btn btn-danger" style="padding:7px 10px; font-size:11px;" onclick="adminToggleMemberStatus(' + idx + ')">🚫 Suspendre</button>') +
+              ? '<button class="btn btn-ghost" style="padding:0 12px; color:var(--sage-primary);" onclick="adminToggleMemberStatus(' + idx + ')">Réactiver</button>'
+              : '<button class="btn btn-danger" style="padding:0 12px;" onclick="adminToggleMemberStatus(' + idx + ')">Suspendre</button>') +
           '</div>';
         list.appendChild(box);
       });
@@ -1767,8 +1916,8 @@
 
       handlePassSelection(m.passType || "Pass 10 Séances");
 
-      document.getElementById('form-mem-title').innerText = "✏️ Modifier le Membre : " + m.user;
-      document.getElementById('btn-save-member').innerText = "Enregistrer Modifications";
+      document.getElementById('form-mem-title').innerText = "Modifier le Membre : " + m.user;
+      document.getElementById('btn-save-member').innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/></svg><span>Enregistrer Modifications</span>';
       document.getElementById('btn-cancel-mem-edit').style.display = 'inline-flex';
     }
 
@@ -1778,7 +1927,7 @@
       document.getElementById('new-mem-phone').value = '';
       document.getElementById('new-mem-emergency').value = '';
       document.getElementById('form-mem-title').innerText = "Nouveau Membre";
-      document.getElementById('btn-save-member').innerText = "+ Enregistrer le Membre";
+      document.getElementById('btn-save-member').innerHTML = '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg><span>Enregistrer le Membre</span>';
       document.getElementById('btn-cancel-mem-edit').style.display = 'none';
       handlePassSelection("Pass 10 Séances");
     }
@@ -1862,7 +2011,7 @@
       });
     }
 
-    // Initialisation au chargement
+    // Initialisation
     window.onload = function() {
       handlePassSelection("Pass 10 Séances");
     };
