@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#F8FAF7">
 
-  <!-- Google Fonts : Cormorant Garamond (Titres) & Plus Jakarta Sans (Interface & Chiffres) -->
+  <!-- Google Fonts : Cormorant Garamond (Titres Élégants) & Plus Jakarta Sans (Interface Pure & Chiffres Nets) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -84,6 +84,7 @@
       font-variant-numeric: tabular-nums;
     }
 
+    /* Icônes Vectorielles Normalisées */
     .svg-icon {
       width: 16px;
       height: 16px;
@@ -95,7 +96,7 @@
       flex-shrink: 0;
     }
 
-    /* Header */
+    /* Header Studio */
     header {
       height: 64px;
       background: rgba(248, 250, 247, 0.94);
@@ -165,7 +166,7 @@
       letter-spacing: 0.2px;
     }
 
-    /* Modal Universel */
+    /* Modale Universelle */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -230,7 +231,7 @@
       pointer-events: auto; 
     }
 
-    /* Conteneur Principal */
+    /* Layout & Vues */
     main {
       flex: 1;
       padding: 16px;
@@ -259,7 +260,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cartes */
+    /* Cartes Épurées */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--sage-border);
@@ -306,7 +307,7 @@
       box-shadow: var(--shadow-xs);
     }
 
-    /* Formulaires */
+    /* Formulaires Harmonieux */
     .field { display: flex; flex-direction: column; gap: 5px; }
     .field label { 
       font-size: 10px; 
@@ -332,7 +333,7 @@
       box-shadow: 0 0 0 3px rgba(90, 126, 101, 0.12);
     }
 
-    /* Boutons */
+    /* Boutons Clairs & Rehaussés */
     .btn {
       height: 40px;
       padding: 0 16px;
@@ -392,7 +393,52 @@
       flex-shrink: 0;
     }
 
-    /* Date Strip */
+    /* Barre de Statut de Réservation (Confirmation & Annulation Distinctes) */
+    .booking-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--sage-light);
+      border: 1px solid var(--sage-border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .status-confirmed-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--sage-dark);
+    }
+
+    .btn-cancel-link {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      background: #FFFFFF;
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s var(--ease);
+      box-shadow: var(--shadow-xs);
+    }
+    .btn-cancel-link:hover {
+      background: var(--danger-bg);
+    }
+    .btn-cancel-link:active {
+      transform: scale(0.96);
+    }
+
+    /* Bandeau de Dates Défilant */
     .date-strip { 
       display: flex; 
       gap: 8px; 
@@ -464,7 +510,7 @@
       border-color: var(--sage-primary);
     }
 
-    /* Badges & Pilules */
+    /* Badges & Pilules Harmonieux */
     .badge-pill {
       font-size: 11px;
       font-weight: 600;
@@ -501,7 +547,7 @@
       border: 1px solid #FFECB3;
     }
 
-    /* KPIs */
+    /* KPIs Supervision */
     .kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
     .kpi-box {
       background: #FFFFFF;
@@ -534,7 +580,7 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Barre de Progression */
+    /* Barre de Remplissage */
     .prog-track { 
       height: 6px; 
       background: var(--sage-surface); 
@@ -549,7 +595,7 @@
       transition: width 0.3s var(--ease); 
     }
 
-    /* Barre de Navigation Inférieure */
+    /* Navigation Inférieure */
     .bottom-bar {
       position: fixed;
       bottom: 0; left: 0; right: 0;
@@ -1384,18 +1430,24 @@
             '</div>' +
           '</div>' +
           '<div class="prog-track"><div class="prog-fill" style="width:' + pct + '%;"></div></div>' +
-          '<div style="display:flex; gap:8px; margin-top:2px;">' +
-            (isBooked 
-              ? '<button class="btn btn-danger" style="width:100%;" onclick="requestGuestCancel(\'' + s.id + '\')">' +
-                  '<svg class="svg-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-                  '<span>Inscrit(e) — Annuler ma place</span>' +
-                '</button>'
-              : '<button class="btn btn-accent" style="flex:1;" ' + (isFull ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' +
-                  '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
-                  '<span>' + (isFull ? 'Complet' : 'Réserver') + '</span>' +
+          (isBooked 
+            ? '<div class="booking-status-bar">' +
+                '<div class="status-confirmed-pill">' +
+                  '<svg class="svg-icon" style="color:var(--sage-primary); width:15px; height:15px;" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
+                  '<span>Votre place est réservée</span>' +
+                '</div>' +
+                '<button class="btn-cancel-link" onclick="requestGuestCancel(\'' + s.id + '\')">' +
+                  '<svg class="svg-icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                  '<span>Annuler</span>' +
                 '</button>' +
-                (isSeriesMulti ? '<button class="btn btn-ghost" style="flex:1; border-color:var(--sand-border); color:var(--sand-accent);" onclick="guestBookSeries(\'' + s.seriesId + '\')"><svg class="svg-icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg><span>Réserver le Cycle</span></button>' : '')) +
-          '</div>';
+              '</div>'
+            : '<div style="display:flex; gap:8px; margin-top:2px;">' +
+                '<button class="btn btn-accent" style="flex:1;" ' + (isFull ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : '') + ' onclick="guestBookSingle(\'' + s.id + '\')">' +
+                  '<svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>' +
+                  '<span>' + (isFull ? 'Complet' : 'Réserver ce créneau') + '</span>' +
+                '</button>' +
+                (isSeriesMulti ? '<button class="btn btn-ghost" style="flex:1; border-color:var(--sand-border); color:var(--sand-accent);" onclick="guestBookSeries(\'' + s.seriesId + '\')"><svg class="svg-icon" viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg><span>Réserver le Cycle</span></button>' : '') +
+              '</div>');
         list.appendChild(box);
       });
     }
@@ -1474,7 +1526,10 @@
               '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
               '<div style="font-size:11.5px; color:var(--text-muted);">Coach : ' + s.coach + '</div>' +
             '</div>' +
-            '<button class="btn btn-danger" style="height:34px; padding:0 12px; font-size:11.5px;" onclick="requestGuestCancel(\'' + s.id + '\')">Annuler</button>' +
+            '<button class="btn-cancel-link" style="height:34px;" onclick="requestGuestCancel(\'' + s.id + '\')">' +
+              '<svg class="svg-icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+              '<span>Annuler</span>' +
+            '</button>' +
           '</div>' +
           '<div style="display:flex; gap:6px; border-top:1px solid var(--sage-surface); padding-top:10px; margin-top:2px;">' +
             '<button class="btn btn-ghost" style="flex:1; height:32px; font-size:11px;" onclick="exportToGoogle(\'' + s.title + '\',\'' + s.date + '\',\'' + s.time + '\',' + s.duration + ')">Google</button>' +
@@ -1609,7 +1664,7 @@
           var y = 120 - h;
           svgContent += '<rect x="' + x + '" y="' + y + '" width="24" height="' + h + '" fill="#5A7E65" rx="5"/>';
           svgContent += '<text x="' + (x + 12) + '" y="' + (y - 5) + '" fill="#223829" font-size="10" font-weight="700" font-family="Plus Jakarta Sans" text-anchor="middle">' + p.val + '</text>';
-          svgContent += '<text x="' + (x + 12) + '" y="135" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">' + p.label + '</text>';
+          svgContent += '<text x="' + (x + 12) + '" y="' + 135 + '" fill="#617366" font-size="9" font-weight="600" font-family="Plus Jakarta Sans" text-anchor="middle">' + p.label + '</text>';
         });
         svgContent += '</svg>';
         container.innerHTML = svgContent;
@@ -1853,7 +1908,7 @@
           '<div style="display:flex; justify-content:space-between; align-items:flex-start;">' +
             '<div>' +
               '<div style="display:flex; align-items:center; gap:6px;">' +
-                '<span class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark);">' + (m.name || m.user) + '</span>' +
+                '<span class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark);">👤 ' + (m.name || m.user) + '</span>' +
                 (isDisabled ? '<span class="badge-pill badge-sand" style="color:var(--danger); font-size:10px;">Suspendu</span>' : '') +
               '</div>' +
               '<div style="font-size:11.5px; color:var(--sage-primary); font-weight:700; margin-top:2px;">' + (m.passType || "Pass 10 Séances") + '</div>' +
