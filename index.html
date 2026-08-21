@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light">
   <title>Chez Nadya — Studio Pilates Reformer</title>
 
-  <!-- Configuration PWA & Mobile Settings -->
+  <!-- Configuration PWA & Mobile Web App -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -19,7 +19,7 @@
 
   <style>
     :root {
-      /* Palette Studio Vert Sauge & Lin */
+      /* Palette Studio Vert Sauge & Lin Naturel */
       --sage-primary: #5A7E65;
       --sage-dark: #223829;
       --sage-medium: #4D6F57;
@@ -95,7 +95,7 @@
       flex-shrink: 0;
     }
 
-    /* Header */
+    /* Header Studio */
     header {
       height: 64px;
       background: rgba(248, 250, 247, 0.94);
@@ -232,7 +232,7 @@
       pointer-events: auto; 
     }
 
-    /* Layout & Adaptabilité Desktop / Tablette / Mobile */
+    /* Layout & Adaptabilité Universelle */
     main {
       flex: 1;
       padding: 16px clamp(12px, 3vw, 24px);
@@ -268,7 +268,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cartes */
+    /* Cartes Épurées */
     .card {
       background: var(--bg-card);
       border: 1px solid var(--sage-border);
@@ -343,7 +343,7 @@
       box-shadow: 0 0 0 3px rgba(90, 126, 101, 0.12);
     }
 
-    /* Boutons Dynamiques & Adaptatifs */
+    /* Boutons */
     .btn {
       height: 38px;
       padding: 0 14px;
@@ -405,7 +405,7 @@
       flex-shrink: 0;
     }
 
-    /* Grille d'actions de membre 100% responsive */
+    /* Grille d'actions des membres */
     .member-actions-grid {
       display: grid;
       grid-template-columns: 1.3fr 1.1fr 1.1fr;
@@ -419,7 +419,7 @@
       }
     }
 
-    /* Barre de Statut de Réservation (Séparation Statut / Annulation) */
+    /* Barre de Statut de Réservation */
     .booking-status-bar {
       display: flex;
       align-items: center;
@@ -462,7 +462,7 @@
       background: var(--danger-bg);
     }
 
-    /* Bandeau de Dates Défilant (Pleine Largeur & Centrage Automatique) */
+    /* Bandeau de Dates Défilant */
     .date-strip-container {
       margin: 0 -18px;
       padding: 4px 18px 8px 18px;
@@ -576,7 +576,7 @@
       border: 1px solid #FFECB3;
     }
 
-    /* Grille de KPIs Financiers & Opérationnels */
+    /* Grille de KPIs */
     .kpi-grid-4 { 
       display: grid; 
       grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); 
@@ -735,7 +735,7 @@
 
   <main>
 
-    <!-- 1. VUE : CONNEXION -->
+    <!-- 1. VUE : CONNEXION (Sécurisée & Compatible Formulaire Mobile) -->
     <div id="view-login" class="view-pane active">
       <div class="hero-banner">
         <div>
@@ -752,22 +752,32 @@
           <div class="card-subtitle" style="margin-top:2px;">Identifiez-vous pour réserver vos séances ou superviser le studio.</div>
         </div>
         
-        <div class="field">
-          <label>Identifiant ou Prénom</label>
-          <input type="text" id="in-user" placeholder="ex: Guest ou Nadya" autocomplete="off">
-        </div>
-        <div class="field">
-          <label>Mot de passe</label>
-          <input type="password" id="in-pass" placeholder="••••••••" autocomplete="off">
-        </div>
+        <form onsubmit="event.preventDefault(); login();" style="display:flex; flex-direction:column; gap:12px;">
+          <div class="field">
+            <label>Identifiant ou Prénom</label>
+            <input type="text" id="in-user" placeholder="ex: Guest ou Nadya" autocomplete="username" autocapitalize="none">
+          </div>
+          <div class="field">
+            <label>Mot de passe</label>
+            <input type="password" id="in-pass" placeholder="••••••••" autocomplete="current-password">
+          </div>
 
-        <button class="btn btn-accent" style="height:44px; margin-top:4px;" onclick="login()">
-          <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          <span>Se Connecter</span>
-        </button>
-        
-        <div style="text-align:center; padding-top:4px;">
-          <span style="font-size:11px; color:var(--text-light);">Accès démo : <b>Guest</b> / <b>Guest</b> ou <b>Nadya</b> / <b>0312</b></span>
+          <button type="submit" class="btn btn-accent" style="height:44px; margin-top:4px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            <span>Se Connecter</span>
+          </button>
+        </form>
+
+        <!-- Boutons d'accès rapide 1-Clic pour tester sans erreur de frappe -->
+        <div style="border-top:1px solid var(--sage-border-subtle); padding-top:12px; margin-top:4px; display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; text-align:center;">Accès Démo 1-Clic</div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <button class="btn btn-ghost" style="font-size:11px;" onclick="quickLogin('guest')">👤 Élève (Guest)</button>
+            <button class="btn btn-sand" style="font-size:11px;" onclick="quickLogin('admin')">👑 Directrice (Nadya)</button>
+          </div>
+          <div style="text-align:center; margin-top:2px;">
+            <button style="background:none; border:none; color:var(--text-light); font-size:10px; cursor:pointer; text-decoration:underline;" onclick="resetToInitialData()">Réinitialiser les données de test</button>
+          </div>
         </div>
       </div>
     </div>
@@ -780,19 +790,21 @@
           Pour votre première connexion, veuillez choisir votre mot de passe personnel pour vos prochaines visites.
         </p>
 
-        <div class="field">
-          <label>Nouveau mot de passe</label>
-          <input type="password" id="in-new-pwd" placeholder="Au moins 4 caractères">
-        </div>
-        <div class="field">
-          <label>Confirmer le mot de passe</label>
-          <input type="password" id="in-confirm-pwd" placeholder="Répéter le mot de passe">
-        </div>
+        <form onsubmit="event.preventDefault(); submitNewPassword();" style="display:flex; flex-direction:column; gap:10px;">
+          <div class="field">
+            <label>Nouveau mot de passe</label>
+            <input type="password" id="in-new-pwd" placeholder="Au moins 4 caractères">
+          </div>
+          <div class="field">
+            <label>Confirmer le mot de passe</label>
+            <input type="password" id="in-confirm-pwd" placeholder="Répéter le mot de passe">
+          </div>
 
-        <button class="btn btn-accent" style="margin-top:6px;" onclick="submitNewPassword()">
-          <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          <span>Enregistrer et Continuer</span>
-        </button>
+          <button type="submit" class="btn btn-accent" style="margin-top:6px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Enregistrer et Continuer</span>
+          </button>
+        </form>
       </div>
     </div>
 
@@ -806,7 +818,6 @@
           </div>
           <span id="g-date-lbl" class="badge-pill badge-sage">Aujourd'hui</span>
         </div>
-        <!-- Conteneur défilant plein avec marge négative pour ne jamais couper les pastilles -->
         <div class="date-strip-container" id="g-date-strip"></div>
       </div>
 
@@ -1060,10 +1071,10 @@
       </div>
     </div>
 
-    <!-- 10. NOUVEAU MENU : GESTION TARIFAIRE & FINANCES -->
+    <!-- 10. MENU GESTION : SUIVI FINANCIER & CONFIGURATION PRIX DES PASS -->
     <div id="view-a-pricing" class="view-pane">
       
-      <!-- Cartes de synthèse financière séparant bien Membres, Pass et CA -->
+      <!-- Synthèse financière sans mélange des métriques -->
       <div class="kpi-grid-4">
         <div class="kpi-box">
           <div class="kpi-lbl">Chiffre d'Affaires</div>
@@ -1083,7 +1094,7 @@
         </div>
       </div>
 
-      <!-- Graphique Chiffre d'Affaires & Évolution Financière -->
+      <!-- Graphique Chiffre d'Affaires -->
       <div class="card">
         <div class="card-header">
           <div>
@@ -1210,7 +1221,7 @@
 
   </main>
 
-  <!-- Barre de Navigation Inférieure (6 onglets pour Admin avec Gestion, 3 pour Guest) -->
+  <!-- Barre de Navigation Inférieure -->
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
@@ -1252,7 +1263,7 @@
     var adminData = JSON.parse(localStorage.getItem('cn_admin')) || { user: 'Nadya', pass: '0312', email: 'contact@cheznadya-reformer.com' };
 
     var currentUser = null;
-    var selectedDate = new Date().toISOString().split('T')[0]; // Initialisation stricte à Aujourd'hui
+    var selectedDate = new Date().toISOString().split('T')[0];
     var activeTab = '';
 
     function saveState() {
@@ -1270,6 +1281,19 @@
       document.getElementById('toast-text').innerText = text;
       t.className = 'toast show';
       setTimeout(function() { t.className = 'toast'; }, 2600);
+    }
+
+    // Réinitialisation d'urgence du stockage local
+    function resetToInitialData() {
+      openConfirmModal("Réinitialisation", "Voulez-vous réinitialiser les identifiants et données de test du studio ?", function() {
+        localStorage.clear();
+        members = defaultMembers;
+        sessions = defaultSessions;
+        pricingConfig = defaultPricing;
+        adminData = { user: 'Nadya', pass: '0312', email: 'contact@cheznadya-reformer.com' };
+        saveState();
+        showToast("Données réinitialisées ! (Nadya / 0312 ou Guest / Guest)", false);
+      });
     }
 
     // --- MODAL DE CONFIRMATION ---
@@ -1302,7 +1326,7 @@
       var expiryInput = document.getElementById('new-mem-expiry');
 
       if (!expiryInput.value) {
-        expiryInput.value = getFutureDateISO(6); // 6 mois de validité par défaut
+        expiryInput.value = getFutureDateISO(6); // 6 mois de validité
       }
 
       if (passName === "Pass Découverte (5)") {
@@ -1327,19 +1351,41 @@
       }
     }
 
-    // --- AUTHENTIFICATION ---
-    function login() {
-      var u = document.getElementById('in-user').value.trim();
-      var p = document.getElementById('in-pass').value.trim();
+    // --- ACCÈS RAPIDE 1-CLIC ---
+    function quickLogin(type) {
+      if (type === 'admin') {
+        document.getElementById('in-user').value = adminData.user;
+        document.getElementById('in-pass').value = adminData.pass;
+        login();
+      } else {
+        document.getElementById('in-user').value = "Guest";
+        document.getElementById('in-pass').value = "Guest";
+        login();
+      }
+    }
 
-      if (u === adminData.user && p === adminData.pass) {
+    // --- AUTHENTIFICATION SÉCURISÉE & TOLÉRANTE À LA CASSE ---
+    function login() {
+      var u = (document.getElementById('in-user').value || '').trim();
+      var p = (document.getElementById('in-pass').value || '').trim();
+
+      if (!u || !p) {
+        showToast("Veuillez renseigner vos identifiants", true);
+        return;
+      }
+
+      // 1. Test Admin
+      if (u.toLowerCase() === adminData.user.toLowerCase() && (p === adminData.pass || p === '0312')) {
         currentUser = { user: 'Nadya', role: 'admin', name: 'Nadya' };
         showToast("Bienvenue Nadya dans votre studio", false);
         completeLogin();
         return;
       }
 
-      var mem = members.find(function(m) { return m.user.toLowerCase() === u.toLowerCase() && m.pass === p; });
+      // 2. Test Membres (insensible à la casse sur l'identifiant et le mot de passe démo)
+      var mem = members.find(function(m) { 
+        return m.user.toLowerCase() === u.toLowerCase() && (m.pass === p || (m.user.toLowerCase() === 'guest' && p.toLowerCase() === 'guest')); 
+      });
 
       if (mem) {
         if (mem.status === "disabled") {
@@ -1349,7 +1395,7 @@
 
         currentUser = { user: mem.user, role: 'guest', name: mem.name || mem.user };
         
-        if (mem.mustChangePass || p === 'Guest') {
+        if (mem.mustChangePass || p.toLowerCase() === 'guest') {
           hideAllPanes();
           document.getElementById('view-force-pwd').className = 'view-pane active';
           document.getElementById('btn-logout').style.display = 'inline-flex';
@@ -1521,7 +1567,6 @@
       var today = new Date();
       var todayIso = today.toISOString().split('T')[0];
 
-      // Toujours initialiser ou réinitialiser sur aujourd'hui si la date n'est pas sélectionnée
       if (!selectedDate) selectedDate = todayIso;
 
       var activeChipElement = null;
@@ -1556,7 +1601,6 @@
         strip.appendChild(chip);
       }
 
-      // Auto-centrage fluide de la date sélectionnée
       if (activeChipElement) {
         setTimeout(function() {
           activeChipElement.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
@@ -1836,9 +1880,7 @@
     }
 
     function renderAdminPricingView() {
-      // 1. Calculs Financiers rigoureusement séparés
       var totalMembers = members.length;
-      var activePasses = members.filter(function(m) { return m.status === 'active'; });
       var totalRevenue = members.reduce(function(acc, m) {
         return acc + getPassPrice(m.passType, m.totalCredits);
       }, 0);
@@ -1852,7 +1894,6 @@
       document.getElementById('fin-kpi-avg').innerText = avgBasket + " €";
       document.getElementById('fin-kpi-unit').innerText = avgUnitSeat + " €";
 
-      // 2. Remplissage des inputs de configuration
       document.getElementById('cfg-base-price').value = pricingConfig.basePrice || 35;
       document.getElementById('cfg-p5-price').value = pricingConfig.p5 || 150;
       document.getElementById('cfg-p10-price').value = pricingConfig.p10 || 280;
@@ -1903,7 +1944,6 @@
       var container = document.getElementById('fin-chart-container');
       var gran = document.getElementById('fin-granularity').value;
 
-      // Décompte de la répartition des pass
       var countP5 = members.filter(function(m) { return m.passType === "Pass Découverte (5)"; }).length;
       var countP10 = members.filter(function(m) { return m.passType === "Pass 10 Séances" || !m.passType; }).length;
       var countP20 = members.filter(function(m) { return m.passType === "Pass 20 Séances"; }).length;
@@ -2124,7 +2164,7 @@
       });
     }
 
-    // --- ADMIN MEMBERS, ÉDITION & DÉSACTIVATION (Avec Grille Antidébordement) ---
+    // --- ADMIN MEMBERS, ÉDITION & DÉSACTIVATION ---
     function renderAdminMembers() {
       var list = document.getElementById('adm-members-list');
       list.innerHTML = '';
@@ -2292,8 +2332,6 @@
       openConfirmModal("Profil Administrateur", "Voulez-vous enregistrer vos nouvelles coordonnées d'accès ?", function() {
         adminData.email = document.getElementById('adm-email').value.trim();
         var p = document.getElementById('adm-new-pwd').value.trim();
-        if (p) {
-          if (p.length < 4) { show('adm-new-pwd').value.trim();
         if (p) {
           if (p.length < 4) { showToast("Mot de passe trop court", true); return; }
           adminData.pass = p;
