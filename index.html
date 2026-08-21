@@ -9,25 +9,28 @@
   <!-- Configuration PWA & Mobile Web App -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#F8FAF7">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#121814">
 
   <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
       /* Palette Studio Vert Sauge & Lin Naturel */
       --sage-primary: #5A7E65;
-      --sage-dark: #223829;
+      --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
       --sage-light: #EBF2ED;
       --sage-surface: #F2F7F4;
       --sage-border: #D6E3D9;
       --sage-border-subtle: #E5EFE7;
       
+      --gold-primary: #C5A059;
+      --gold-light: #E8D5B5;
+      --gold-dark: #8F6D2E;
       --sand-accent: #B89267;
       --sand-light: #F7F3EE;
       --sand-border: #E8DECE;
@@ -95,6 +98,83 @@
       flex-shrink: 0;
     }
 
+    /* --- ÉCRAN DE DÉMARRAGE / SPLASH SCREEN VIDÉO --- */
+    .splash-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #111413;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s var(--ease), visibility 0.8s var(--ease), transform 0.8s var(--ease);
+      overflow: hidden;
+    }
+
+    .splash-overlay.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .splash-video-container {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1E2620 0%, #0A0E0C 100%);
+    }
+
+    .splash-video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      max-width: 600px;
+    }
+
+    .splash-fallback-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      padding: 24px;
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(197, 160, 89, 0.2)); }
+      50% { transform: scale(1.02); filter: drop-shadow(0 0 30px rgba(197, 160, 89, 0.45)); }
+    }
+
+    .splash-skip-btn {
+      position: absolute;
+      top: calc(18px + env(safe-area-inset-top));
+      right: 18px;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(197, 160, 89, 0.35);
+      color: #E8D5B5;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.2s var(--ease);
+    }
+    .splash-skip-btn:hover, .splash-skip-btn:active {
+      background: rgba(197, 160, 89, 0.25);
+      border-color: #C5A059;
+      transform: scale(0.96);
+    }
+
     /* Header Studio */
     header {
       height: 64px;
@@ -116,18 +196,21 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
 
     .brand-logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      background: #FFFFFF;
-      border: 1px solid var(--sage-border);
+      background: #141A16;
+      border: 1px solid rgba(197, 160, 89, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: var(--shadow-xs);
+      box-shadow: 0 2px 8px rgba(20, 26, 22, 0.15);
+      overflow: hidden;
+      padding: 4px;
     }
 
     .brand-title {
@@ -140,11 +223,11 @@
     }
 
     .brand-subtitle {
-      font-size: 8.5px;
+      font-size: 8px;
       font-weight: 700;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.6px;
       text-transform: uppercase;
-      color: var(--sand-accent);
+      color: var(--gold-dark);
       margin-top: 2px;
     }
 
@@ -303,18 +386,21 @@
       line-height: 1.45;
     }
 
-    /* Hero Banner */
-    .hero-banner {
-      background: linear-gradient(135deg, #EFF5F0 0%, #FAF7F2 100%);
-      border: 1px solid var(--sage-border);
+    /* Hero Banner Or & Sombre Élégant */
+    .hero-banner-gold {
+      background: radial-gradient(circle at center, #1B241E 0%, #0D120F 100%);
+      border: 1px solid rgba(197, 160, 89, 0.3);
       border-radius: var(--radius-lg);
-      padding: 20px;
+      padding: 22px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 16px;
+      text-align: center;
+      gap: 12px;
       position: relative;
       overflow: hidden;
-      box-shadow: var(--shadow-xs);
+      box-shadow: var(--shadow-sm);
+      color: #FFFFFF;
     }
 
     /* Formulaires */
@@ -369,6 +455,16 @@
     }
     .btn-accent:hover {
       background: var(--sage-medium);
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #D4AF37 0%, #AA771C 100%);
+      color: #FFFFFF;
+      border: none;
+      box-shadow: 0 2px 10px rgba(170, 119, 28, 0.3);
+    }
+    .btn-gold:hover {
+      filter: brightness(1.08);
     }
 
     .btn-sand {
@@ -518,7 +614,7 @@
       right: 5px;
       width: 6px;
       height: 6px;
-      background: var(--sand-accent);
+      background: var(--gold-primary);
       border-radius: 50%;
       border: 1.5px solid #FFFFFF;
     }
@@ -687,6 +783,68 @@
 </head>
 <body>
 
+  <!-- ========================================== -->
+  <!-- ÉCRAN DE DÉMARRAGE AVEC VIDÉO ET LOGO OR -->
+  <!-- ========================================== -->
+  <div id="app-splash-screen" class="splash-overlay">
+    <button class="splash-skip-btn" onclick="dismissSplash()">Passer ✕</button>
+    
+    <div class="splash-video-container">
+      <!-- 1. Vidéo de Démarrage Officielle (autoplay muted playsinline) -->
+      <video id="splash-video" playsinline muted autoplay poster="9367.jpg" onended="dismissSplash()">
+        <source src="9368.mp4" type="video/mp4">
+        <source src="intro.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <!-- 2. Fallback / Animation Vectorielle HD du Logo Officiel -->
+    <div id="splash-fallback" class="splash-fallback-content">
+      <div style="width: 140px; height: 140px;">
+        <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+          <defs>
+            <linearGradient id="goldSplashGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F4E2BB"/>
+              <stop offset="35%" stop-color="#D4AF37"/>
+              <stop offset="65%" stop-color="#AA771C"/>
+              <stop offset="90%" stop-color="#E6CA65"/>
+              <stop offset="100%" stop-color="#8F6D2E"/>
+            </linearGradient>
+          </defs>
+          <!-- Arc de Cercle Supérieur -->
+          <path d="M 140 248 C 96 230 70 185 75 138 C 82 82 130 38 186 36 C 242 34 290 72 304 126 C 309 146 308 170 298 190" 
+                stroke="url(#goldSplashGrad)" stroke-width="4.5" stroke-linecap="round" fill="none" />
+          <!-- Étoile Scintillante -->
+          <g transform="translate(238, 78) scale(0.8)" fill="url(#goldSplashGrad)">
+            <path d="M 0 -22 Q 0 0 22 0 Q 0 0 0 22 Q 0 0 -22 0 Q 0 0 0 -22 Z" />
+            <circle cx="0" cy="0" r="2.5" fill="#FFFFFF" />
+          </g>
+          <!-- Lettre N Calligraphique avec Empattements -->
+          <path d="M 138 108 L 165 108 M 151 108 L 151 224 M 138 224 L 165 224" stroke="url(#goldSplashGrad)" stroke-width="4" stroke-linecap="square" fill="none" />
+          <polygon points="150,110 160,110 258,224 246,224" fill="url(#goldSplashGrad)" />
+          <path d="M 235 108 L 262 108 M 248 108 L 248 150 M 248 200 L 248 224 M 235 224 L 262 224" stroke="url(#goldSplashGrad)" stroke-width="4" stroke-linecap="square" fill="none" />
+          <!-- Silhouette Archer & Posture Pilates vers la lumière -->
+          <circle cx="240" cy="118" r="9" fill="url(#goldSplashGrad)" />
+          <path d="M 142 248 C 175 240 210 215 224 185 C 235 162 248 140 292 72" stroke="url(#goldSplashGrad)" stroke-width="5.5" stroke-linecap="round" fill="none" />
+          <polygon points="292,72 278,76 288,86" fill="url(#goldSplashGrad)" />
+          <polygon points="292,72 296,86 284,82" fill="url(#goldSplashGrad)" />
+          <path d="M 224 185 C 238 195 250 175 252 148 C 248 152 238 160 224 185 Z" fill="url(#goldSplashGrad)" />
+          <path d="M 205 165 C 220 178 245 200 270 232" stroke="url(#goldSplashGrad)" stroke-width="12" stroke-linecap="round" fill="none" opacity="0.95" />
+        </svg>
+      </div>
+
+      <div>
+        <div style="font-family:'Cormorant Garamond', serif; font-size:13px; letter-spacing:8px; color:#C5A059; text-transform:uppercase;">C H E Z</div>
+        <div style="font-family:'Cormorant Garamond', serif; font-size:32px; font-weight:700; color:#E8D5B5; letter-spacing:4px; margin-top:2px;">NADYA</div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:4px;">
+          <div style="width:24px; height:1px; background:linear-gradient(90deg, transparent, #C5A059);"></div>
+          <span style="color:#C5A059; font-size:10px;">✦</span>
+          <div style="width:24px; height:1px; background:linear-gradient(90deg, #C5A059, transparent);"></div>
+        </div>
+        <div style="font-size:8.5px; font-weight:700; letter-spacing:3px; color:#A4B8A9; text-transform:uppercase; margin-top:6px;">MOVE • BREATHE • GLOW</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal Universel de Confirmation -->
   <div id="vfa-confirm-modal" class="vfa-modal-overlay">
     <div class="vfa-modal-box">
@@ -705,22 +863,32 @@
     <span id="toast-text">Message</span>
   </div>
 
-  <!-- En-tête Principal -->
+  <!-- En-tête Principal avec Logo Officiel Chez Nadya -->
   <header>
-    <div class="brand-container">
+    <div class="brand-container" onclick="replaySplashVideo()" title="Revoir l'introduction vidéo">
       <div class="brand-logo-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--sage-dark);">
-          <circle cx="12" cy="5" r="2" stroke="var(--sand-accent)" stroke-width="1.8"/>
-          <path d="M12 7v6l4 3" stroke="var(--sage-dark)"/>
-          <path d="M8 18l4-5 4 5" stroke="var(--sage-dark)"/>
-          <path d="M5 9c2-2 6-3 10-1" stroke="var(--sand-accent)" stroke-dasharray="2 1.5"/>
-          <path d="M6 14l11-8" stroke="var(--sage-primary)" stroke-width="1.8"/>
-          <path d="M14 6h3v3" stroke="var(--sage-primary)" stroke-width="1.8"/>
+        <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+          <defs>
+            <linearGradient id="goldHdrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#F4E2BB"/>
+              <stop offset="50%" stop-color="#D4AF37"/>
+              <stop offset="100%" stop-color="#AA771C"/>
+            </linearGradient>
+          </defs>
+          <path d="M 140 248 C 96 230 70 185 75 138 C 82 82 130 38 186 36 C 242 34 290 72 304 126 C 309 146 308 170 298 190" stroke="url(#goldHdrGrad)" stroke-width="7" stroke-linecap="round" fill="none" />
+          <g transform="translate(238, 78) scale(0.9)" fill="url(#goldHdrGrad)">
+            <path d="M 0 -22 Q 0 0 22 0 Q 0 0 0 22 Q 0 0 -22 0 Q 0 0 0 -22 Z" />
+          </g>
+          <path d="M 138 108 L 165 108 M 151 108 L 151 224 M 138 224 L 165 224" stroke="url(#goldHdrGrad)" stroke-width="6" stroke-linecap="square" />
+          <polygon points="150,110 160,110 258,224 246,224" fill="url(#goldHdrGrad)" />
+          <circle cx="240" cy="118" r="12" fill="url(#goldHdrGrad)" />
+          <path d="M 142 248 C 175 240 210 215 224 185 C 235 162 248 140 292 72" stroke="url(#goldHdrGrad)" stroke-width="8" stroke-linecap="round" />
+          <polygon points="292,72 278,76 288,86" fill="url(#goldHdrGrad)" />
         </svg>
       </div>
       <div>
         <div class="brand-title">Chez Nadya</div>
-        <div class="brand-subtitle">Pilates Reformer Studio</div>
+        <div class="brand-subtitle">Move • Breathe • Glow</div>
       </div>
     </div>
     
@@ -735,13 +903,40 @@
 
   <main>
 
-    <!-- 1. VUE : CONNEXION (Sécurisée & Compatible Formulaire Mobile) -->
+    <!-- 1. VUE : CONNEXION -->
     <div id="view-login" class="view-pane active">
-      <div class="hero-banner">
+      <!-- Bannière Luxueuse avec le Logo Officiel -->
+      <div class="hero-banner-gold">
+        <div style="width: 80px; height: 80px;">
+          <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+            <defs>
+              <linearGradient id="goldHeroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F4E2BB"/>
+                <stop offset="40%" stop-color="#D4AF37"/>
+                <stop offset="80%" stop-color="#AA771C"/>
+                <stop offset="100%" stop-color="#8F6D2E"/>
+              </linearGradient>
+            </defs>
+            <path d="M 140 248 C 96 230 70 185 75 138 C 82 82 130 38 186 36 C 242 34 290 72 304 126 C 309 146 308 170 298 190" stroke="url(#goldHeroGrad)" stroke-width="5.5" stroke-linecap="round" fill="none" />
+            <g transform="translate(238, 78) scale(0.85)" fill="url(#goldHeroGrad)">
+              <path d="M 0 -22 Q 0 0 22 0 Q 0 0 0 22 Q 0 0 -22 0 Q 0 0 0 -22 Z" />
+              <circle cx="0" cy="0" r="3" fill="#FFFFFF" />
+            </g>
+            <path d="M 138 108 L 165 108 M 151 108 L 151 224 M 138 224 L 165 224" stroke="url(#goldHeroGrad)" stroke-width="4.5" stroke-linecap="square" />
+            <polygon points="150,110 160,110 258,224 246,224" fill="url(#goldHeroGrad)" />
+            <path d="M 235 108 L 262 108 M 248 108 L 248 150 M 248 200 L 248 224 M 235 224 L 262 224" stroke="url(#goldHeroGrad)" stroke-width="4.5" stroke-linecap="square" />
+            <circle cx="240" cy="118" r="10" fill="url(#goldHeroGrad)" />
+            <path d="M 142 248 C 175 240 210 215 224 185 C 235 162 248 140 292 72" stroke="url(#goldHeroGrad)" stroke-width="6.5" stroke-linecap="round" />
+            <polygon points="292,72 278,76 288,86" fill="url(#goldHeroGrad)" />
+            <polygon points="292,72 296,86 284,82" fill="url(#goldHeroGrad)" />
+            <path d="M 224 185 C 238 195 250 175 252 148 C 248 152 238 160 224 185 Z" fill="url(#goldHeroGrad)" />
+            <path d="M 205 165 C 220 178 245 200 270 232" stroke="url(#goldHeroGrad)" stroke-width="13" stroke-linecap="round" opacity="0.95" />
+          </svg>
+        </div>
         <div>
-          <div class="font-serif" style="font-size:22px; font-weight:700; color:var(--sage-dark);">Harmonie, Respiration & Posture</div>
-          <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px; line-height:1.45;">
-            L'excellence du Pilates Reformer dans un cadre serein, bienveillant et apaisant.
+          <div style="font-family:'Cormorant Garamond', serif; font-size:24px; font-weight:700; color:#E8D5B5; letter-spacing:1px;">Studio Pilates Reformer</div>
+          <p style="font-size:11px; color:#A4B8A9; margin-top:3px; letter-spacing:1.8px; text-transform:uppercase;">
+            Move • Breathe • Glow
           </p>
         </div>
       </div>
@@ -768,15 +963,16 @@
           </button>
         </form>
 
-        <!-- Boutons d'accès rapide 1-Clic pour tester sans erreur de frappe -->
+        <!-- Boutons d'accès rapide 1-Clic -->
         <div style="border-top:1px solid var(--sage-border-subtle); padding-top:12px; margin-top:4px; display:flex; flex-direction:column; gap:8px;">
-          <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; text-align:center;">Accès Démo 1-Clic</div>
+          <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; text-align:center;">Accès Démo 1-Clic</div>
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <button class="btn btn-ghost" style="font-size:11px;" onclick="quickLogin('guest')">👤 Élève (Guest)</button>
             <button class="btn btn-sand" style="font-size:11px;" onclick="quickLogin('admin')">👑 Directrice (Nadya)</button>
           </div>
-          <div style="text-align:center; margin-top:2px;">
-            <button style="background:none; border:none; color:var(--text-light); font-size:10px; cursor:pointer; text-decoration:underline;" onclick="resetToInitialData()">Réinitialiser les données de test</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; padding:0 4px;">
+            <button style="background:none; border:none; color:var(--gold-dark); font-size:10.5px; cursor:pointer; text-decoration:underline;" onclick="replaySplashVideo()">▶ Rejouer l'animation de démarrage</button>
+            <button style="background:none; border:none; color:var(--text-light); font-size:10px; cursor:pointer; text-decoration:underline;" onclick="resetToInitialData()">Réinitialiser</button>
           </div>
         </div>
       </div>
@@ -1225,7 +1421,36 @@
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
-    // --- 1. MODÈLES DE DONNÉES PAR DÉFAUT ---
+    // --- 1. GESTION DE L'ÉCRAN DE DÉMARRAGE SPLASH SCREEN & VIDÉO ---
+    function dismissSplash() {
+      var splash = document.getElementById('app-splash-screen');
+      if (splash) {
+        splash.className = 'splash-overlay fade-out';
+        setTimeout(function() {
+          splash.style.display = 'none';
+        }, 800);
+      }
+    }
+
+    function replaySplashVideo() {
+      var splash = document.getElementById('app-splash-screen');
+      if (splash) {
+        splash.style.display = 'flex';
+        splash.className = 'splash-overlay';
+        var vid = document.getElementById('splash-video');
+        if (vid) {
+          vid.currentTime = 0;
+          vid.play().catch(function() {});
+        }
+      }
+    }
+
+    // Auto-dismiss de sécurité après 5.5s
+    setTimeout(function() {
+      dismissSplash();
+    }, 5500);
+
+    // --- 2. MODÈLES DE DONNÉES PAR DÉFAUT ---
     function getFutureDateISO(months) {
       var d = new Date();
       d.setMonth(d.getMonth() + months);
@@ -1252,7 +1477,7 @@
       { id: "s3", seriesId: "ser_03", title: "Reformer Stretch & Align", coach: "Nadya", duration: 45, date: new Date(Date.now() + 86400000).toISOString().split('T')[0], time: "18:00", cap: 6, users: [], status: "active" }
     ];
 
-    // --- 2. RESTAURATION & RÉTENTION UNIFIÉE ---
+    // --- 3. RESTAURATION & RÉTENTION UNIFIÉE ---
     var savedMembers = localStorage.getItem('cn_members_v5') || localStorage.getItem('cn_members_v4') || localStorage.getItem('cn_members_v3') || localStorage.getItem('cn_members') || null;
     var savedSessions = localStorage.getItem('cn_sessions_v5') || localStorage.getItem('cn_sessions_v4') || localStorage.getItem('cn_sessions_v3') || localStorage.getItem('cn_sessions_v2') || localStorage.getItem('cn_sessions') || null;
     var savedPricing = localStorage.getItem('cn_pricing') || null;
@@ -1326,7 +1551,7 @@
       var expiryInput = document.getElementById('new-mem-expiry');
 
       if (!expiryInput.value) {
-        expiryInput.value = getFutureDateISO(6); // 6 mois de validité
+        expiryInput.value = getFutureDateISO(6);
       }
 
       if (passName === "Pass Découverte (5)") {
@@ -1382,7 +1607,7 @@
         return;
       }
 
-      // 2. Test Membres (insensible à la casse sur l'identifiant et le mot de passe démo)
+      // 2. Test Membres (insensible à la casse)
       var mem = members.find(function(m) { 
         return m.user.toLowerCase() === u.toLowerCase() && (m.pass === p || (m.user.toLowerCase() === 'guest' && p.toLowerCase() === 'guest')); 
       });
@@ -1560,7 +1785,7 @@
       }
     }
 
-    // --- GUEST PLANNING (Affichage Aujourd'hui par défaut & Défilement Fluide) ---
+    // --- GUEST PLANNING ---
     function renderGuestPlanning() {
       var strip = document.getElementById('g-date-strip');
       strip.innerHTML = '';
@@ -1821,7 +2046,7 @@
       }
     }
 
-    // --- ADMIN SUPERVISION (KPIs Opérationnels Distincts) ---
+    // --- ADMIN SUPERVISION ---
     function renderAdminKPI() {
       var totSessions = sessions.length;
       var bookedSeats = sessions.reduce(function(acc, s) { return acc + s.users.length; }, 0);
@@ -1871,7 +2096,7 @@
       }
     }
 
-    // --- NOUVEAU MENU GESTION : SUIVI FINANCIER & CONFIGURATION PRIX DES PASS ---
+    // --- MENU GESTION : SUIVI FINANCIER & PRIX DES PASS ---
     function getPassPrice(passType, totalCredits) {
       if (passType === "Pass Découverte (5)") return pricingConfig.p5 || 150;
       if (passType === "Pass 10 Séances") return pricingConfig.p10 || 280;
