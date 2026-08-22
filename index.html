@@ -1326,10 +1326,9 @@
   <script>
     // --- SÉCURITÉ ANTI-BLOCAGE & PURGE DU CACHE ---
     (async function forceCachePurge() {
-      var CURRENT_BUILD = "v6_safe_launch_2026";
+      var CURRENT_BUILD = "v7_force_reflow_2026";
       var lastBuild = localStorage.getItem("cn_app_build_version");
 
-      // Sécurité absolue : si le cache n'a pas été purgé ou que ça bloque, on force un timeout de secours de 3 secondes max
       var safetyTimer = setTimeout(function() {
         dismissSplash();
       }, 3000);
@@ -1371,6 +1370,10 @@
           splash.style.display = 'none';
         }, 500);
       }
+      // Force le recalcul du rendu graphique pour débloquer le fond clair sur Samsung/Android
+      document.body.style.display = 'none';
+      document.body.offsetHeight; // Déclenche un reflow du DOM
+      document.body.style.display = '';
     }
 
     function setNetworkPill(isOnline) {
