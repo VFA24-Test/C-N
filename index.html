@@ -76,14 +76,8 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .font-serif {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-    }
-
-    .font-num {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-variant-numeric: tabular-nums;
-    }
+    .font-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .font-num { font-family: 'Plus Jakarta Sans', sans-serif; font-variant-numeric: tabular-nums; }
 
     .svg-icon {
       width: 16px;
@@ -96,11 +90,9 @@
       flex-shrink: 0;
     }
 
-    .brand-gold {
-      color: var(--gold-solid) !important;
-    }
+    .brand-gold { color: var(--gold-solid) !important; }
 
-    /* --- GESTION DU LOGO & SCINTILLEMENT (NON MODIFIÉ) --- */
+    /* --- GESTION DU LOGO & SCINTILLEMENT (ORIGINAL STRICT) --- */
     .logo-wrapper {
       position: relative;
       width: 140px;
@@ -256,13 +248,7 @@
       flex-shrink: 0;
     }
 
-    .brand-text-block {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      line-height: 1;
-    }
-
+    .brand-text-block { display: flex; flex-direction: column; min-width: 0; line-height: 1; }
     .brand-title {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 20px;
@@ -344,7 +330,7 @@
       color: var(--danger);
     }
 
-    /* Modal & Toast */
+    /* Modale & Toast */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -359,10 +345,7 @@
       opacity: 0;
       transition: opacity 0.2s var(--ease);
     }
-    .vfa-modal-overlay.show {
-      display: flex;
-      opacity: 1;
-    }
+    .vfa-modal-overlay.show { display: flex; opacity: 1; }
     .vfa-modal-box {
       background: #FFFFFF;
       border: 1px solid var(--sage-border);
@@ -377,9 +360,7 @@
       transform: scale(0.95);
       transition: transform 0.2s var(--ease);
     }
-    .vfa-modal-overlay.show .vfa-modal-box {
-      transform: scale(1);
-    }
+    .vfa-modal-overlay.show .vfa-modal-box { transform: scale(1); }
 
     .toast {
       position: fixed;
@@ -403,11 +384,7 @@
       gap: 8px;
       white-space: nowrap;
     }
-    .toast.show { 
-      opacity: 1; 
-      transform: translate(-50%, 0); 
-      pointer-events: auto; 
-    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 
     main {
       flex: 1;
@@ -422,27 +399,12 @@
     }
 
     @media (min-width: 768px) {
-      main {
-        max-width: 760px;
-        padding-top: 22px;
-      }
+      main { max-width: 760px; padding-top: 22px; }
     }
     
-    .view-pane { 
-      display: none; 
-      flex-direction: column; 
-      gap: 14px; 
-    }
-    
-    .view-pane.active { 
-      display: flex; 
-      animation: fadeUp 0.3s var(--ease) forwards;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .view-pane { display: none; flex-direction: column; gap: 14px; }
+    .view-pane.active { display: flex; animation: fadeUp 0.3s var(--ease) forwards; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
     .card {
       background: var(--bg-card);
@@ -457,14 +419,7 @@
       transition: all 0.3s var(--ease);
     }
     
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
+    .card-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
     .card-title {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: clamp(20px, 4vw, 23px);
@@ -472,12 +427,7 @@
       color: var(--sage-dark);
       line-height: 1.15;
     }
-
-    .card-subtitle {
-      font-size: 11.5px;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
+    .card-subtitle { font-size: 11.5px; color: var(--text-muted); line-height: 1.45; }
 
     .hero-banner-studio {
       background: linear-gradient(135deg, #FFFFFF 0%, #F5F9F6 50%, #EDF4EF 100%);
@@ -495,50 +445,18 @@
     }
 
     /* Pass Cards */
-    .pass-card-decouverte, .pass-card-standard {
-      background: #FFFFFF;
-      border: 1px solid var(--sage-border);
-    }
-    
-    .pass-card-avantage {
-      background: linear-gradient(135deg, #F2F8F4 0%, #E3EFE6 100%);
-      border: 1px solid #B0CCB7;
-    }
-    .pass-card-avantage .badge-pass-custom {
-      background: #D4E5D8;
-      color: #1B4328;
-      border: 1px solid #9DBFA4;
-      font-weight: 700;
-    }
-    .pass-card-avantage .prog-fill {
-      background: linear-gradient(90deg, #4A7A57, #245233);
-    }
+    .pass-card-decouverte, .pass-card-standard { background: #FFFFFF; border: 1px solid var(--sage-border); }
+    .pass-card-avantage { background: linear-gradient(135deg, #F2F8F4 0%, #E3EFE6 100%); border: 1px solid #B0CCB7; }
+    .pass-card-avantage .badge-pass-custom { background: #D4E5D8; color: #1B4328; border: 1px solid #9DBFA4; font-weight: 700; }
+    .pass-card-avantage .prog-fill { background: linear-gradient(90deg, #4A7A57, #245233); }
 
-    .pass-card-platinium {
-      background: linear-gradient(135deg, #FAF6EE 0%, #F3EBD8 100%);
-      border: 1px solid rgba(175, 131, 71, 0.35);
-      color: var(--sage-dark);
-    }
+    .pass-card-platinium { background: linear-gradient(135deg, #FAF6EE 0%, #F3EBD8 100%); border: 1px solid rgba(175, 131, 71, 0.35); color: var(--sage-dark); }
     .pass-card-platinium .card-title { color: var(--sage-dark); }
-    .pass-card-platinium .badge-pass-custom {
-      background: var(--gold-solid);
-      color: #FFFFFF;
-      border: none;
-      font-weight: 700;
-      box-shadow: 0 2px 8px rgba(175, 131, 71, 0.25);
-    }
-    .pass-card-platinium .prog-fill {
-      background: var(--gold-solid);
-    }
+    .pass-card-platinium .badge-pass-custom { background: var(--gold-solid); color: #FFFFFF; border: none; font-weight: 700; box-shadow: 0 2px 8px rgba(175, 131, 71, 0.25); }
+    .pass-card-platinium .prog-fill { background: var(--gold-solid); }
 
     .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-    .field label { 
-      font-size: 10px; 
-      font-weight: 700; 
-      color: var(--text-muted); 
-      text-transform: uppercase; 
-      letter-spacing: 0.6px; 
-    }
+    .field label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
     .field input, .field select {
       background: var(--sage-surface);
       border: 1px solid var(--sage-border);
@@ -573,33 +491,13 @@
       transition: transform 0.12s var(--ease), background 0.15s var(--ease), border-color 0.15s var(--ease);
     }
     .btn:active { transform: scale(0.97); }
-    
-    .btn-accent { 
-      background: var(--sage-primary); 
-      color: #FFFFFF; 
-      box-shadow: 0 2px 8px rgba(90, 126, 101, 0.25);
-    }
+    .btn-accent { background: var(--sage-primary); color: #FFFFFF; box-shadow: 0 2px 8px rgba(90, 126, 101, 0.25); }
     .btn-accent:hover { background: var(--sage-medium); }
-
-    .btn-sand {
-      background: #FFFFFF;
-      color: var(--sand-accent);
-      border: 1px solid var(--sand-border);
-    }
+    .btn-sand { background: #FFFFFF; color: var(--sand-accent); border: 1px solid var(--sand-border); }
     .btn-sand:hover { background: var(--sand-light); }
-
-    .btn-ghost { 
-      background: var(--sage-surface); 
-      color: var(--sage-dark); 
-      border: 1px solid var(--sage-border); 
-    }
+    .btn-ghost { background: var(--sage-surface); color: var(--sage-dark); border: 1px solid var(--sage-border); }
     .btn-ghost:hover { background: var(--sage-light); }
-    
-    .btn-danger { 
-      background: var(--danger-bg); 
-      color: var(--danger); 
-      border: 1px solid var(--danger-border); 
-    }
+    .btn-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid var(--danger-border); }
     .btn-danger:hover { background: #FCE8E8; }
 
     .member-actions-grid {
@@ -609,9 +507,7 @@
       margin-top: 6px;
       width: 100%;
     }
-    @media (max-width: 350px) {
-      .member-actions-grid { grid-template-columns: 1fr 1fr; }
-    }
+    @media (max-width: 350px) { .member-actions-grid { grid-template-columns: 1fr 1fr; } }
 
     .booking-status-bar {
       display: flex;
@@ -841,7 +737,7 @@
 </head>
 <body>
 
-  <!-- ÉCRAN DE DÉMARRAGE AVEC ÉTOILE D'ORIGINE (SANS BARRE DE CHARGEMENT) -->
+  <!-- ÉCRAN DE DÉMARRAGE AVEC ÉTOILE SCINTILLANTE (SANS BARRE DE CHARGEMENT) -->
   <div id="app-splash-screen" class="splash-overlay" onclick="dismissSplash()" title="Toucher pour entrer">
     <div class="splash-content">
       
@@ -1453,10 +1349,10 @@
       var startTime = Date.now();
       var isOnline = navigator.onLine;
 
-      // 1. Test actif de connectivité (Ping serveur)
+      // 1. Test actif de connectivité avec bypass cache
       if (isOnline) {
         try {
-          var ping = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
+          var ping = await fetch(window.location.href + '?t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
           isOnline = ping.ok || ping.status === 0 || ping.type === 'opaque';
         } catch (e) {
           isOnline = false;
@@ -1465,13 +1361,12 @@
 
       setNetworkPill(isOnline);
 
-      // Attente synchronisée avec la fin du cycle de scintillement de l'étoile (2200ms)
+      // Synchronisation sur le cycle de 2.2s de l'étoile d'origine
       var elapsed = Date.now() - startTime;
       var remainingTwinkle = Math.max(0, 2200 - elapsed);
       await new Promise(function(resolve) { setTimeout(resolve, remainingTwinkle); });
 
       if (!isOnline) {
-        // Message demandé si hors-ligne
         if (splashMsg) {
           splashMsg.innerText = "Vous n'avez pas de connexion internet. Les données vont être chargées depuis le serveur local.";
           splashMsg.style.color = "var(--danger)";
@@ -1482,9 +1377,9 @@
         return;
       }
 
-      // 2. Vérification de conformité et mise à jour du code HTML
+      // 2. Vérification d'intégrité du code HTML & Rechargement automatique immédiat
       try {
-        var res = await fetch(window.location.href, { cache: 'no-cache' });
+        var res = await fetch(window.location.href + '?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           var serverHtml = await res.text();
           var cachedHtml = localStorage.getItem('cn_app_ui_html');
@@ -1494,15 +1389,20 @@
               splashMsg.innerText = "Mise à jour de l'interface en cours...";
               splashMsg.style.color = "var(--sage-dark)";
             }
-            // Téléchargement et enregistrement de la version à jour en local
             localStorage.setItem('cn_app_ui_html', serverHtml);
-            showToast("Interface mise à jour et synchronisée avec le serveur local !", false);
+            showToast("Mise à jour appliquée !", false);
+            
+            // Rechargement forcé de la WebApp sur l'écran d'accueil
+            setTimeout(function() {
+              window.location.reload(true);
+            }, 600);
+            return;
           } else if (!cachedHtml) {
             localStorage.setItem('cn_app_ui_html', serverHtml);
           }
         }
       } catch (err) {
-        console.warn("Impossible de comparer la version HTML distante:", err);
+        console.warn("Impossible de vérifier les mises à jour distantes:", err);
       }
 
       isCheckingApp = false;
