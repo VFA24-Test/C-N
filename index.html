@@ -98,12 +98,11 @@
       flex-shrink: 0;
     }
 
-    /* Couleur Unie Bronze Dorée du Logo */
     .brand-gold {
       color: var(--gold-solid) !important;
     }
 
-    /* --- GESTION DU LOGO & MASQUAGE ÉTOILE --- */
+    /* --- GESTION DU LOGO & SCINTILLEMENT --- */
     .logo-wrapper {
       position: relative;
       width: 140px;
@@ -113,7 +112,6 @@
       justify-content: center;
     }
 
-    /* 1. Image du Logo */
     .logo-img-splash {
       width: 100%;
       height: 100%;
@@ -124,41 +122,28 @@
       z-index: 1;
     }
 
-    /* 2. Pastille de Masquage */
-    .star-mask-disc {
-      position: absolute;
-      top: 13%;
-      right: 25.5%;
-      width: 32px;
-      height: 32px;
-      background: radial-gradient(circle, #FDFEFC 78%, rgba(253, 254, 252, 0.85) 100%);
-      border-radius: 50%;
-      z-index: 2;
-    }
-
-    /* 3. Étoile Scintillante & Tournante */
     .star-overlay-anim {
       position: absolute;
-      top: 13.5%;
-      right: 26%;
-      width: 30px;
-      height: 30px;
+      top: 14.5%;
+      right: 27%;
+      width: 24px;
+      height: 24px;
       pointer-events: none;
-      z-index: 3;
+      z-index: 2;
       animation: starTwinkleSpin 2.2s infinite ease-in-out;
       transform-origin: center center;
     }
 
     @keyframes starTwinkleSpin {
       0%, 100% {
-        transform: scale(0.8) rotate(0deg);
-        opacity: 0.8;
-        filter: drop-shadow(0 0 2px rgba(175, 131, 71, 0.5));
+        transform: scale(0.9) rotate(0deg);
+        opacity: 0.85;
+        filter: drop-shadow(0 0 2px rgba(175, 131, 71, 0.6));
       }
       50% {
         transform: scale(1.25) rotate(180deg);
         opacity: 1;
-        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 10px rgba(175, 131, 71, 0.8));
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(175, 131, 71, 0.8));
       }
     }
 
@@ -219,11 +204,11 @@
       }
     }
 
-    /* Barre de chargement en Bronze Doré Permanent */
+    /* Barre de chargement en Bronze Doré */
     .splash-loader-bar {
       width: 140px;
       height: 2.5px;
-      background: rgba(175, 131, 71, 0.18);
+      background: rgba(175, 131, 71, 0.15);
       border-radius: 999px;
       overflow: hidden;
       position: relative;
@@ -234,7 +219,7 @@
       position: absolute;
       top: 0; left: 0; height: 100%;
       width: 0%;
-      background: #AF8347;
+      background: var(--gold-solid);
       animation: loaderProgress 1.4s ease-out forwards;
       border-radius: 999px;
     }
@@ -310,7 +295,6 @@
       font-weight: 700;
       letter-spacing: 1.2px;
       text-transform: uppercase;
-      color: var(--gold-dark);
       margin-top: 2px;
       white-space: nowrap;
       overflow: hidden;
@@ -359,7 +343,7 @@
       color: var(--danger);
     }
 
-    /* Modal */
+    /* Modale Universelle */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -862,16 +846,12 @@
     <div class="splash-content">
       
       <div class="logo-wrapper">
-        <!-- 1. Image du Logo -->
         <img src="logo.png" alt="Chez Nadya Emblème" class="logo-img-splash">
         
-        <!-- 2. Pastille de Masquage de l'étoile statique -->
-        <div class="star-mask-disc"></div>
-        
-        <!-- 3. Étoile Scintillante et Tournante Réelle -->
         <svg class="star-overlay-anim" viewBox="0 0 100 100" fill="none">
-          <path d="M 50 5 Q 50 48 95 50 Q 50 52 50 95 Q 50 52 5 50 Q 50 48 50 5 Z" fill="#AF8347" />
-          <circle cx="50" cy="50" r="5" fill="#FFFFFF" />
+          <path d="M 50 2 Q 50 48 98 50 Q 50 52 50 98 Q 50 52 2 50 Q 50 48 50 2 Z" fill="#AF8347" />
+          <circle cx="50" cy="50" r="6" fill="#AF8347" />
+          <circle cx="50" cy="50" r="3" fill="#FFFFFF" />
         </svg>
       </div>
 
@@ -879,7 +859,6 @@
         <div style="font-family:'Cormorant Garamond', serif; font-size:15px; letter-spacing:10px; font-weight:600; text-transform:uppercase;" class="brand-gold">C H E Z</div>
         <div style="font-family:'Cormorant Garamond', serif; font-size:36px; font-weight:700; letter-spacing:5px; margin-top:2px;" class="brand-gold">NADYA</div>
         
-        <!-- Séparateur Losange -->
         <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin: 4px 0;">
           <span style="height:1px; width:30px; background:linear-gradient(90deg, transparent, #AF8347);"></span>
           <span style="font-size:10px; color:#AF8347;">✦</span>
