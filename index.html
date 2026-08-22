@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-schemes" content="light">
   <title>Chez Nadya — Studio Pilates Reformer</title>
 
   <meta name="mobile-web-app-capable" content="yes">
@@ -17,6 +18,10 @@
 
   <style>
     :root {
+      color-scheme: light only;
+      forced-color-adjust: none;
+      -webkit-text-size-adjust: 100%;
+
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
@@ -55,15 +60,6 @@
       
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-app: #F8FAF7 !important;
-        --bg-card: #FFFFFF !important;
-        --text-main: #1F2E23 !important;
-        --text-muted: #5C7062 !important;
-      }
-    }
     
     * { 
       margin: 0; 
@@ -73,9 +69,9 @@
       -webkit-tap-highlight-color: transparent; 
     }
     
-    body {
-      background-color: var(--bg-app);
-      color: var(--text-main);
+    html, body {
+      background-color: var(--bg-app) !important;
+      color: var(--text-main) !important;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -161,11 +157,12 @@
       display: block;
     }
 
-    /* --- ÉCRAN DE DÉMARRAGE --- */
+    /* --- ÉCRAN DE DÉMARRAGE (FORÇAGE ANTI-DARK MODE) --- */
     .splash-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(circle at 50% 40%, #FFFFFF 0%, #F5F8F5 65%, #E9F0EB 100%);
+      background: #F8FAF7 !important;
+      color-scheme: light only !important;
       z-index: 9999;
       display: flex;
       flex-direction: column;
@@ -1326,7 +1323,7 @@
   <script>
     // --- SÉCURITÉ ANTI-BLOCAGE & PURGE DU CACHE ---
     (async function forceCachePurge() {
-      var CURRENT_BUILD = "v7_force_reflow_2026";
+      var CURRENT_BUILD = "v8_splash_unforced_2026";
       var lastBuild = localStorage.getItem("cn_app_build_version");
 
       var safetyTimer = setTimeout(function() {
@@ -1370,9 +1367,8 @@
           splash.style.display = 'none';
         }, 500);
       }
-      // Force le recalcul du rendu graphique pour débloquer le fond clair sur Samsung/Android
       document.body.style.display = 'none';
-      document.body.offsetHeight; // Déclenche un reflow du DOM
+      document.body.offsetHeight;
       document.body.style.display = '';
     }
 
