@@ -17,6 +17,7 @@
 
   <style>
     :root {
+      /* Palette Studio Lin, Sauge & Or Chaud Authentique */
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
@@ -25,6 +26,7 @@
       --sage-border: #D6E3D9;
       --sage-border-subtle: #E5EFE7;
       
+      /* Couleur Bronze Doré Unie du Logo */
       --gold-solid: #AF8347;
       --gold-accent: #C59B53;
       --gold-dark: #7A5626;
@@ -202,10 +204,11 @@
       }
     }
 
+    /* Barre de chargement en Bronze Doré */
     .splash-loader-bar {
       width: 140px;
       height: 2.5px;
-      background: rgba(90, 126, 101, 0.12);
+      background: rgba(175, 131, 71, 0.15);
       border-radius: 999px;
       overflow: hidden;
       position: relative;
@@ -340,7 +343,7 @@
       color: var(--danger);
     }
 
-    /* Modal */
+    /* Modale Universelle */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -1441,7 +1444,6 @@
       }
     }
 
-    // Fermeture automatique garantie après 1,5s
     setTimeout(dismissSplash, 1500);
 
     // --- DONNÉES LOCALES & TARIFS ---
@@ -1854,7 +1856,7 @@
       if (!s || s.users.length >= s.cap) return;
 
       var mem = members.find(function(m) { return m.user.toLowerCase() === currentUser.user.toLowerCase(); });
-      var myBookingsCount = sessions.filter(function(x) { return x.users.indexOf(currentUser.user) !== -1; }).length;
+      var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; }).length;
       var totalPass = mem ? (mem.totalCredits || 10) : 10;
 
       if (myBookingsCount >= totalPass) {
