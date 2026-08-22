@@ -16,7 +16,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    /* --- MODE NORMAL (CLAIR PAR DÉFAUT) --- */
     :root {
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
@@ -57,11 +56,8 @@
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* --- GESTION AUTOMATIQUE SI LE TÉLÉPHONE EST EN MODE SOMBRE --- */
     @media (prefers-color-scheme: dark) {
       :root {
-        /* On redéfinit explicitement des couleurs claires ou harmonieuses si le mode sombre natif est détecté, 
-           évitant l'inversion agressive par Samsung Internet */
         --bg-app: #F8FAF7 !important;
         --bg-card: #FFFFFF !important;
         --text-main: #1F2E23 !important;
@@ -215,7 +211,6 @@
       line-height: 1.45;
       min-height: 24px;
       margin-top: 6px;
-      transition: all 0.3s var(--ease);
     }
 
     /* --- HEADER --- */
@@ -750,7 +745,7 @@
 </head>
 <body>
 
-  <!-- ÉCRAN DE DÉMARRAGE AVEC ÉTOILE SCINTILLANTE (SANS BARRE DE CHARGEMENT) -->
+  <!-- ÉCRAN DE DÉMARRAGE AVEC ÉTOILE SCINTILLANTE -->
   <div id="app-splash-screen" class="splash-overlay" onclick="dismissSplash()" title="Toucher pour entrer">
     <div class="splash-content">
       
@@ -1329,19 +1324,22 @@
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
-    // --- PURGE DU CACHE D'APPLICATION & CONTENEUR PWA (SANS TOUCHER AU LOCALSTORAGE) ---
+    // --- SÉCURITÉ ANTI-BLOCAGE & PURGE DU CACHE ---
     (async function forceCachePurge() {
-      var CURRENT_BUILD = "v5_light_fixed_2026";
+      var CURRENT_BUILD = "v6_safe_launch_2026";
       var lastBuild = localStorage.getItem("cn_app_build_version");
+
+      // Sécurité absolue : si le cache n'a pas été purgé ou que ça bloque, on force un timeout de secours de 3 secondes max
+      var safetyTimer = setTimeout(function() {
+        dismissSplash();
+      }, 3000);
 
       if (lastBuild !== CURRENT_BUILD) {
         if ('caches' in window) {
           try {
             var cacheNames = await caches.keys();
             await Promise.all(cacheNames.map(function(name) { return caches.delete(name); }));
-          } catch (e) {
-            console.warn("Purge cacheStorage:", e);
-          }
+          } catch (e) {}
         }
 
         if ('serviceWorker' in navigator) {
@@ -1350,18 +1348,19 @@
             for (var i = 0; i < registrations.length; i++) {
               await registrations[i].unregister();
             }
-          } catch (e) {
-            console.warn("Désenregistrement SW:", e);
-          }
+          } catch (e) {}
         }
 
         localStorage.setItem("cn_app_build_version", CURRENT_BUILD);
+        clearTimeout(safetyTimer);
         var cleanUrl = window.location.origin + window.location.pathname + '?reload=' + Date.now();
         window.location.replace(cleanUrl);
+        return;
       }
+
+      clearTimeout(safetyTimer);
     })();
 
-    // --- GESTION DE LA VÉRIFICATION DU RÉSEAU & DU CODE ---
     var isCheckingApp = false;
 
     function dismissSplash() {
@@ -1415,7 +1414,7 @@
           splashMsg.style.color = "var(--danger)";
         }
         showToast("Mode hors-ligne : données chargées localement", true);
-        setTimeout(dismissSplash, 2400);
+        setTimeout(dismissSplash, 1200);
         isCheckingApp = false;
         return;
       }
@@ -1946,7 +1945,7 @@
               '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
               '<div style="font-size:11.5px; color:var(--text-muted);">Coach : ' + s.coach + '</div>' +
             '</div>' +
-            '<button class="btn-cancel-link" style="height:34px;" onclick="requestGuestCancel(\'' + s.id + \')">' +
+            '<button class="btn-cancel-link" style="height:34px;" onclick="requestGuestCancel(\'' + s.id + '\')">' +
               '<svg class="svg-icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
               '<span>Annuler</span>' +
             '</button>' +
