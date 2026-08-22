@@ -17,7 +17,6 @@
 
   <style>
     :root {
-      /* Palette Studio Lin, Sauge & Or Chaud Authentique */
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
@@ -26,7 +25,6 @@
       --sage-border: #D6E3D9;
       --sage-border-subtle: #E5EFE7;
       
-      /* Couleur Bronze Doré Unie du Logo */
       --gold-solid: #AF8347;
       --gold-accent: #C59B53;
       --gold-dark: #7A5626;
@@ -102,7 +100,7 @@
       color: var(--gold-solid) !important;
     }
 
-    /* --- GESTION DU LOGO & SCINTILLEMENT --- */
+    /* --- LOGO & SCINTILLEMENT LUMINEUX --- */
     .logo-wrapper {
       position: relative;
       width: 140px;
@@ -122,28 +120,29 @@
       z-index: 1;
     }
 
-    .star-overlay-anim {
+    /* Halo lumineux doux et précis sur l'étoile existante */
+    .star-glow-point {
       position: absolute;
-      top: 14.5%;
-      right: 27%;
-      width: 24px;
-      height: 24px;
+      top: 17%;
+      right: 28%;
+      width: 16px;
+      height: 16px;
+      background: radial-gradient(circle, #FFFFFF 15%, rgba(245, 219, 156, 0.8) 45%, rgba(175, 131, 71, 0) 75%);
+      border-radius: 50%;
       pointer-events: none;
       z-index: 2;
-      animation: starTwinkleSpin 2.2s infinite ease-in-out;
-      transform-origin: center center;
+      animation: starShinePulse 1.8s infinite ease-in-out;
     }
 
-    @keyframes starTwinkleSpin {
+    @keyframes starShinePulse {
       0%, 100% {
-        transform: scale(0.9) rotate(0deg);
-        opacity: 0.85;
-        filter: drop-shadow(0 0 2px rgba(175, 131, 71, 0.6));
+        transform: scale(0.7);
+        opacity: 0.4;
       }
       50% {
-        transform: scale(1.25) rotate(180deg);
+        transform: scale(1.6);
         opacity: 1;
-        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 8px rgba(175, 131, 71, 0.8));
+        filter: drop-shadow(0 0 8px #FFFFFF) drop-shadow(0 0 14px rgba(197, 155, 83, 0.8));
       }
     }
 
@@ -847,12 +846,8 @@
       
       <div class="logo-wrapper">
         <img src="logo.png" alt="Chez Nadya Emblème" class="logo-img-splash">
-        
-        <svg class="star-overlay-anim" viewBox="0 0 100 100" fill="none">
-          <path d="M 50 2 Q 50 48 98 50 Q 50 52 50 98 Q 50 52 2 50 Q 50 48 50 2 Z" fill="#AF8347" />
-          <circle cx="50" cy="50" r="6" fill="#AF8347" />
-          <circle cx="50" cy="50" r="3" fill="#FFFFFF" />
-        </svg>
+        <!-- Point lumineux délicat au centre de l'étoile -->
+        <div class="star-glow-point"></div>
       </div>
 
       <div style="display:flex; flex-direction:column; align-items:center;">
@@ -1856,7 +1851,7 @@
       if (!s || s.users.length >= s.cap) return;
 
       var mem = members.find(function(m) { return m.user.toLowerCase() === currentUser.user.toLowerCase(); });
-      var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; }).length;
+      var myBookingsCount = sessions.filter(function(x) { return x.users.indexOf(currentUser.user) !== -1; }).length;
       var totalPass = mem ? (mem.totalCredits || 10) : 10;
 
       if (myBookingsCount >= totalPass) {
