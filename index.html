@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="color-scheme" content="light only">
-  <meta name="supported-color-schemes" content="light">
+  <meta name="color-scheme" content="light dark">
   <title>Chez Nadya — Studio Pilates Reformer</title>
 
   <meta name="mobile-web-app-capable" content="yes">
@@ -17,11 +16,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    /* --- MODE NORMAL (CLAIR PAR DÉFAUT) --- */
     :root {
-      color-scheme: light only;
-      forced-color-adjust: none;
-      -webkit-text-size-adjust: 100%;
-
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
@@ -60,6 +56,18 @@
       
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
+
+    /* --- GESTION AUTOMATIQUE SI LE TÉLÉPHONE EST EN MODE SOMBRE --- */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* On redéfinit explicitement des couleurs claires ou harmonieuses si le mode sombre natif est détecté, 
+           évitant l'inversion agressive par Samsung Internet */
+        --bg-app: #F8FAF7 !important;
+        --bg-card: #FFFFFF !important;
+        --text-main: #1F2E23 !important;
+        --text-muted: #5C7062 !important;
+      }
+    }
     
     * { 
       margin: 0; 
@@ -69,9 +77,9 @@
       -webkit-tap-highlight-color: transparent; 
     }
     
-    html, body {
-      background-color: var(--bg-app) !important;
-      color: var(--text-main) !important;
+    body {
+      background-color: var(--bg-app);
+      color: var(--text-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -1323,7 +1331,7 @@
   <script>
     // --- PURGE DU CACHE D'APPLICATION & CONTENEUR PWA (SANS TOUCHER AU LOCALSTORAGE) ---
     (async function forceCachePurge() {
-      var CURRENT_BUILD = "v4_light_forced_2026";
+      var CURRENT_BUILD = "v5_light_fixed_2026";
       var lastBuild = localStorage.getItem("cn_app_build_version");
 
       if (lastBuild !== CURRENT_BUILD) {
@@ -1938,7 +1946,7 @@
               '<div class="font-serif" style="font-size:19px; font-weight:700; color:var(--sage-dark); margin-top:4px;">' + s.title + '</div>' +
               '<div style="font-size:11.5px; color:var(--text-muted);">Coach : ' + s.coach + '</div>' +
             '</div>' +
-            '<button class="btn-cancel-link" style="height:34px;" onclick="requestGuestCancel(\'' + s.id + '\')">' +
+            '<button class="btn-cancel-link" style="height:34px;" onclick="requestGuestCancel(\'' + s.id + \')">' +
               '<svg class="svg-icon" style="width:12px; height:12px;" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
               '<span>Annuler</span>' +
             '</button>' +
