@@ -17,7 +17,6 @@
 
   <style>
     :root {
-      /* Palette Studio Lin, Sauge & Or Chaud Authentique */
       --sage-primary: #5A7E65;
       --sage-dark: #1E3324;
       --sage-medium: #4D6F57;
@@ -26,7 +25,6 @@
       --sage-border: #D6E3D9;
       --sage-border-subtle: #E5EFE7;
       
-      /* Couleur Bronze Doré Unie du Logo */
       --gold-solid: #AF8347;
       --gold-accent: #C59B53;
       --gold-dark: #7A5626;
@@ -102,7 +100,7 @@
       color: var(--gold-solid) !important;
     }
 
-    /* --- GESTION DU LOGO & SCINTILLEMENT --- */
+    /* --- GESTION DU LOGO & SCINTILLEMENT (NON MODIFIÉ) --- */
     .logo-wrapper {
       position: relative;
       width: 140px;
@@ -204,30 +202,15 @@
       }
     }
 
-    /* Barre de chargement en Bronze Doré */
-    .splash-loader-bar {
-      width: 140px;
-      height: 2.5px;
-      background: rgba(175, 131, 71, 0.15);
-      border-radius: 999px;
-      overflow: hidden;
-      position: relative;
-      margin-top: 14px;
-    }
-
-    .splash-loader-progress {
-      position: absolute;
-      top: 0; left: 0; height: 100%;
-      width: 0%;
-      background: var(--gold-solid);
-      animation: loaderProgress 1.4s ease-out forwards;
-      border-radius: 999px;
-    }
-
-    @keyframes loaderProgress {
-      0% { width: 0%; }
-      60% { width: 75%; }
-      100% { width: 100%; }
+    .splash-status-message {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      max-width: 290px;
+      line-height: 1.45;
+      min-height: 24px;
+      margin-top: 6px;
+      transition: all 0.3s var(--ease);
     }
 
     /* --- HEADER --- */
@@ -308,6 +291,24 @@
       flex-shrink: 0;
     }
 
+    .status-network-pill {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid var(--sage-border);
+      background: var(--sage-light);
+      color: var(--sage-dark);
+    }
+    .status-network-pill.offline {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger);
+    }
+
     .role-badge {
       font-size: 10px;
       font-weight: 700;
@@ -343,7 +344,7 @@
       color: var(--danger);
     }
 
-    /* Modale Universelle */
+    /* Modal & Toast */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -380,7 +381,6 @@
       transform: scale(1);
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       top: 18px;
@@ -841,7 +841,7 @@
 </head>
 <body>
 
-  <!-- ÉCRAN DE DÉMARRAGE -->
+  <!-- ÉCRAN DE DÉMARRAGE AVEC ÉTOILE D'ORIGINE (SANS BARRE DE CHARGEMENT) -->
   <div id="app-splash-screen" class="splash-overlay" onclick="dismissSplash()" title="Toucher pour entrer">
     <div class="splash-content">
       
@@ -868,9 +868,7 @@
         <div style="font-size:8.5px; font-weight:700; letter-spacing:4px; text-transform:uppercase;" class="brand-gold">MOVE • BREATHE • GLOW</div>
       </div>
 
-      <div class="splash-loader-bar">
-        <div class="splash-loader-progress"></div>
-      </div>
+      <div id="splash-msg" class="splash-status-message"></div>
     </div>
   </div>
 
@@ -891,7 +889,7 @@
   </div>
 
   <header>
-    <div class="brand-container" onclick="replaySplashAnimation()" title="Rejouer l'animation de démarrage">
+    <div class="brand-container" onclick="replaySplashAnimation()" title="Rejouer l'animation et vérifier les mises à jour">
       <div class="brand-logo-icon">
         <img src="logo.png" alt="Logo" class="logo-img-header">
       </div>
@@ -902,6 +900,10 @@
     </div>
     
     <div class="header-actions">
+      <div id="header-net-pill" class="status-network-pill">
+        <span style="width:5px; height:5px; border-radius:50%; background:var(--sage-primary);"></span>
+        <span>En ligne</span>
+      </div>
       <span id="app-title-header" class="role-badge" style="display:none;">Espace</span>
       <button id="btn-logout" class="btn-logout-icon" style="display:none;" onclick="logout()" title="Déconnexion">
         <svg class="svg-icon" style="width:15px; height:15px;" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -1418,7 +1420,9 @@
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
-    // --- GESTION DU SPLASH SCREEN ---
+    // --- GESTION DE LA VÉRIFICATION DU RÉSEAU & DU CODE ---
+    var isCheckingApp = false;
+
     function dismissSplash() {
       var splash = document.getElementById('app-splash-screen');
       if (splash && splash.style.display !== 'none') {
@@ -1429,22 +1433,92 @@
       }
     }
 
+    function setNetworkPill(isOnline) {
+      var pill = document.getElementById('header-net-pill');
+      if (!pill) return;
+      if (isOnline) {
+        pill.className = "status-network-pill";
+        pill.innerHTML = '<span style="width:5px; height:5px; border-radius:50%; background:var(--sage-primary);"></span><span>En ligne</span>';
+      } else {
+        pill.className = "status-network-pill offline";
+        pill.innerHTML = '<span style="width:5px; height:5px; border-radius:50%; background:var(--danger);"></span><span>Mode Local</span>';
+      }
+    }
+
+    async function checkNetworkAndSyncCode() {
+      if (isCheckingApp) return;
+      isCheckingApp = true;
+
+      var splashMsg = document.getElementById('splash-msg');
+      var startTime = Date.now();
+      var isOnline = navigator.onLine;
+
+      // 1. Test actif de connectivité (Ping serveur)
+      if (isOnline) {
+        try {
+          var ping = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
+          isOnline = ping.ok || ping.status === 0 || ping.type === 'opaque';
+        } catch (e) {
+          isOnline = false;
+        }
+      }
+
+      setNetworkPill(isOnline);
+
+      // Attente synchronisée avec la fin du cycle de scintillement de l'étoile (2200ms)
+      var elapsed = Date.now() - startTime;
+      var remainingTwinkle = Math.max(0, 2200 - elapsed);
+      await new Promise(function(resolve) { setTimeout(resolve, remainingTwinkle); });
+
+      if (!isOnline) {
+        // Message demandé si hors-ligne
+        if (splashMsg) {
+          splashMsg.innerText = "Vous n'avez pas de connexion internet. Les données vont être chargées depuis le serveur local.";
+          splashMsg.style.color = "var(--danger)";
+        }
+        showToast("Mode hors-ligne : données chargées localement", true);
+        setTimeout(dismissSplash, 2400);
+        isCheckingApp = false;
+        return;
+      }
+
+      // 2. Vérification de conformité et mise à jour du code HTML
+      try {
+        var res = await fetch(window.location.href, { cache: 'no-cache' });
+        if (res.ok) {
+          var serverHtml = await res.text();
+          var cachedHtml = localStorage.getItem('cn_app_ui_html');
+
+          if (cachedHtml && cachedHtml !== serverHtml) {
+            if (splashMsg) {
+              splashMsg.innerText = "Mise à jour de l'interface en cours...";
+              splashMsg.style.color = "var(--sage-dark)";
+            }
+            // Téléchargement et enregistrement de la version à jour en local
+            localStorage.setItem('cn_app_ui_html', serverHtml);
+            showToast("Interface mise à jour et synchronisée avec le serveur local !", false);
+          } else if (!cachedHtml) {
+            localStorage.setItem('cn_app_ui_html', serverHtml);
+          }
+        }
+      } catch (err) {
+        console.warn("Impossible de comparer la version HTML distante:", err);
+      }
+
+      isCheckingApp = false;
+      dismissSplash();
+    }
+
     function replaySplashAnimation() {
       var splash = document.getElementById('app-splash-screen');
       if (splash) {
         splash.style.display = 'flex';
         splash.classList.remove('fade-out');
-        var prog = splash.querySelector('.splash-loader-progress');
-        if (prog) {
-          prog.style.animation = 'none';
-          void prog.offsetWidth;
-          prog.style.animation = 'loaderProgress 1.4s ease-out forwards';
-        }
-        setTimeout(dismissSplash, 1500);
+        var msg = document.getElementById('splash-msg');
+        if (msg) msg.innerText = '';
+        checkNetworkAndSyncCode();
       }
     }
-
-    setTimeout(dismissSplash, 1500);
 
     // --- DONNÉES LOCALES & TARIFS ---
     function getFutureDateISO(months) {
@@ -1506,7 +1580,12 @@
       var t = document.getElementById('toast');
       document.getElementById('toast-text').innerText = text;
       t.className = 'toast show';
-      setTimeout(function() { t.className = 'toast'; }, 2600);
+      if (isError) {
+        t.style.borderColor = "var(--danger-border)";
+      } else {
+        t.style.borderColor = "var(--sage-border)";
+      }
+      setTimeout(function() { t.className = 'toast'; }, 2800);
     }
 
     function openConfirmModal(title, msg, onConfirm) {
@@ -1856,7 +1935,7 @@
       if (!s || s.users.length >= s.cap) return;
 
       var mem = members.find(function(m) { return m.user.toLowerCase() === currentUser.user.toLowerCase(); });
-      var myBookingsCount = sessions.filter(function(s) { return s.users.indexOf(currentUser.user) !== -1; }).length;
+      var myBookingsCount = sessions.filter(function(x) { return x.users.indexOf(currentUser.user) !== -1; }).length;
       var totalPass = mem ? (mem.totalCredits || 10) : 10;
 
       if (myBookingsCount >= totalPass) {
@@ -2603,9 +2682,20 @@
       });
     }
 
+    window.addEventListener('online', function() {
+      setNetworkPill(true);
+      showToast("Connexion Internet rétablie !", false);
+    });
+
+    window.addEventListener('offline', function() {
+      setNetworkPill(false);
+      showToast("Vous êtes hors-ligne. Utilisation des données locales.", true);
+    });
+
     window.onload = function() {
       handlePassSelection("10 séances (Pass Standard)");
       document.getElementById('new-mem-expiry').value = getFutureDateISO(6);
+      checkNetworkAndSyncCode();
     };
   </script>
 </body>
