@@ -92,7 +92,7 @@
 
     .brand-gold { color: var(--gold-solid) !important; }
 
-    /* --- GESTION DU LOGO & SCINTILLEMENT (ORIGINAL STRICT) --- */
+    /* --- GESTION DU LOGO & SCINTILLEMENT (CONSERVÉ STRICTEMENT) --- */
     .logo-wrapper {
       position: relative;
       width: 140px;
@@ -330,7 +330,7 @@
       color: var(--danger);
     }
 
-    /* Modale & Toast */
+    /* Modal & Toast */
     .vfa-modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -1316,6 +1316,38 @@
   <nav id="bottom-bar" class="bottom-bar" style="display:none;"></nav>
 
   <script>
+    // --- PURGE DU CACHE D'APPLICATION & CONTENEUR PWA (SANS TOUCHER AU LOCALSTORAGE) ---
+    (async function forceCachePurge() {
+      var CURRENT_BUILD = "v3_light_bg_2026";
+      var lastBuild = localStorage.getItem("cn_app_build_version");
+
+      if (lastBuild !== CURRENT_BUILD) {
+        if ('caches' in window) {
+          try {
+            var cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(function(name) { return caches.delete(name); }));
+          } catch (e) {
+            console.warn("Purge cacheStorage:", e);
+          }
+        }
+
+        if ('serviceWorker' in navigator) {
+          try {
+            var registrations = await navigator.serviceWorker.getRegistrations();
+            for (var i = 0; i < registrations.length; i++) {
+              await registrations[i].unregister();
+            }
+          } catch (e) {
+            console.warn("Désenregistrement SW:", e);
+          }
+        }
+
+        localStorage.setItem("cn_app_build_version", CURRENT_BUILD);
+        var cleanUrl = window.location.origin + window.location.pathname + '?reload=' + Date.now();
+        window.location.replace(cleanUrl);
+      }
+    })();
+
     // --- GESTION DE LA VÉRIFICATION DU RÉSEAU & DU CODE ---
     var isCheckingApp = false;
 
@@ -1349,7 +1381,7 @@
       var startTime = Date.now();
       var isOnline = navigator.onLine;
 
-      // 1. Test actif de connectivité avec bypass cache
+      // 1. Test actif de connectivité
       if (isOnline) {
         try {
           var ping = await fetch(window.location.href + '?t=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
@@ -1377,7 +1409,7 @@
         return;
       }
 
-      // 2. Vérification d'intégrité du code HTML & Rechargement automatique immédiat
+      // 2. Vérification d'intégrité du code HTML & Rechargement si mise à jour
       try {
         var res = await fetch(window.location.href + '?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
@@ -1392,7 +1424,6 @@
             localStorage.setItem('cn_app_ui_html', serverHtml);
             showToast("Mise à jour appliquée !", false);
             
-            // Rechargement forcé de la WebApp sur l'écran d'accueil
             setTimeout(function() {
               window.location.reload(true);
             }, 600);
@@ -1402,7 +1433,7 @@
           }
         }
       } catch (err) {
-        console.warn("Impossible de vérifier les mises à jour distantes:", err);
+        console.warn("Vérification maj distantes:", err);
       }
 
       isCheckingApp = false;
